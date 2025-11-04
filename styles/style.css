@@ -1,0 +1,167 @@
+body {
+     font-family: Arial, sans-serif;
+ }
+
+ header {
+     background: #000;
+     color: #fff;
+     font-size: 0.8rem;
+     padding: 0.2rem 0;
+     text-align: center;
+ }
+
+ .hero h1 span {
+     font-weight: 800;
+     font-size: 3rem;
+ }
+
+ .benefit-card {
+     border: 2px solid #ccc;
+     border-radius: 10px;
+     text-align: center;
+     padding: 1rem;
+     height: 100%;
+ }
+
+ .btn-main {
+     background-color: #000;
+     color: #fff;
+ }
+
+ .btn-secondary {
+     background-color: #eee;
+     color: #000;
+ }
+
+ 
+.sect-color{
+   background-color:  #343a40;
+}
+
+
+
+ /* Overlay scuro e sfocato */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Overlay visibile solo quando la checkbox è spuntata */
+#configurator-toggle:not(:checked) ~ .overlay-configurator {
+  display: none;
+}
+
+.overlay-configurator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-content {
+  background: white;
+  width: 90%;
+  max-width: 900px;
+  height: 80%;
+  border-radius: 1rem;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+/* Wrapper della finestra principale */
+.config-wrapper {
+  background: white;
+  width: 90%;
+  max-width: 900px;
+  height: 80%;
+  border-radius: 1rem;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Pulsante chiusura */
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+}
+
+/* Opzioni a scelta multipla */
+.option-cards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.option-card {
+  flex: 1 1 30%;
+  min-width: 200px;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.option-card input[type="radio"] {
+  display: none;
+}
+
+.option-card .card-content {
+  padding: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Stato selezionato */
+.option-card input[type="radio"]:checked + .card-content {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* Hover */
+.option-card:hover .card-content {
+  background-color: #f0f0f0;
+}
+
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    
+
+   
+    
+}
