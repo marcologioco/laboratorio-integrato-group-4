@@ -3,8 +3,8 @@ package com.immobiliaris.immobiliaris_be.model;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.immobiliaris.immobiliaris_be.model.StatoImmobile;
-import com.immobiliaris.immobiliaris_be.model.TipoImmobile;
+import com.immobiliaris.immobiliaris_be.enums.StatoImmobile;
+import com.immobiliaris.immobiliaris_be.enums.TipoImmobile;
 
 import jakarta.persistence.*;
 

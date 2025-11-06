@@ -3,7 +3,7 @@ package com.immobiliaris.immobiliaris_be.model;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.immobiliaris.immobiliaris_be.model.StatoValutazione;
+import com.immobiliaris.immobiliaris_be.enums.StatoValutazione;
 
 import jakarta.persistence.*;
 

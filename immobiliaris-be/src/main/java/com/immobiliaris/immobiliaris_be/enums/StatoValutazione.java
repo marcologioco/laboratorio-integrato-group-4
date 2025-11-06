@@ -1,4 +1,4 @@
-package com.immobiliaris.immobiliaris_be.model;
+package com.immobiliaris.immobiliaris_be.enums;
 
 public enum StatoValutazione {
 
