@@ -69,10 +69,65 @@
                 </div>
 
                 <div>
-                    <div class="bg-my-cream border border-gray-300 rounded-xl p-8 text-center">
-                        <img src="https://via.placeholder.com/400x250" alt="Esempio tool"
-                            class="w-full h-auto rounded-lg">
-                    </div>
+                    <div id="valuation-form" class="mt-8 bg-white rounded-xl shadow-lg p-6 max-w-md">
+  <div class="mb-4">
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div id="progress-bar" class="bg-my-green-dark h-2 rounded-full transition-all duration-300" style="width: 33%;"></div>
+    </div>
+  </div>
+
+  <!-- FORM MULTI-STEP (sostituisci l'intero blocco form esistente con questo) -->
+<div id="valuation-form" class="mt-8 bg-white rounded-xl shadow-lg p-6 max-w-md">
+  <div class="mb-4">
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div id="progress-bar" class="bg-my-green-dark h-2 rounded-full transition-all duration-300" style="width: 33%;"></div>
+    </div>
+  </div>
+
+  <form id="multi-step-form" class="space-y-6">
+    <!-- STEP 1 -->
+    <div class="step" data-step="1">
+      <h3 class="font-bold text-my-black text-lg mb-3">Tipo di abitazione</h3>
+      <div class="grid grid-cols-1 gap-3">
+        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
+          <input type="radio" name="tipo" value="Appartamento" class="accent-my-green-dark">
+          <span>Appartamento</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
+          <input type="radio" name="tipo" value="Villa" class="accent-my-green-dark">
+          <span>Villa</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
+          <input type="radio" name="tipo" value="Ufficio" class="accent-my-green-dark">
+          <span>Ufficio</span>
+        </label>
+      </div>
+      <button type="button" data-action="next" data-step="1" class="mt-6 bg-my-green-dark text-white px-5 py-2 rounded-lg hover:bg-my-black transition">Avanti</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step hidden" data-step="2">
+      <h3 class="font-bold text-my-black text-lg mb-3">Superficie (m²)</h3>
+      <input type="number" name="metratura" placeholder="Es. 80" class="border rounded-lg w-full p-2 focus:outline-none focus:ring-2 focus:ring-my-green-dark">
+      <div class="flex justify-between mt-6">
+        <button type="button" data-action="back" data-step="2" class="bg-gray-200 text-my-black px-4 py-2 rounded-lg hover:bg-gray-300 transition">Indietro</button>
+        <button type="button" data-action="next" data-step="2" class="bg-my-green-dark text-white px-5 py-2 rounded-lg hover:bg-my-black transition">Avanti</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step hidden text-center" data-step="3">
+      <h3 class="font-bold text-my-black text-lg mb-3">Perfetto!</h3>
+      <p class="text-gray-600 mb-6">Hai completato i dati principali. Premi invia per continuare.</p>
+      <div class="flex justify-between mt-6">
+        <button type="button" data-action="back" data-step="3" class="bg-gray-200 text-my-black px-4 py-2 rounded-lg hover:bg-gray-300 transition">Indietro</button>
+        <button type="submit" class="bg-my-green-dark text-white px-6 py-2 rounded-lg hover:bg-my-black transition">Invia</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
                 </div>
             </div>
         </div>
@@ -528,8 +583,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     <script src="/js/swiper-config.js"></script>
+    <script src="/js/form-multi-step.js"></script>
 
 </body>
 
