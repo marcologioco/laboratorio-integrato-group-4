@@ -3,13 +3,13 @@ package com.immobiliaris.immobiliaris_be.repos;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.immobiliaris.immobiliaris_be.model.Contratto;
 import java.time.LocalDate;
 import com.immobiliaris.immobiliaris_be.enums.StatoContratto;
 
-
-
+@Repository
 public interface ContrattoRepo extends JpaRepository<Contratto,Integer>{
 
     //trova contratti per id_contratto
@@ -40,3 +40,6 @@ public interface ContrattoRepo extends JpaRepository<Contratto,Integer>{
     List<Contratto> findByStato(StatoContratto stato);
 
 }
+
+
+

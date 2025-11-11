@@ -1,0 +1,20 @@
+package com.immobiliaris.immobiliaris_be.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.immobiliaris.immobiliaris_be.model.Zona;
+
+public interface ZoneService {
+
+    List<Zona> findAllZone();
+    Optional<Zona> findZonaByCap(String cap);
+
+    Zona addZona(Zona z);
+
+    List<Zona> findZonaByPrezzoMedio(Double prezzoMedioSqm);
+    Zona updateZona(Zona zona);
+    void deleteZona(String cap);
+    Zona patchZona(String cap, Zona zona);
+
+}
