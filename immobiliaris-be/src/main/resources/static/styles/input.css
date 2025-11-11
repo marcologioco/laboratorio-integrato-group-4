@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Font definitions for headings and body text */
+@layer base {
+  /* h1 uses Cinzel Decorative */
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+  }
+
+  /* h2 uses Cinzel */
+  h2 {
+    font-family: 'Cinzel', serif;
+  }
+
+  /* h3, h4, h5, h6 use Cinzel as well for consistency */
+  h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+  }
+
+  /* Body and paragraph text use Montserrat */
+  body {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  p, span, a, li {
+    font-family: 'Montserrat', sans-serif;
+  }
+}

@@ -1,0 +1,17 @@
+/* FAQ accordion styles: no gaps between items, hidden answers with smooth height transition, and rotating icon */
+.faq-list { margin: 0; padding: 0; list-style: none; }
+.faq-item { border: 1px solid #E5E7EB; border-radius: 0.5rem; overflow: hidden; }
+.faq-item + .faq-item { margin-top: 0; } /* ensure no extra gap */
+.faq-question { padding: 1rem; background-color: #274239; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.faq-question .faq-title { flex: 1; text-align: left; color: #ffffff;}
+.faq-icon { width: 1rem; height: 1rem; display: inline-block; transition: transform 0.25s ease; transform-origin: center; }
+.faq-item.open .faq-icon { transform: rotate(180deg); }
+.faq-answer { padding: 1rem; color: #4B5563; border-top: 1px solid #E5E7EB; overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+.faq-question:focus { outline: 2px solid #274239; outline-offset: 2px; }
+
+
+/* Optional: small responsive tweak */
+@media (min-width: 768px) {
+  .faq-question { padding: 1rem 1.25rem; }
+  .faq-answer { padding: 1rem 1.25rem; }
+}
