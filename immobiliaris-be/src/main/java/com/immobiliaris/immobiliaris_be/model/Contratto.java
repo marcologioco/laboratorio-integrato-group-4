@@ -67,6 +67,7 @@ public class Contratto {
     @Column(name = "note", columnDefinition = "TEXT")
     private Text note;
 
+    //Getters e setters
     public Integer getIdContratto() {
         return idContratto;
     }
@@ -147,6 +148,7 @@ public class Contratto {
         this.note = note;
     }
 
+    //Costruttore
     public Contratto(Integer idImmobile, Integer idVenditore, String tipo, Boolean esclusiva, LocalDate dataInizio,
             LocalDate dataFine, Double prezzoFinaleMinimo, StatoContratto stato, Text note) {
         this.idImmobile = idImmobile;

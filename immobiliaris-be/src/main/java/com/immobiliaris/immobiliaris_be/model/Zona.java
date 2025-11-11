@@ -29,6 +29,7 @@ public class Zona {
     @ColumnDefault(value = "0.00")
     private Double prezzoMedioSqm;
 
+    //Getters e setters
     public String getCap() {
         return cap;
     }
@@ -53,6 +54,7 @@ public class Zona {
         this.prezzoMedioSqm = prezzoMedioSqm;
     }
 
+    //Costruttore
     public Zona(String cap, String nomeZona, Double prezzoMedioSqm) {
         this.cap = cap;
         this.nomeZona = nomeZona;
