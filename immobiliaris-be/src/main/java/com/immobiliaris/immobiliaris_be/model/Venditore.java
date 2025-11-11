@@ -1,5 +1,7 @@
 package com.immobiliaris.immobiliaris_be.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,48 +10,68 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="venditore")
+@Table(name = "venditore")
+@JsonPropertyOrder({
+    "id_venditore",
+    "id_utente",
+    "nome",
+    "cognome",
+    "email",
+    "telefono",
+    "indirizzo",
+    "citta",
+    "provincia",
+    "codice_fiscale"
+})
 public class Venditore {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_venditore")
-    private Integer id_venditore;
+    @Column(name = "id_venditore")
+    private Integer idVenditore;
 
-    @Column(nullable=true)
-    private Integer id_utente;
+    @Column(name = "id_utente", nullable = true)
+    private Integer idUtente;
 
-    @Column(nullable=false)
+    @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Column(name = "cognome")
     private String cognome;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "telefono")
     private String telefono;
 
+    @Column(name = "indirizzo")
     private String indirizzo;
 
+    @Column(name = "citta")
     private String citta;
 
+    @Column(name = "provincia")
     private String provincia;
 
-    private String codice_fiscale;
+    @Column(name = "codice_fiscale")
+    private String codiceFiscale;
 
-    public Integer getId_venditore() {
-        return id_venditore;
+    // Getters and Setters
+    public Integer getIdVenditore() {
+        return idVenditore;
     }
 
-    public void setId_venditore(Integer id_venditore) {
-        this.id_venditore = id_venditore;
+    public void setIdVenditore(Integer idVenditore) {
+        this.idVenditore = idVenditore;
     }
 
-    public Integer getId_utente() {
-        return id_utente;
+    public Integer getIdUtente() {
+        return idUtente;
     }
 
-    public void setId_utente(Integer id_utente) {
-        this.id_utente = id_utente;
+    public void setIdUtente(Integer idUtente) {
+        this.idUtente = idUtente;
     }
 
     public String getNome() {
@@ -108,14 +130,11 @@ public class Venditore {
         this.provincia = provincia;
     }
 
-    public String getCodice_fiscale() {
-        return codice_fiscale;
+    public String getCodiceFiscale() {
+        return codiceFiscale;
     }
 
-    public void setCodice_fiscale(String codice_fiscale) {
-        this.codice_fiscale = codice_fiscale;
+    public void setCodiceFiscale(String codiceFiscale) {
+        this.codiceFiscale = codiceFiscale;
     }
-
-    
-
 }
