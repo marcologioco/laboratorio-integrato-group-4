@@ -88,21 +88,33 @@
     <!-- STEP 1 -->
     <div class="step" data-step="1">
       <h3 class="font-bold text-my-black text-lg mb-3">Tipo di abitazione</h3>
-      <div class="grid grid-cols-1 gap-3">
-        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
-          <input type="radio" name="tipo" value="Appartamento" class="accent-my-green-dark">
-          <span>Appartamento</span>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <label class="cursor-pointer border rounded-lg p-4 flex flex-col items-center text-center transition-shadow duration-300
+                      hover:shadow-lg peer-checked:shadow-lg peer-checked:border-my-green-dark"
+               >
+          <input type="radio" name="tipo" value="Appartamento" class="hidden peer" />
+          <img src="/assets/appartamento.svg" alt="Appartamento" class="w-16 h-16 mb-2" />
+          <span class="font-semibold text-base sm:text-lg leading-snug peer-checked:text-my-green-dark break-words max-w-full">Appartamento</span>
         </label>
-        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
-          <input type="radio" name="tipo" value="Villa" class="accent-my-green-dark">
-          <span>Villa</span>
+        <label class="cursor-pointer border rounded-lg p-4 flex flex-col items-center text-center transition-shadow duration-300
+                      hover:shadow-lg peer-checked:shadow-lg peer-checked:border-my-green-dark"
+               >
+          <input type="radio" name="tipo" value="Villa" class="hidden peer" />
+          <img src="/assets/villa.svg" alt="Villa" class="w-16 h-16 mb-2" />
+          <span class="font-semibold text-base sm:text-lg leading-snug peer-checked:text-my-green-dark break-words max-w-full">Villa</span>
         </label>
-        <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-my-green-dark transition">
-          <input type="radio" name="tipo" value="Ufficio" class="accent-my-green-dark">
-          <span>Ufficio</span>
+        <label class="cursor-pointer border rounded-lg p-4 flex flex-col items-center text-center transition-shadow duration-300
+                      hover:shadow-lg peer-checked:shadow-lg peer-checked:border-my-green-dark"
+               >
+          <input type="radio" name="tipo" value="Ufficio" class="hidden peer" />
+          <img src="/assets/office.svg" alt="Ufficio" class="w-16 h-16 mb-2" />
+          <span class="font-semibold text-base sm:text-lg leading-snug peer-checked:text-my-green-dark break-words max-w-full">Ufficio</span>
         </label>
       </div>
-      <button type="button" data-action="next" data-step="1" class="mt-6 bg-my-green-dark text-white px-5 py-2 rounded-lg hover:bg-my-black transition">Avanti</button>
+      <div class="flex justify-between mt-6">
+        <button type="button" data-action="back" data-step="1" class="bg-gray-200 text-my-black px-4 py-2 rounded-lg hover:bg-gray-300 transition">Indietro</button>
+        <button type="button" data-action="next" data-step="1" class="bg-my-green-dark text-white px-5 py-2 rounded-lg hover:bg-my-black transition">Avanti</button>
+      </div>
     </div>
 
     <!-- STEP 2 -->
@@ -389,7 +401,7 @@
                         riguardo il tool
                     </h2>
                     <p class="my-3 text-lg text-my-cream">Lorem ipsum dolor sit amet consectetur. Purus phasellus sit
-                        duis.</p>
+                        dui.</p>
                     <a href="#"
                         class="py-3 px-6 font-semibold rounded-lg bg-white text-my-black hover:bg-gray-200 transition duration-150">Main
                         CTA</a>
