@@ -1,6 +1,7 @@
 package com.immobiliaris.immobiliaris_be.repos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,11 +13,11 @@ public interface VenditoreRepo extends JpaRepository<Venditore, Integer>{
 
     //Trova per id_venditore
     //SELECT * FROM venditore WHERE id_venditore = ?;
-    List<Venditore> findByIdVenditore(Integer id_venditore);
+    Optional<Venditore> findByIdVenditore(Integer id_venditore);
 
     //Trova per id_utente
     //SELECT * FROM venditore WHERE id_utente = ?;
-    List<Venditore> findByIdUtenteVenditore(String id_utente);
+    List<Venditore> findByIdUtenteVenditore(Integer id_utente);
 
     //Trova per nome
     //SELECT * FROM venditore WHERE nome = ?;

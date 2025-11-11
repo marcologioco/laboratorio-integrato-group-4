@@ -1,13 +1,14 @@
 package com.immobiliaris.immobiliaris_be.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.immobiliaris.immobiliaris_be.model.Venditore;
 
 public interface VenditoreService {
     
     List<Venditore> findAllVenditori();
-    List<Venditore> findVenditoreById(Integer id_venditore);
+    Optional<Venditore> findVenditoreById(Integer id_venditore);
     List<Venditore> findVenditoreByIdUtente(Integer id_utente);
     List<Venditore> findVenditoreByNome(String nome);
     List<Venditore> findVenditoreByCognome(String cognome);
