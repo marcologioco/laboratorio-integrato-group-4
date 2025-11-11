@@ -1,5 +1,7 @@
 package com.immobiliaris.immobiliaris_be.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,22 +11,27 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ruolo")
+@JsonPropertyOrder({
+    "id_ruolo",
+    "nome"
+})
 public class Ruolo {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_ruolo")
-    private Integer id_ruolo;
+    @Column(name = "id_ruolo")
+    private Integer idRuolo;
 
-    @Column(nullable=false, unique=true)
+    @Column(name = "nome", nullable = false, unique = true, length = 50)
     private String nome;
 
-    public Integer getId_ruolo() {
-        return id_ruolo;
+    // Getters and Setters
+    public Integer getIdRuolo() {
+        return idRuolo;
     }
 
-    public void setId_ruolo(Integer id_ruolo) {
-        this.id_ruolo = id_ruolo;
+    public void setIdRuolo(Integer idRuolo) {
+        this.idRuolo = idRuolo;
     }
 
     public String getNome() {
@@ -34,6 +41,4 @@ public class Ruolo {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
-
 }

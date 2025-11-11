@@ -1,5 +1,7 @@
 package com.immobiliaris.immobiliaris_be.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,33 +10,48 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="utente")
+@Table(name = "utente")
+@JsonPropertyOrder({
+    "id_utente",
+    "nome",
+    "cognome",
+    "email",
+    "password",
+    "telefono",
+    "id_ruolo"
+})
 public class Utente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_utente")
-    private Integer id_utente;
+    @Column(name = "id_utente")
+    private Integer idUtente;
 
+    @Column(name = "nome")
     private String nome;
 
+    @Column(name = "cognome")
     private String cognome;
 
-    @Column(unique=true)
-    private String email ;
+    @Column(name = "email", unique = true)
+    private String email;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "telefono")
     private String telefono;
 
-    private Integer id_ruolo=1;
+    @Column(name = "id_ruolo")
+    private Integer idRuolo;
 
-    public Integer getId_utente() {
-        return id_utente;
+    // Getters and Setters
+    public Integer getIdUtente() {
+        return idUtente;
     }
 
-    public void setId_utente(Integer id_utente) {
-        this.id_utente = id_utente;
+    public void setIdUtente(Integer idUtente) {
+        this.idUtente = idUtente;
     }
 
     public String getNome() {
@@ -77,13 +94,11 @@ public class Utente {
         this.telefono = telefono;
     }
 
-    public Integer getId_ruolo() {
-        return id_ruolo;
+    public Integer getIdRuolo() {
+        return idRuolo;
     }
 
-    public void setId_ruolo(Integer id_ruolo) {
-        this.id_ruolo = id_ruolo;
+    public void setIdRuolo(Integer idRuolo) {
+        this.idRuolo = idRuolo;
     }
-
-    
 }

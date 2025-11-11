@@ -21,53 +21,53 @@ public class VenditoreServiceImpl implements VenditoreService{
     }
 
     @Override
-    public Optional<Venditore> findVenditoreById(Integer id_venditore){
-        return venditoreRepo.findByIdVenditore(id_venditore);
+    public Optional<Venditore> findVenditoreById(Integer idVenditore){
+        return venditoreRepo.findById(idVenditore);
     }
 
     @Override
-    public List<Venditore> findVenditoreByIdUtente(Integer id_utente){
-        return venditoreRepo.findByIdUtenteVenditore(id_utente);
+    public List<Venditore> findVenditoreByIdUtente(Integer idUtente){
+        return venditoreRepo.findByIdUtente(idUtente);
     }
 
     @Override
     public List<Venditore> findVenditoreByNome(String nome) {
-        return venditoreRepo.findByNomeVenditore(nome);
+        return venditoreRepo.findByNome(nome);
     }
 
     @Override
     public List<Venditore> findVenditoreByCognome(String cognome) {
-        return venditoreRepo.findByCognomeVenditore(cognome);
+        return venditoreRepo.findByCognome(cognome);
     }
 
     @Override
     public List<Venditore> findVenditoreByEmail(String email) {
-        return venditoreRepo.findByEmailVenditore(email);
+        return venditoreRepo.findByEmail(email);
     }
 
     @Override
     public List<Venditore> findVenditoreByTelefono(String telefono) {
-        return venditoreRepo.findByTelefonoVenditore(telefono);
+        return venditoreRepo.findByTelefono(telefono);
     }
 
     @Override
     public List<Venditore> findVenditoreByIndirizzo(String indirizzo) {
-        return venditoreRepo.findByIndirizzoVenditore(indirizzo);
+        return venditoreRepo.findByIndirizzo(indirizzo);
     }
 
     @Override
     public List<Venditore> findVenditoreByCitta(String citta) {
-        return venditoreRepo.findByCittaVenditore(citta);
+        return venditoreRepo.findByCitta(citta);
     }
 
     @Override
     public List<Venditore> findVenditoreByProvincia(String provincia) {
-        return venditoreRepo.findByProvinciaVenditore(provincia);
+        return venditoreRepo.findByProvincia(provincia);
     }
 
     @Override
-    public List<Venditore> FindVenditoreByCodiceFiscale(String codice_fiscale) {
-        return venditoreRepo.findByCodiceFiscaleVenditore(codice_fiscale);
+    public List<Venditore> findVenditoreByCodiceFiscale(String codiceFiscale) {
+        return venditoreRepo.findByCodiceFiscale(codiceFiscale);
     }
 
     @Override
@@ -77,11 +77,10 @@ public class VenditoreServiceImpl implements VenditoreService{
 
     @Override
     public Venditore updateVenditore(Integer id, Venditore venditoreDetails) {
-    Venditore venditore = venditoreRepo.findByIdVenditore(id)
-        .orElseThrow(() -> new RuntimeException("Venditore non trovato con id: " + id));
+        Venditore venditore = venditoreRepo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Venditore non trovato con id: " + id));
 
-        venditore.setId_venditore(venditoreDetails.getId_venditore());
-        venditore.setId_utente(venditoreDetails.getId_venditore());
+        venditore.setIdUtente(venditoreDetails.getIdUtente());
         venditore.setNome(venditoreDetails.getNome());
         venditore.setCognome(venditoreDetails.getCognome());
         venditore.setEmail(venditoreDetails.getEmail());
@@ -89,10 +88,9 @@ public class VenditoreServiceImpl implements VenditoreService{
         venditore.setIndirizzo(venditoreDetails.getIndirizzo());
         venditore.setCitta(venditoreDetails.getCitta());
         venditore.setProvincia(venditoreDetails.getProvincia());
-        venditore.setCodice_fiscale(venditoreDetails.getCodice_fiscale());
+        venditore.setCodiceFiscale(venditoreDetails.getCodiceFiscale());
         
         return venditoreRepo.save(venditore);
-        
     }
 
     @Override
@@ -102,11 +100,11 @@ public class VenditoreServiceImpl implements VenditoreService{
 
     @Override
     public Venditore patchVenditore(Integer idVenditore, Venditore venditore) {
-        Venditore existingVenditore = venditoreRepo.findByIdVenditore(idVenditore)
+        Venditore existingVenditore = venditoreRepo.findById(idVenditore)
             .orElseThrow(() -> new RuntimeException("Venditore non trovato con id: " + idVenditore));
 
-        if (venditore.getId_utente() != null) {
-            existingVenditore.setId_utente(venditore.getId_utente());
+        if (venditore.getIdUtente() != null) {
+            existingVenditore.setIdUtente(venditore.getIdUtente());
         }
         if (venditore.getNome() != null && !venditore.getNome().isBlank()) {
             existingVenditore.setNome(venditore.getNome().trim());
@@ -129,8 +127,8 @@ public class VenditoreServiceImpl implements VenditoreService{
         if (venditore.getProvincia() != null && !venditore.getProvincia().isBlank()) {
             existingVenditore.setProvincia(venditore.getProvincia().trim());
         }
-        if (venditore.getCodice_fiscale() != null && !venditore.getCodice_fiscale().isBlank()) {
-            existingVenditore.setCodice_fiscale(venditore.getCodice_fiscale().trim());
+        if (venditore.getCodiceFiscale() != null && !venditore.getCodiceFiscale().isBlank()) {
+            existingVenditore.setCodiceFiscale(venditore.getCodiceFiscale().trim());
         }
 
         return venditoreRepo.save(existingVenditore);
