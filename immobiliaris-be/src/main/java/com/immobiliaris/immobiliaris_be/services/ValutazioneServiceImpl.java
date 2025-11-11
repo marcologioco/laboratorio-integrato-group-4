@@ -106,8 +106,8 @@ public class ValutazioneServiceImpl implements ValutazioneService {
             existingValutazione.setDataCompletamento(patchValutazione.getDataCompletamento());
         }
 
-        if (patchValutazione.getNote() != null) {
-            existingValutazione.setNote(patchValutazione.getNote());
+        if (patchValutazione.getNote() != null && !patchValutazione.getNote().isBlank()) {
+            existingValutazione.setNote(patchValutazione.getNote().trim());
         }
 
         return valutazioneRepo.save(existingValutazione);

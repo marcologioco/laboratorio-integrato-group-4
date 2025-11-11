@@ -102,20 +102,20 @@ public class ImmobileServiceImpl implements ImmobileService {
             existingImmobile.setTipo(patchImmobile.getTipo());
         }
 
-        if (patchImmobile.getIndirizzo() != null) {
-            existingImmobile.setIndirizzo(patchImmobile.getIndirizzo());
+        if (patchImmobile.getIndirizzo() != null && !patchImmobile.getIndirizzo().isBlank()) {
+            existingImmobile.setIndirizzo(patchImmobile.getIndirizzo().trim());
         }
 
-        if (patchImmobile.getCitta() != null) {
-            existingImmobile.setCitta(patchImmobile.getCitta());
+        if (patchImmobile.getCitta() != null && !patchImmobile.getCitta().isBlank()) {
+            existingImmobile.setCitta(patchImmobile.getCitta().trim());
         }
 
-        if (patchImmobile.getProvincia() != null) {
-            existingImmobile.setProvincia(patchImmobile.getProvincia());
+        if (patchImmobile.getProvincia() != null && !patchImmobile.getProvincia().isBlank()) {
+            existingImmobile.setProvincia(patchImmobile.getProvincia().trim());
         }
 
-        if (patchImmobile.getCap() != null) {
-            existingImmobile.setCap(patchImmobile.getCap());
+        if (patchImmobile.getCap() != null && !patchImmobile.getCap().isBlank()) {
+            existingImmobile.setCap(patchImmobile.getCap().trim());
         }
 
         if (patchImmobile.getMetriQuadri() != null) {
@@ -134,8 +134,8 @@ public class ImmobileServiceImpl implements ImmobileService {
             existingImmobile.setPrezzo(patchImmobile.getPrezzo());
         }
 
-        if (patchImmobile.getDescrizione() != null) {
-            existingImmobile.setDescrizione(patchImmobile.getDescrizione());
+        if (patchImmobile.getDescrizione() != null && !patchImmobile.getDescrizione().isBlank()) {
+            existingImmobile.setDescrizione(patchImmobile.getDescrizione().trim());
         }
 
         if (patchImmobile.getStato() != null) {
