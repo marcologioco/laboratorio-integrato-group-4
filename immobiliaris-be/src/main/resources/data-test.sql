@@ -29,19 +29,19 @@ INSERT INTO zona (cap, nome_zona, prezzo_medio_sqm) VALUES
 
 -- IMMOBILI
 INSERT INTO immobile (id_venditore, tipo, indirizzo, citta, provincia, cap, metri_quadri, camere, bagni, prezzo, descrizione, stato) VALUES
-(1, 'appartamento', 'Via Genova 12', 'Torino', 'TO', '10137', 80, 3, 1, 160000, 'Appartamento luminoso con balcone e garage', 'abitabile'),
-(2, 'villa', 'Via dei Fiori 5', 'Roma', 'RM', '00144', 180, 5, 3, 750000, 'Villa con giardino e piscina', 'nuova'),
-(3, 'ufficio', 'Corso Buenos Aires 99', 'Milano', 'MI', '20121', 120, 4, 2, 890000, 'Ufficio moderno in zona centrale', 'ristrutturata'),
-(4, 'appartamento', 'Via Chambery 45', 'Torino', 'TO', '10141', 65, 2, 1, 130000, 'Bilocale con riscaldamento autonomo', 'da_ristrutturare'),
-(5, 'villa', 'Viale Europa 33', 'Torino', 'TO', '10126', 200, 6, 3, 560000, 'Villa indipendente con ampio cortile', 'abitabile');
+(1, 'APPARTAMENTO', 'Via Genova 12', 'Torino', 'TO', '10137', 80, 3, 1, 160000, 'Appartamento luminoso con balcone e garage', 'ABITABILE'),
+(2, 'VILLA', 'Via dei Fiori 5', 'Roma', 'RM', '00144', 180, 5, 3, 750000, 'Villa con giardino e piscina', 'NUOVA'),
+(3, 'UFFICIO', 'Corso Buenos Aires 99', 'Milano', 'MI', '20121', 120, 4, 2, 890000, 'Ufficio moderno in zona centrale', 'RISTRUTTURATA'),
+(4, 'APPARTAMENTO', 'Via Chambery 45', 'Torino', 'TO', '10141', 65, 2, 1, 130000, 'Bilocale con riscaldamento autonomo', 'DA_RISTRUTTURARE'),
+(5, 'VILLA', 'Viale Europa 33', 'Torino', 'TO', '10126', 200, 6, 3, 560000, 'Villa indipendente con ampio cortile', 'ABITABILE');
 
 -- VALUTAZIONI
 INSERT INTO valutazione (id_immobile, id_utente, stato, valore_stimato, valore_calcolato_zona, deadline, note) VALUES
-(1, 2, 'completata', 165000, 152000, '2024-06-01 00:00:00', 'Valore in linea con il mercato'),
-(2, 3, 'in_corso', NULL, 810000, '2024-06-15 00:00:00', 'In attesa di sopralluogo'),
-(3, 1, 'completata', 900000, 880000, '2024-07-01 00:00:00', 'Valutazione confermata'),
-(4, 5, 'annullata', NULL, NULL, '2024-06-10 00:00:00', 'Richiesta ritirata dal venditore'),
-(5, 4, 'in_corso', NULL, 540000, '2024-06-20 00:00:00', 'In verifica dati catastali');
+(1, 2, 'COMPLETATA', 165000, 152000, '2024-06-01 00:00:00', 'Valore in linea con il mercato'),
+(2, 3, 'IN_CORSO', NULL, 810000, '2024-06-15 00:00:00', 'In attesa di sopralluogo'),
+(3, 1, 'COMPLETATA', 900000, 880000, '2024-07-01 00:00:00', 'Valutazione confermata'),
+(4, 5, 'ANNULLATA', NULL, NULL, '2024-06-10 00:00:00', 'Richiesta ritirata dal venditore'),
+(5, 4, 'IN_CORSO', NULL, 540000, '2024-06-20 00:00:00', 'In verifica dati catastali');
 
 -- CONTRATTI
 INSERT INTO contratto (id_immobile, id_venditore, tipo, esclusiva, data_inizio, data_fine, prezzo_finale_minimo, stato, note) VALUES
