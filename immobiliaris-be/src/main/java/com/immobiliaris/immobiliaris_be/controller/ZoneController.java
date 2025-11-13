@@ -35,7 +35,7 @@ public class ZoneController {
     }
 
     //GET zona per cap
-    @GetMapping("/{id}")
+    @GetMapping("/{cap}")
     public ResponseEntity<Zona> getZonaByCap(@PathVariable String cap){
         return service.findZonaByCap(cap)
             .map(ResponseEntity::ok)
@@ -44,15 +44,15 @@ public class ZoneController {
 
     //GET zona per nome
     @GetMapping("/nome/{nomeZona}")
-    public ResponseEntity<Zona> getZonaByNome(@PathVariable String nome){
-        Zona zona = service.findZonaByNome(nome);
+    public ResponseEntity<Zona> getZonaByNome(@PathVariable String nomeZona){
+        Zona zona = service.findZonaByNome(nomeZona);
         return ResponseEntity.ok(zona);
     }
 
     //GET zone per prezzo medio
     @GetMapping("/prezzo-medio/{prezzoMedioSqm}")
-    public ResponseEntity<List<Zona>> getZonaByPrezzoMedio(@PathVariable Double prezzo){
-        List<Zona> zone = service.findZonaByPrezzoMedio(prezzo);
+    public ResponseEntity<List<Zona>> getZonaByPrezzoMedio(@PathVariable Double prezzoMedioSqm){
+        List<Zona> zone = service.findZonaByPrezzoMedio(prezzoMedioSqm);
         return ResponseEntity.ok(zone);
     }
 
@@ -64,7 +64,7 @@ public class ZoneController {
     }
 
     //PUT aggiorna zona completa
-    @PutMapping("/{id}")
+    @PutMapping("/{cap}")
     public ResponseEntity<Zona> updateZona(@PathVariable String cap, @RequestBody Zona zona){
         try{
             Zona updatedZona = service.updateZona(cap, zona);
@@ -75,7 +75,7 @@ public class ZoneController {
     }
 
     //PATCH aggiorna zona parziale
-    @PatchMapping("/{id}")
+    @PatchMapping("/{cap}")
     public ResponseEntity<Zona> patchZona(@PathVariable String cap, @RequestBody Zona zona){
         try{
             Zona patchedZona = service.patchZona(cap, zona);
@@ -85,8 +85,8 @@ public class ZoneController {
         }
     }
 
-    //elimina zona per id
-    @DeleteMapping
+    //DELETE elimina zona per cap
+    @DeleteMapping("/{cap}")
     public ResponseEntity<Void> deleteZonaById(@PathVariable String cap){
         try{
             service.deleteZonaById(cap);

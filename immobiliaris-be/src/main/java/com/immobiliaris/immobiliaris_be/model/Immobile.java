@@ -2,6 +2,8 @@ package com.immobiliaris.immobiliaris_be.model;
 
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.immobiliaris.immobiliaris_be.enums.StatoImmobile;
 import com.immobiliaris.immobiliaris_be.enums.TipoImmobile;
@@ -71,7 +73,8 @@ public class Immobile {
     @Column(name = "stato", length = 30)
     private StatoImmobile stato;
 
-    @Column(name = "data_inserimento")
+    @CreationTimestamp
+    @Column(name = "data_inserimento", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataInserimento;
 

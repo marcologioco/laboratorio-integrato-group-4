@@ -12,33 +12,37 @@ import com.immobiliaris.immobiliaris_be.enums.StatoContratto;
 @Repository
 public interface ContrattoRepo extends JpaRepository<Contratto,Integer>{
 
-    //trova contratti per id_contratto
-    List<Contratto> findByIdContratto(Integer idContratto);
-
-    //trova contratti per id_immobile
+    // Trova contratti per id_immobile
+    // SELECT * FROM contratto WHERE id_immobile = ?
     List<Contratto> findByIdImmobile(Integer idImmobile);
 
-    //trova contratti per id_venditore
+    // Trova contratti per id_venditore
+    // SELECT * FROM contratto WHERE id_venditore = ?
     List<Contratto> findByIdVenditore(Integer idVenditore);
 
-    //trova contratti per tipo
+    // Trova contratti per tipo
+    // SELECT * FROM contratto WHERE tipo = ?
     List<Contratto> findByTipo(String tipo);
 
-    //trova contratti in base all'esclusività
+    // Trova contratti in base all'esclusività
+    // SELECT * FROM contratto WHERE esclusiva = ?
     List<Contratto> findByEsclusiva(Boolean esclusiva);
 
-    //trova contratti per data di inizio
+    // Trova contratti per data di inizio
+    // SELECT * FROM contratto WHERE data_inizio = ?
     List<Contratto> findByDataInizio(LocalDate dataInizio);
 
-    //trova contratti per data di fine
+    // Trova contratti per data di fine
+    // SELECT * FROM contratto WHERE data_fine = ?
     List<Contratto> findByDataFine(LocalDate dataFine);
 
-    //trova contratti per prezzo finale minimo
+    // Trova contratti per prezzo finale minimo
+    // SELECT * FROM contratto WHERE prezzo_finale_minimo = ?
     List<Contratto> findByPrezzoFinaleMinimo(Double prezzoFinaleMinimo);
 
-    //trova contratti in base allo stato
+    // Trova contratti in base allo stato
+    // SELECT * FROM contratto WHERE stato = ?
     List<Contratto> findByStato(StatoContratto stato);
-
 }
 
 

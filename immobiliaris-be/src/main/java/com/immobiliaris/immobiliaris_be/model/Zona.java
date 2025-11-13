@@ -54,7 +54,11 @@ public class Zona {
         this.prezzoMedioSqm = prezzoMedioSqm;
     }
 
-    //Costruttore
+    // Costruttore vuoto (richiesto da JPA)
+    public Zona() {
+    }
+
+    //Costruttore parametrizzato
     public Zona(String cap, String nomeZona, Double prezzoMedioSqm) {
         this.cap = cap;
         this.nomeZona = nomeZona;

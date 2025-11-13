@@ -45,8 +45,8 @@ public class ZoneServiceImpl implements ZoneService{
         Zona zona = repo.findById(cap)
             .orElseThrow(() -> new RuntimeException("Zona non trovata con cap: " + cap));
 
-        zona.setNomeZona(zona.getNomeZona());
-        zona.setPrezzoMedioSqm(zona.getPrezzoMedioSqm());
+        zona.setNomeZona(z.getNomeZona());
+        zona.setPrezzoMedioSqm(z.getPrezzoMedioSqm());
 
         return repo.save(zona);
     }
@@ -61,12 +61,8 @@ public class ZoneServiceImpl implements ZoneService{
         Zona existingZona = repo.findById(cap)
             .orElseThrow(() -> new RuntimeException("Zona non trovata con cap: " + cap));
         
-        if (zona.getNomeZona() != null){
-            existingZona.setNomeZona(zona.getNomeZona());
-        }
-
-        if (zona.getNomeZona() != null){
-            existingZona.setNomeZona(zona.getNomeZona());
+        if (zona.getNomeZona() != null && !zona.getNomeZona().isBlank()){
+            existingZona.setNomeZona(zona.getNomeZona().trim());
         }
 
         if (zona.getPrezzoMedioSqm() != null){

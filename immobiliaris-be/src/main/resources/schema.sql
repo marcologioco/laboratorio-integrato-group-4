@@ -87,9 +87,9 @@ CREATE TABLE contratto (
     data_inizio DATE NOT NULL,
     data_fine DATE,
     prezzo_finale_minimo DECIMAL(12,2),
-    stato VARCHAR(30) DEFAULT 'attivo',
+    stato VARCHAR(30) DEFAULT 'ATTIVO',
     note TEXT,
     FOREIGN KEY (id_immobile) REFERENCES immobile(id_immobile),
     FOREIGN KEY (id_venditore) REFERENCES venditore(id_venditore),
-    CONSTRAINT chk_contratto_stato CHECK (stato IN ('attivo','completato','annullato'))
+    CONSTRAINT chk_contratto_stato CHECK (stato IN ('ATTIVO','COMPLETATO','ANNULLATO'))
 );

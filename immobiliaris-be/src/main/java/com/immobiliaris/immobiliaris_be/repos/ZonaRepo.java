@@ -10,12 +10,11 @@ import com.immobiliaris.immobiliaris_be.model.Zona;
 @Repository
 public interface ZonaRepo extends JpaRepository<Zona,String>{
 
-    //trova zone per cap;
-    List<Zona> findByCap(String cap);
-    //trova zone per nome
+    // Trova zona per nome
+    // SELECT * FROM zona WHERE nome_zona = ?
     Zona findByNomeZona(String nomeZona);
-    //trova zone per prezzo medio al metro quadro
-    List<Zona> findByPrezzoMedioSqm(Double prezzoMedioSqm);
-
     
+    // Trova zone per prezzo medio al metro quadro
+    // SELECT * FROM zona WHERE prezzo_medio_sqm = ?
+    List<Zona> findByPrezzoMedioSqm(Double prezzoMedioSqm);
 }

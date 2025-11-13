@@ -2,6 +2,8 @@ package com.immobiliaris.immobiliaris_be.model;
 
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.immobiliaris.immobiliaris_be.enums.StatoValutazione;
 
@@ -48,7 +50,8 @@ public class Valutazione {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
 
-    @Column(name = "data_richiesta")
+    @CreationTimestamp
+    @Column(name = "data_richiesta", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataRichiesta;
 

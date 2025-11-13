@@ -2,7 +2,6 @@ package com.immobiliaris.immobiliaris_be.model;
 
 import java.time.LocalDate;
 
-import org.attoparser.dom.Text;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -65,7 +64,7 @@ public class Contratto {
     private StatoContratto stato;
 
     @Column(name = "note", columnDefinition = "TEXT")
-    private Text note;
+    private String note;
 
     //Getters e setters
     public Integer getIdContratto() {
@@ -140,17 +139,21 @@ public class Contratto {
         this.stato = stato;
     }
 
-    public Text getNote() {
+    public String getNote() {
         return note;
     }
 
-    public void setNote(Text note) {
+    public void setNote(String note) {
         this.note = note;
     }
 
-    //Costruttore
+    // Costruttore vuoto (richiesto da JPA)
+    public Contratto() {
+    }
+
+    //Costruttore parametrizzato
     public Contratto(Integer idImmobile, Integer idVenditore, String tipo, Boolean esclusiva, LocalDate dataInizio,
-            LocalDate dataFine, Double prezzoFinaleMinimo, StatoContratto stato, Text note) {
+            LocalDate dataFine, Double prezzoFinaleMinimo, StatoContratto stato, String note) {
         this.idImmobile = idImmobile;
         this.idVenditore = idVenditore;
         this.tipo = tipo;
