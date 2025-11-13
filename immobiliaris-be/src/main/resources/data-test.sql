@@ -102,5 +102,5 @@ INSERT INTO contratto (id_immobile, id_venditore, tipo, esclusiva, data_inizio, 
 (3, 4, 'vendita', TRUE, '2024-05-20', NULL, 120000, 'ANNULLATO', 'Cliente ha cambiato idea'),
 (4, 5, 'vendita', TRUE, '2024-03-01', '2024-09-01', 550000, 'COMPLETATO', 'Venduto al prezzo di mercato'),
 (5, 3, 'vendita', TRUE, '2024-06-01', NULL, 220000, 'ATTIVO', 'Contratto standard 6 mesi'),
-(6, 6, 'vendita', TRUE, '2024-05-10', NULL, 140000, 'IN_CORSO', 'Contratto in corso');
+(6, 6, 'vendita', TRUE, '2024-05-10', NULL, 140000, 'ATTIVO', 'Contratto in corso');
 -- =============================
