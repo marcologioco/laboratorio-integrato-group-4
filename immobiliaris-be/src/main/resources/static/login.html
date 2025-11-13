@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Immobiliaris</title>
+
+  <!-- Tailwind -->
+  <link href="styles/style-tailwind.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f9f9f9;
+    }
+
+    /* Contenitore grande e centrato */
+    .login-container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom right, #e6ebe8, #ffffff);
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 520px;
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      padding: 3rem 2.5rem;
+    }
+  </style>
+</head>
+
+<body class="font-sans text-my-black antialiased">
+
+  <div class="login-container">
+    <div class="login-box relative">
+
+      <!-- Pulsante chiusura -->
+      <a href="index.html" aria-label="Torna alla home"
+        class="absolute top-4 right-5 text-3xl text-gray-400 hover:text-gray-700 transition">&times;</a>
+
+      <h1 class="text-3xl font-bold text-center mb-2">Accedi</h1>
+      <p class="text-gray-500 text-center mb-8">Inserisci le tue credenziali per continuare</p>
+
+      <form class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input type="email" placeholder="Inserisci la tua email" required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-my-green-dark">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Password</label>
+          <input type="password" placeholder="Inserisci la password" required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-my-green-dark">
+        </div>
+
+        <div class="mt-8 flex flex-col justify-between gap-4 sm:flex-row">
+          <!-- Bottone utente -->
+          <a href="account.html"
+            class="bg-my-green-dark text-white text-center p-3 rounded-lg font-semibold hover:bg-[#111A19] transition">
+            Accedi come utente
+          </a>
+
+          <!-- Bottone admin -->
+          <a href="admin.html"
+            class="bg-my-green-dark text-white text-center p-3 rounded-lg font-semibold hover:bg-[#111A19] transition">
+            Accedi come admin
+          </a>
+        </div>
+      </form>
+
+      <p class="text-sm text-gray-400 text-center mt-6">© 2025 Immobiliaris</p>
+    </div>
+  </div>
+
+</body>
+
+</html>

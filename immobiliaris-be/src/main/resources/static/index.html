@@ -2,15 +2,15 @@
 <html lang="it">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Landing page migliore del mondo</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Immobiliaris - Home</title>
 
+    <!-- tuo CSS Tailwind -->
     <link href="styles/style-tailwind.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="/styles/carousel-styles.css" />
-
 </head>
 
 <body class="font-sans text-my-black antialiased">
@@ -19,6 +19,7 @@
         Qualche info di servizio come il contatto mail o numero di telefono
     </header>
 
+    <!-- NAVBAR -->
     <nav class="bg-white py-3 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
@@ -27,7 +28,6 @@
 
                 <div class="hidden lg:flex lg:ml-auto">
                     <ul class="flex space-x-6 items-center">
-
                         <li class="nav-item"><a class="text-gray-600 hover:text-my-green-dark transition duration-150"
                                 href="#">VOCE MENU</a></li>
                         <li class="nav-item"><a class="text-gray-600 hover:text-my-green-dark transition duration-150"
@@ -37,9 +37,12 @@
                         <li class="nav-item"><a class="text-gray-600 hover:text-my-green-dark transition duration-150"
                                 href="#">VOCE MENU</a></li>
 
-                        <li class="nav-item">
-                            <a class="ml-4 py-2 px-3 text-sm font-semibold bg-my-green-dark text-white rounded-md hover:bg-[#111A19] transition duration-150"
-                                href="#">Main CTA</a>
+                        <!-- Bottone che apre la modale (non fa redirect) -->
+                        <li>
+                            <a href="login.html"
+                                class="ml-4 py-2 px-3 text-sm font-semibold bg-my-green-dark text-white rounded-md hover:bg-[#111A19] transition duration-150">
+                                Accedi
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -47,6 +50,9 @@
             </div>
         </div>
     </nav>
+
+
+
 
     <section class="py-16 md:py-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -530,6 +536,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script src="/js/swiper-config.js"></script>
+    <script src="./js/login.js"></script>
 
 </body>
 
