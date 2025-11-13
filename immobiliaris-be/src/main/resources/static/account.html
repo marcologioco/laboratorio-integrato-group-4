@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Area Personale - Immobiliaris</title>
+  <link href="styles/style-tailwind.css" rel="stylesheet">
+  <style>
+    .card-dim { opacity: 0.45; transform: scale(0.98); }
+    .immobile-card { position: relative; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .immobile-card:hover { transform: scale(1.01); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .immobile-overlay { position: absolute; inset:0; background: rgba(0,0,0,0.7); color:white; display:flex; flex-direction:column; justify-content:center; align-items:center; opacity:0; transition: opacity 0.3s ease; text-align:center; padding:1.5rem; }
+    .immobile-card:hover .immobile-overlay { opacity:1; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans text-my-black">
+
+  <div class="page-full min-h-screen flex flex-col lg:flex-row">
+
+    <!-- Sidebar sinistra -->
+    <aside class="bg-gray-200 w-full lg:w-80 p-8 flex flex-col items-center lg:items-start">
+      <div class="w-40 h-40 rounded-full bg-white flex items-center justify-center shadow-md mb-6"></div>
+      <nav class="space-y-4 w-full lg:w-auto">
+        <a href="#" class="block text-gray-700 hover:text-gray-900">Profilo</a>
+        <a href="#" class="block text-gray-700 hover:text-gray-900">Valutazioni</a>
+        <a href="#" class="block text-gray-700 hover:text-gray-900">Impostazioni</a>
+      </nav>
+    </aside>
+
+    <!-- Contenuto principale -->
+    <main class="flex-1 p-6 lg:p-12 relative">
+      <a href="index.html" aria-label="Torna alla home" class="absolute top-6 right-6 text-3xl text-gray-600 hover:text-gray-800">&times;</a>
+
+      <h1 class="text-3xl lg:text-4xl font-bold mt-6 mb-2">Area personale</h1>
+      <p class="text-gray-600 mb-6">qui puoi visualizzare i tuoi dati e le tue attività in sospeso</p>
+      <hr class="mb-8 border-gray-300">
+
+      <!-- Stato valutazione -->
+      <h2 class="text-xl font-semibold mb-6">Stato della valutazione:</h2>
+      <div class="flex flex-col lg:flex-row gap-6 mb-8">
+        <div class="flex-1 bg-white p-6 shadow-lg rounded-xl">
+          <h3 class="font-semibold text-lg mb-2">Valutazione inviata</h3>
+          <p class="text-gray-600 mb-4">La tua valutazione è stata inviata correttamente ed è in lavorazione.</p>
+          <span class="inline-block px-3 py-1 bg-green-600 text-white rounded-full text-sm">Selezionato</span>
+        </div>
+        <div class="flex-1 bg-white p-6 rounded-xl shadow-md card-dim">
+          <h3 class="font-semibold text-lg mb-2">Bozza</h3>
+          <p class="text-gray-600">Hai una bozza incompleta.</p>
+        </div>
+        <div class="flex-1 bg-white p-6 rounded-xl shadow-md card-dim">
+          <h3 class="font-semibold text-lg mb-2">Scaduta</h3>
+          <p class="text-gray-600">Valutazione scaduta o non valida.</p>
+        </div>
+      </div>
+
+      <!-- Immobile in corso di valutazione -->
+      <h2 class="text-xl font-semibold mt-8 mb-4">Immobile in corso di valutazione:</h2>
+      <div class="immobile-card bg-white p-6 rounded-2xl shadow-lg w-full max-w-3xl relative">
+        <div class="flex flex-wrap gap-6">
+          <div><p class="text-gray-500 text-sm">Superficie</p><p class="font-semibold text-lg">120 m²</p></div>
+          <div><p class="text-gray-500 text-sm">Locali</p><p class="font-semibold text-lg">4</p></div>
+          <div><p class="text-gray-500 text-sm">Bagni</p><p class="font-semibold text-lg">2</p></div>
+          <div><p class="text-gray-500 text-sm">Piano</p><p class="font-semibold text-lg">3°</p></div>
+          <div><p class="text-gray-500 text-sm">Indirizzo</p><p class="font-semibold text-lg">Via Roma 24, Milano</p></div>
+        </div>
+        <div class="immobile-overlay rounded-2xl">
+          <p class="text-lg mb-2">Valutazione fatta in data <strong>11 Novembre</strong></p>
+          <p class="text-sm opacity-90">Il preventivo sarà pronto tra <strong>12 ore</strong></p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
