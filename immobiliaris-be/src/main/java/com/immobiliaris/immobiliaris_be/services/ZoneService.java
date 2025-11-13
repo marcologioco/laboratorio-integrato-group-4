@@ -12,9 +12,10 @@ public interface ZoneService {
 
     Zona addZona(Zona z);
 
+    Zona findZonaByNome(String nomeZona);
     List<Zona> findZonaByPrezzoMedio(Double prezzoMedioSqm);
-    Zona updateZona(Zona zona);
-    void deleteZona(String cap);
+    Zona updateZona(String cap, Zona zona);
+    void deleteZonaById(String cap);
     Zona patchZona(String cap, Zona zona);
 
 }

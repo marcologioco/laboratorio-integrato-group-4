@@ -31,25 +31,52 @@ public class ZoneServiceImpl implements ZoneService{
     }
 
     @Override
+    public Zona findZonaByNome(String nomeZona) {
+        return repo.findByNomeZona(nomeZona);
+    }
+
+    @Override
     public List<Zona> findZonaByPrezzoMedio(Double prezzoMedioSqm) {
         return repo.findByPrezzoMedioSqm(prezzoMedioSqm);
     }
 
     @Override
-    public Zona updateZona(Zona zona) {
-        return null;
+    public Zona updateZona(String cap, Zona z) {
+        Zona zona = repo.findById(cap)
+            .orElseThrow(() -> new RuntimeException("Zona non trovata con cap: " + cap));
+
+        zona.setNomeZona(zona.getNomeZona());
+        zona.setPrezzoMedioSqm(zona.getPrezzoMedioSqm());
+
+        return repo.save(zona);
     }
 
     @Override
-    public void deleteZona(String cap) {
+    public void deleteZonaById(String cap) {
         repo.deleteById(cap);
     }
 
     @Override
     public Zona patchZona(String cap, Zona zona) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'patchZona'");
+        Zona existingZona = repo.findById(cap)
+            .orElseThrow(() -> new RuntimeException("Zona non trovata con cap: " + cap));
+        
+        if (zona.getNomeZona() != null){
+            existingZona.setNomeZona(zona.getNomeZona());
+        }
+
+        if (zona.getNomeZona() != null){
+            existingZona.setNomeZona(zona.getNomeZona());
+        }
+
+        if (zona.getPrezzoMedioSqm() != null){
+            existingZona.setPrezzoMedioSqm(zona.getPrezzoMedioSqm());
+        }
+        
+        return repo.save(existingZona);
+        
     }
+
    
     
     

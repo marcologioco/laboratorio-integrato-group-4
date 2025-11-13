@@ -22,8 +22,8 @@ public interface ContrattiService {
     List<Contratto> findContrattiByStato(StatoContratto stato);
 
     Contratto addContratto(Contratto c);
-    Contratto updateContratto(Contratto c);
-    void deleteContratto(Integer id);
+    Contratto updateContratto(Integer id, Contratto c);
+    void deleteContrattoById(Integer id);
     Contratto patchContratto(Integer id, Contratto contratto);
 
 }

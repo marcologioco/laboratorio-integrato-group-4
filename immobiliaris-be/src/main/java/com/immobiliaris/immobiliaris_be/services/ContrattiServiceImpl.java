@@ -23,7 +23,7 @@ public class ContrattiServiceImpl implements ContrattiService{
     }
 
     @Override
-    public void deleteContratto(Integer id) {
+    public void deleteContrattoById(Integer id) {
         repo.deleteById(id);
     }
 
@@ -79,14 +79,55 @@ public class ContrattiServiceImpl implements ContrattiService{
 
     @Override
     public Contratto patchContratto(Integer id, Contratto contratto) {
-        // TODO Auto-generated method stub
-        return null;
+        Contratto existingContratto = repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Contratto non trovato con id: " + id));
+
+        if (contratto.getDataFine() != null){
+            existingContratto.setDataFine(contratto.getDataFine());
+        }
+        if (contratto.getDataInizio() != null){
+            existingContratto.setDataInizio(contratto.getDataInizio());
+        }
+        if (contratto.getEsclusiva() != null){
+            existingContratto.setEsclusiva(contratto.getEsclusiva());
+        }
+        if (contratto.getIdImmobile() != null){
+            existingContratto.setIdImmobile(contratto.getIdImmobile());
+        }
+        if (contratto.getIdVenditore() != null){
+            existingContratto.setIdVenditore(contratto.getIdVenditore());
+        }
+        if (contratto.getPrezzoFinaleMinimo() != null){
+            existingContratto.setPrezzoFinaleMinimo(contratto.getPrezzoFinaleMinimo());
+        }
+        if (contratto.getStato() != null){
+            existingContratto.setStato(contratto.getStato());
+        }
+        if (contratto.getTipo() != null){
+            existingContratto.setTipo(contratto.getTipo());
+        }
+        if (contratto.getNote() != null){
+            existingContratto.setNote(contratto.getNote());
+        }
+        return repo.save(existingContratto);
     }
 
     @Override
-    public Contratto updateContratto(Contratto c) {
-        // TODO Auto-generated method stub
-        return null;
+    public Contratto updateContratto(Integer id, Contratto c) {
+        Contratto contratto = repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Contratto non trovato con id: " + id));
+
+        contratto.setIdImmobile(c.getIdImmobile());
+        contratto.setIdVenditore(c.getIdVenditore());
+        contratto.setTipo(c.getTipo());
+        contratto.setEsclusiva(c.getEsclusiva());
+        contratto.setDataInizio(c.getDataInizio());
+        contratto.setDataFine(c.getDataFine());
+        contratto.setPrezzoFinaleMinimo(c.getPrezzoFinaleMinimo());
+        contratto.setStato(c.getStato());
+        contratto.setNote(c.getNote());
+
+        return repo.save(contratto);
     }
 
 }

@@ -12,7 +12,10 @@ public interface ZonaRepo extends JpaRepository<Zona,String>{
 
     //trova zone per cap;
     List<Zona> findByCap(String cap);
+    //trova zone per nome
+    Zona findByNomeZona(String nomeZona);
     //trova zone per prezzo medio al metro quadro
     List<Zona> findByPrezzoMedioSqm(Double prezzoMedioSqm);
 
+    
 }
