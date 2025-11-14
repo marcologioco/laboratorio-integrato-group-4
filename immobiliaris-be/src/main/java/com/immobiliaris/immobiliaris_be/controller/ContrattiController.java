@@ -39,8 +39,8 @@ public class ContrattiController {
 
     //GET contratto per id
     @GetMapping("/{id}")
-    public ResponseEntity<Contratto> getContrattoById(@PathVariable Integer Id){
-        Optional<Contratto> contratto = service.findContrattoById(Id);
+    public ResponseEntity<Contratto> getContrattoById(@PathVariable Integer id){
+        Optional<Contratto> contratto = service.findContrattoById(id);
         return contratto.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
