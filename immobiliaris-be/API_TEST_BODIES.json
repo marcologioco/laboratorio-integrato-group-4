@@ -1,0 +1,434 @@
+{
+  "UTENTI": {
+    "POST_CREATE": {
+      "url": "POST http://localhost:8080/api/utenti",
+      "body": {
+        "nome": "Francesco",
+        "cognome": "Bianchi",
+        "email": "francesco.bianchi@example.com",
+        "password": "pwd303",
+        "telefono": "3401234567",
+        "idRuolo": 1
+      }
+    },
+    "PUT_UPDATE_UTENTE_2": {
+      "url": "PUT http://localhost:8080/api/utenti/2",
+      "body": {
+        "nome": "Luca",
+        "cognome": "Rossi",
+        "email": "luca.rossi.updated@example.com",
+        "password": "newpwd123",
+        "telefono": "3456789999",
+        "idRuolo": 1
+      }
+    },
+    "PATCH_UPDATE_UTENTE_3": {
+      "url": "PATCH http://localhost:8080/api/utenti/3",
+      "body": {
+        "telefono": "3491122999",
+        "password": "updatedpwd789"
+      }
+    }
+  },
+  
+  "IMMOBILI": {
+    "POST_CREATE_APPARTAMENTO": {
+      "url": "POST http://localhost:8080/api/immobili",
+      "body": {
+        "idVenditore": 1,
+        "tipo": "APPARTAMENTO",
+        "indirizzo": "Via Nizza 88",
+        "citta": "Torino",
+        "provincia": "TO",
+        "cap": "10126",
+        "metriQuadri": 95.0,
+        "camere": 3,
+        "bagni": 2,
+        "prezzo": 228000.00,
+        "descrizione": "Appartamento moderno con vista panoramica",
+        "stato": "RISTRUTTURATA"
+      }
+    },
+    "POST_CREATE_VILLA": {
+      "url": "POST http://localhost:8080/api/immobili",
+      "body": {
+        "idVenditore": 5,
+        "tipo": "VILLA",
+        "indirizzo": "Via Monferrato 12",
+        "citta": "Asti",
+        "provincia": "AT",
+        "cap": "14100",
+        "metriQuadri": 220.0,
+        "camere": 6,
+        "bagni": 4,
+        "prezzo": 620000.00,
+        "descrizione": "Villa di prestigio con piscina e dependance",
+        "stato": "NUOVA"
+      }
+    },
+    "POST_CREATE_UFFICIO": {
+      "url": "POST http://localhost:8080/api/immobili",
+      "body": {
+        "idVenditore": 3,
+        "tipo": "UFFICIO",
+        "indirizzo": "Corso Torino 150",
+        "citta": "Alessandria",
+        "provincia": "AL",
+        "cap": "15121",
+        "metriQuadri": 110.0,
+        "camere": 5,
+        "bagni": 2,
+        "prezzo": 187000.00,
+        "descrizione": "Ufficio open space in zona centrale",
+        "stato": "ABITABILE"
+      }
+    },
+    "PUT_UPDATE_IMMOBILE_1": {
+      "url": "PUT http://localhost:8080/api/immobili/1",
+      "body": {
+        "idVenditore": 1,
+        "tipo": "APPARTAMENTO",
+        "indirizzo": "Via Genova 12",
+        "citta": "Torino",
+        "provincia": "TO",
+        "cap": "10137",
+        "metriQuadri": 80.0,
+        "camere": 3,
+        "bagni": 1,
+        "prezzo": 155000.00,
+        "descrizione": "Appartamento luminoso con balcone e garage - PREZZO RIBASSATO",
+        "stato": "ABITABILE"
+      }
+    },
+    "PATCH_UPDATE_IMMOBILE_3": {
+      "url": "PATCH http://localhost:8080/api/immobili/3",
+      "body": {
+        "prezzo": 125000.00,
+        "stato": "RISTRUTTURATA",
+        "descrizione": "Bilocale completamente ristrutturato con riscaldamento autonomo"
+      }
+    }
+  },
+
+  "CONTRATTI": {
+    "POST_CREATE_VENDITA": {
+      "url": "POST http://localhost:8080/api/contratti",
+      "body": {
+        "idImmobile": 3,
+        "idVenditore": 4,
+        "tipo": "vendita",
+        "esclusiva": true,
+        "dataInizio": "2024-11-15",
+        "dataFine": "2025-05-15",
+        "prezzoFinaleMinimo": 120000.00,
+        "stato": "ATTIVO",
+        "note": "Nuovo contratto dopo annullamento precedente"
+      }
+    },
+    "POST_CREATE_VENDITA_NON_ESCLUSIVA": {
+      "url": "POST http://localhost:8080/api/contratti",
+      "body": {
+        "idImmobile": 1,
+        "idVenditore": 1,
+        "tipo": "vendita",
+        "esclusiva": false,
+        "dataInizio": "2024-11-20",
+        "dataFine": "2025-02-20",
+        "prezzoFinaleMinimo": 145000.00,
+        "stato": "ATTIVO",
+        "note": "Contratto non in esclusiva 3 mesi"
+      }
+    },
+    "PUT_UPDATE_CONTRATTO_1": {
+      "url": "PUT http://localhost:8080/api/contratti/1",
+      "body": {
+        "idImmobile": 1,
+        "idVenditore": 1,
+        "tipo": "vendita",
+        "esclusiva": true,
+        "dataInizio": "2024-05-01",
+        "dataFine": "2024-11-01",
+        "prezzoFinaleMinimo": 150000.00,
+        "stato": "COMPLETATO",
+        "note": "Vendita completata con successo"
+      }
+    },
+    "PATCH_UPDATE_CONTRATTO_5": {
+      "url": "PATCH http://localhost:8080/api/contratti/5",
+      "body": {
+        "prezzoFinaleMinimo": 210000.00,
+        "note": "Prezzo minimo ribassato per vendita più rapida"
+      }
+    }
+  },
+
+  "VALUTAZIONI": {
+    "POST_CREATE_IN_CORSO": {
+      "url": "POST http://localhost:8080/api/valutazioni",
+      "body": {
+        "idImmobile": 5,
+        "idUtente": 3,
+        "stato": "IN_CORSO",
+        "valoreStimato": null,
+        "valoreCalcolatoZona": 153000.00,
+        "deadline": "2024-12-20T23:59:59",
+        "note": "Valutazione in corso per vendita"
+      }
+    },
+    "POST_CREATE_COMPLETATA": {
+      "url": "POST http://localhost:8080/api/valutazioni",
+      "body": {
+        "idImmobile": 4,
+        "idUtente": 5,
+        "stato": "COMPLETATA",
+        "valoreStimato": 575000.00,
+        "valoreCalcolatoZona": 560000.00,
+        "deadline": "2024-12-01T23:59:59",
+        "dataCompletamento": "2024-11-25T15:30:00",
+        "note": "Valutazione completata - valore superiore alla media di zona"
+      }
+    },
+    "PUT_UPDATE_VALUTAZIONE_2": {
+      "url": "PUT http://localhost:8080/api/valutazioni/2",
+      "body": {
+        "idImmobile": 2,
+        "idUtente": 1,
+        "stato": "COMPLETATA",
+        "valoreStimato": 755000.00,
+        "valoreCalcolatoZona": 540000.00,
+        "deadline": "2024-06-20T00:00:00",
+        "dataCompletamento": "2024-11-14T12:00:00",
+        "note": "Valutazione completata - villa di pregio"
+      }
+    },
+    "PATCH_UPDATE_VALUTAZIONE_4": {
+      "url": "PATCH http://localhost:8080/api/valutazioni/4",
+      "body": {
+        "stato": "COMPLETATA",
+        "valoreStimato": 568000.00,
+        "dataCompletamento": "2024-11-14T16:45:00",
+        "note": "Sopralluogo effettuato - valutazione confermata"
+      }
+    }
+  },
+
+  "VENDITORI": {
+    "POST_CREATE_CON_UTENTE": {
+      "url": "POST http://localhost:8080/api/venditori",
+      "body": {
+        "idUtente": 4,
+        "nome": "Paolo",
+        "cognome": "Ferrari",
+        "email": "paolo.ferrari@vendite.it",
+        "telefono": "3332233445",
+        "indirizzo": "Via Torino 77",
+        "citta": "Torino",
+        "provincia": "TO",
+        "codiceFiscale": "FRRPLA85M10L219B"
+      }
+    },
+    "POST_CREATE_SENZA_UTENTE": {
+      "url": "POST http://localhost:8080/api/venditori",
+      "body": {
+        "nome": "Simone",
+        "cognome": "Colombo",
+        "email": "simone.colombo@vendite.it",
+        "telefono": "3478889900",
+        "indirizzo": "Corso Vittorio 100",
+        "citta": "Asti",
+        "provincia": "AT",
+        "codiceFiscale": "CLMSMN88H15H501K"
+      }
+    },
+    "PUT_UPDATE_VENDITORE_2": {
+      "url": "PUT http://localhost:8080/api/venditori/2",
+      "body": {
+        "idUtente": null,
+        "nome": "Elena",
+        "cognome": "Gallo",
+        "email": "elena.gallo.new@vendite.it",
+        "telefono": "3475678901",
+        "indirizzo": "Corso Francia 25",
+        "citta": "Torino",
+        "provincia": "TO",
+        "codiceFiscale": "GLLLNE85B41L219K"
+      }
+    },
+    "PATCH_UPDATE_VENDITORE_3": {
+      "url": "PATCH http://localhost:8080/api/venditori/3",
+      "body": {
+        "telefono": "3478901999",
+        "email": "marta.bianchi.updated@vendite.it"
+      }
+    }
+  },
+
+  "ZONE": {
+    "POST_CREATE_TORINO": {
+      "url": "POST http://localhost:8080/api/zone",
+      "body": {
+        "cap": "10157",
+        "nomeZona": "Borgata Vittoria Sud",
+        "prezzoMedioSqm": 1750.00
+      }
+    },
+    "POST_CREATE_ALTRA_CITTA": {
+      "url": "POST http://localhost:8080/api/zone",
+      "body": {
+        "cap": "28100",
+        "nomeZona": "Novara Centro",
+        "prezzoMedioSqm": 2100.00
+      }
+    },
+    "PUT_UPDATE_ZONA_10126": {
+      "url": "PUT http://localhost:8080/api/zone/10126",
+      "body": {
+        "cap": "10126",
+        "nomeZona": "Lingotto / Nizza Millefonti",
+        "prezzoMedioSqm": 2500.00
+      }
+    },
+    "PATCH_UPDATE_ZONA_14100": {
+      "url": "PATCH http://localhost:8080/api/zone/14100",
+      "body": {
+        "prezzoMedioSqm": 2000.00
+      }
+    }
+  },
+
+  "ESEMPI_GET_REQUESTS": {
+    "UTENTI": {
+      "GET_ALL": "GET http://localhost:8080/api/utenti",
+      "GET_BY_ID": "GET http://localhost:8080/api/utenti/2",
+      "GET_BY_EMAIL": "GET http://localhost:8080/api/utenti/email/luca.rossi@example.com",
+      "GET_BY_RUOLO_UTENTE": "GET http://localhost:8080/api/utenti/ruolo/1",
+      "GET_BY_RUOLO_ADMIN": "GET http://localhost:8080/api/utenti/ruolo/2"
+    },
+    "IMMOBILI": {
+      "GET_ALL": "GET http://localhost:8080/api/immobili",
+      "GET_BY_ID_1": "GET http://localhost:8080/api/immobili/1",
+      "GET_BY_ID_2": "GET http://localhost:8080/api/immobili/2",
+      "GET_BY_VENDITORE_1": "GET http://localhost:8080/api/immobili/venditore/1",
+      "GET_BY_VENDITORE_2": "GET http://localhost:8080/api/immobili/venditore/2",
+      "GET_BY_TIPO_APPARTAMENTO": "GET http://localhost:8080/api/immobili/tipo/APPARTAMENTO",
+      "GET_BY_TIPO_VILLA": "GET http://localhost:8080/api/immobili/tipo/VILLA",
+      "GET_BY_STATO_ABITABILE": "GET http://localhost:8080/api/immobili/stato/ABITABILE",
+      "GET_BY_STATO_NUOVA": "GET http://localhost:8080/api/immobili/stato/NUOVA",
+      "GET_BY_STATO_DA_RISTRUTTURARE": "GET http://localhost:8080/api/immobili/stato/DA_RISTRUTTURARE",
+      "GET_BY_CITTA_TORINO": "GET http://localhost:8080/api/immobili/citta/Torino",
+      "GET_BY_CITTA_ASTI": "GET http://localhost:8080/api/immobili/citta/Asti",
+      "GET_BY_CAP_10137": "GET http://localhost:8080/api/immobili/cap/10137",
+      "GET_BY_CAP_10126": "GET http://localhost:8080/api/immobili/cap/10126",
+      "GET_BY_PROVINCIA_TO": "GET http://localhost:8080/api/immobili/provincia/TO",
+      "GET_BY_PROVINCIA_AL": "GET http://localhost:8080/api/immobili/provincia/AL"
+    },
+    "CONTRATTI": {
+      "GET_ALL": "GET http://localhost:8080/api/contratti",
+      "GET_BY_ID_1": "GET http://localhost:8080/api/contratti/1",
+      "GET_BY_ID_2": "GET http://localhost:8080/api/contratti/2",
+      "GET_BY_IMMOBILE_1": "GET http://localhost:8080/api/contratti/immobile/1",
+      "GET_BY_IMMOBILE_2": "GET http://localhost:8080/api/contratti/immobile/2",
+      "GET_BY_VENDITORE_1": "GET http://localhost:8080/api/contratti/venditore/1",
+      "GET_BY_VENDITORE_2": "GET http://localhost:8080/api/contratti/venditore/2",
+      "GET_BY_TIPO": "GET http://localhost:8080/api/contratti/tipo/vendita",
+      "GET_BY_ESCLUSIVA_TRUE": "GET http://localhost:8080/api/contratti/esclusiva/true",
+      "GET_BY_DATA_INIZIO_2024_05_01": "GET http://localhost:8080/api/contratti/data-inizio/2024-05-01",
+      "GET_BY_DATA_INIZIO_2024_04_15": "GET http://localhost:8080/api/contratti/data-inizio/2024-04-15",
+      "GET_BY_DATA_FINE_2024_11_01": "GET http://localhost:8080/api/contratti/data-fine/2024-11-01",
+      "GET_BY_DATA_FINE_2024_10_15": "GET http://localhost:8080/api/contratti/data-fine/2024-10-15",
+      "GET_BY_DATA_FINE_2024_09_01": "GET http://localhost:8080/api/contratti/data-fine/2024-09-01",
+      "GET_BY_PREZZO_MINIMO_150000": "GET http://localhost:8080/api/contratti/prezzo-finale-minimo/150000",
+      "GET_BY_PREZZO_MINIMO_550000": "GET http://localhost:8080/api/contratti/prezzo-finale-minimo/550000",
+      "GET_BY_STATO_ATTIVO": "GET http://localhost:8080/api/contratti/stato/ATTIVO",
+      "GET_BY_STATO_COMPLETATO": "GET http://localhost:8080/api/contratti/stato/COMPLETATO",
+      "GET_BY_STATO_ANNULLATO": "GET http://localhost:8080/api/contratti/stato/ANNULLATO"
+    },
+    "VALUTAZIONI": {
+      "GET_ALL": "GET http://localhost:8080/api/valutazioni",
+      "GET_BY_ID_1": "GET http://localhost:8080/api/valutazioni/1",
+      "GET_BY_ID_2": "GET http://localhost:8080/api/valutazioni/2",
+      "GET_BY_IMMOBILE_1": "GET http://localhost:8080/api/valutazioni/immobile/1",
+      "GET_BY_IMMOBILE_2": "GET http://localhost:8080/api/valutazioni/immobile/2",
+      "GET_BY_UTENTE_1": "GET http://localhost:8080/api/valutazioni/utente/1",
+      "GET_BY_UTENTE_2": "GET http://localhost:8080/api/valutazioni/utente/2",
+      "GET_BY_STATO_IN_CORSO": "GET http://localhost:8080/api/valutazioni/stato/IN_CORSO",
+      "GET_BY_STATO_COMPLETATA": "GET http://localhost:8080/api/valutazioni/stato/COMPLETATA",
+      "GET_BY_STATO_ANNULLATA": "GET http://localhost:8080/api/valutazioni/stato/ANNULLATA"
+    },
+    "VENDITORI": {
+      "GET_ALL": "GET http://localhost:8080/api/venditori",
+      "GET_BY_ID_1": "GET http://localhost:8080/api/venditori/1",
+      "GET_BY_ID_2": "GET http://localhost:8080/api/venditori/2",
+      "GET_BY_UTENTE_1": "GET http://localhost:8080/api/venditori/utente/1",
+      "GET_BY_UTENTE_2": "GET http://localhost:8080/api/venditori/utente/2",
+      "GET_BY_NOME_LUCA": "GET http://localhost:8080/api/venditori/nome/Luca",
+      "GET_BY_NOME_ELENA": "GET http://localhost:8080/api/venditori/nome/Elena",
+      "GET_BY_COGNOME_ROSSI": "GET http://localhost:8080/api/venditori/cognome/Rossi",
+      "GET_BY_COGNOME_GALLO": "GET http://localhost:8080/api/venditori/cognome/Gallo",
+      "GET_BY_EMAIL": "GET http://localhost:8080/api/venditori/email/elena.gallo@vendite.it",
+      "GET_BY_TELEFONO": "GET http://localhost:8080/api/venditori/telefono/3475678901",
+      "GET_BY_INDIRIZZO": "GET http://localhost:8080/api/venditori/indirizzo/Corso Francia 25",
+      "GET_BY_CITTA_TORINO": "GET http://localhost:8080/api/venditori/citta/Torino",
+      "GET_BY_CITTA_ASTI": "GET http://localhost:8080/api/venditori/citta/Asti",
+      "GET_BY_PROVINCIA_TO": "GET http://localhost:8080/api/venditori/provincia/TO",
+      "GET_BY_PROVINCIA_AL": "GET http://localhost:8080/api/venditori/provincia/AL",
+      "GET_BY_CODICE_FISCALE": "GET http://localhost:8080/api/venditori/codicefiscale/RSSLCU80A01L219Z"
+    },
+    "ZONE": {
+      "GET_ALL": "GET http://localhost:8080/api/zone",
+      "GET_BY_CAP_10121": "GET http://localhost:8080/api/zone/10121",
+      "GET_BY_CAP_10126": "GET http://localhost:8080/api/zone/10126",
+      "GET_BY_CAP_14100": "GET http://localhost:8080/api/zone/14100",
+      "GET_BY_NOME_CENTRO_STORICO": "GET http://localhost:8080/api/zone/nome/Centro Storico",
+      "GET_BY_NOME_ASTI_CENTRO": "GET http://localhost:8080/api/zone/nome/Asti Centro",
+      "GET_BY_PREZZO_MEDIO_4000": "GET http://localhost:8080/api/zone/prezzo-medio/4000",
+      "GET_BY_PREZZO_MEDIO_2400": "GET http://localhost:8080/api/zone/prezzo-medio/2400"
+    }
+  },
+
+  "DELETE_REQUESTS": {
+    "UTENTE": "DELETE http://localhost:8080/api/utenti/{id}",
+    "IMMOBILE": "DELETE http://localhost:8080/api/immobili/{id}",
+    "CONTRATTO": "DELETE http://localhost:8080/api/contratti/{id}",
+    "VALUTAZIONE": "DELETE http://localhost:8080/api/valutazioni/{id}",
+    "VENDITORE": "DELETE http://localhost:8080/api/venditori/{id}",
+    "ZONA": "DELETE http://localhost:8080/api/zone/{cap}"
+  },
+
+  "ENUMS": {
+    "TipoImmobile": ["APPARTAMENTO", "VILLA", "UFFICIO"],
+    "StatoImmobile": ["RISTRUTTURATA", "DA_RISTRUTTURARE", "ABITABILE", "NUOVA"],
+    "StatoContratto": ["ATTIVO", "COMPLETATO", "ANNULLATO"],
+    "StatoValutazione": ["IN_CORSO", "COMPLETATA", "ANNULLATA"]
+  },
+
+  "NOTE": {
+    "formato_date": "Le date devono essere nel formato ISO: YYYY-MM-DD per LocalDate, YYYY-MM-DDTHH:MM:SS per Timestamp",
+    "id_autogenerati": "Gli ID (idUtente, idImmobile, idContratto, idValutazione, idVenditore) vengono generati automaticamente e non vanno inseriti nelle richieste POST",
+    "cap_zona": "Il CAP è la chiave primaria della tabella Zone",
+    "campi_null": "I campi null o non specificati in PATCH vengono ignorati, permettendo aggiornamenti parziali",
+    "delete_success": "DELETE ritorna 204 No Content quando ha successo (body vuoto è normale)",
+    "dati_esistenti": {
+      "utenti": "ID 1-5: (1=Admin, 2=Luca Rossi, 3=Giulia Verdi, 4=Paolo Ferrari, 5=Sara Conti)",
+      "venditori": "ID 1-6: (1=Luca Rossi/Torino, 2=Elena Gallo/Torino, 3=Marta Bianchi/AL, 4=Marco Russo/TO, 5=Giulia Verdi/AT, 6=Carlo Bianchi/CN)",
+      "immobili": "ID 1-6: (1=App TO 10137, 2=Villa TO 10126, 3=App TO 10141, 4=Villa Asti, 5=App AL, 6=App CN)",
+      "contratti": {
+        "id_1": "immobile_1, venditore_1, 2024-05-01 to 2024-11-01, ATTIVO",
+        "id_2": "immobile_2, venditore_2, 2024-04-15 to 2024-10-15, COMPLETATO",
+        "id_3": "immobile_3, venditore_4, 2024-05-20, data_fine=NULL, ANNULLATO",
+        "id_4": "immobile_4, venditore_5, 2024-03-01 to 2024-09-01, COMPLETATO",
+        "id_5": "immobile_5, venditore_3, 2024-06-01, data_fine=NULL, ATTIVO",
+        "id_6": "immobile_6, venditore_6, 2024-05-10, data_fine=NULL, ATTIVO"
+      },
+      "valutazioni": {
+        "id_1": "immobile_1, utente_2, COMPLETATA, 165000",
+        "id_2": "immobile_2, utente_1, IN_CORSO, NULL",
+        "id_3": "immobile_3, utente_5, ANNULLATA, NULL",
+        "id_4": "immobile_4, utente_3, IN_CORSO, NULL",
+        "id_5": "immobile_5, utente_4, COMPLETATA, 225000",
+        "id_6": "immobile_6, utente_2, IN_CORSO, NULL"
+      },
+      "zone": "CAP Torino: 10121-10156 (33 zone), Altre: 14100=Asti, 15121=Alessandria, 12100=Cuneo"
+    }
+  }
+}
