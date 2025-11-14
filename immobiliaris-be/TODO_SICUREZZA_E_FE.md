@@ -286,3 +286,89 @@ Headers: {
 - JWT Java: https://github.com/jwtk/jjwt
 - BCrypt: https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
 - CORS Spring Boot: https://spring.io/guides/gs/rest-service-cors/
+
+---
+
+## 🗄️ EXTRA: MIGRAZIONE DA H2 A MYSQL (Per Produzione)
+
+### Perché migrare da H2 a MySQL?
+
+**H2 (attuale)** - Database in-memory:
+
+- ❌ **Dati volatili**: Tutti i dati vengono persi quando fermi l'applicazione
+- ❌ **Solo sviluppo**: Non adatto per ambienti di produzione
+- ❌ **Rischio sicurezza**: Console H2 esposta è un rischio in produzione
+- ✅ **Vantaggi**: Veloce da configurare, zero installazione, ottimo per testing
+
+**MySQL (produzione)** - Database persistente:
+
+- ✅ **Dati persistenti**: I dati rimangono salvati anche dopo restart
+- ✅ **Scalabile**: Supporta grandi volumi di dati e utenti concorrenti
+- ✅ **Affidabile**: Backup, replica, transaction log
+- ✅ **Standard industry**: Usato da milioni di applicazioni in produzione
+
+### Passi per la migrazione:
+
+#### 1. Aggiungere dipendenza MySQL in `pom.xml`
+
+```xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+#### 2. Modificare `application.properties`
+
+**Commentare configurazione H2:**
+```properties
+# H2 - SOLO SVILUPPO
+#spring.datasource.url=jdbc:h2:mem:ImmobiliarisDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.h2.console.enabled=true
+#spring.h2.console.path=/h2
+```
+
+**Aggiungere configurazione MySQL:**
+```properties
+# MySQL - PRODUZIONE
+spring.datasource.url=jdbc:mysql://localhost:3306/immobiliaris_db?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=your_password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA con MySQL
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+#### 3. Rimuovere configurazioni H2 da SecurityConfig
+
+Rimuovere:
+```java
+.requestMatchers("/h2/**").permitAll()
+.headers(headers -> headers.frameOptions(frame -> frame.disable()))
+```
+
+#### 4. Installare e configurare MySQL
+
+- Installare MySQL Server localmente o usare servizio cloud (AWS RDS, Azure Database, etc.)
+- Creare database: `CREATE DATABASE immobiliaris_db;`
+- Creare utente con permessi appropriati
+
+#### 5. Testare la migrazione
+
+- Avviare applicazione
+- Hibernate creerà automaticamente le tabelle in MySQL
+- DataLoader inserirà gli utenti
+- data-test.sql inserirà i dati di test
+
+### Note importanti:
+
+- **Environment variables**: In produzione, usa variabili d'ambiente per password DB
+- **Backup**: Implementa strategia di backup regolare
+- **Connection pooling**: HikariCP (già incluso) gestisce le connessioni
+- **Performance**: Considera l'aggiunta di indici su colonne frequentemente ricercate
+
