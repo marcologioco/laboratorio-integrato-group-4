@@ -78,7 +78,7 @@ overview.querySelectorAll('.card-admin').forEach(card => {
   });
 });
 
-// Click X per tornare all’overview
+// Click X per tornare all’over view
 closeBtn.addEventListener('click', () => { showCards(); });
 
 // Click sui link della sidebar
