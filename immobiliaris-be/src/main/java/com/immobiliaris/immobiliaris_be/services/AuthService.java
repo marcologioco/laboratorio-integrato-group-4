@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.immobiliaris.immobiliaris_be.dto.LoginRequest;
 import com.immobiliaris.immobiliaris_be.dto.LoginResponse;
 import com.immobiliaris.immobiliaris_be.model.Utente;
+import com.immobiliaris.immobiliaris_be.util.JwtUtil;
 
 /**
  * Service per gestire l'autenticazione degli utenti
@@ -19,6 +20,9 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;  // Utility per generare token JWT
 
     /**
      * Autentica un utente con email e password
@@ -41,9 +45,12 @@ public class AuthService {
         // 3. Determino il ruolo (1 = utente, 2 = admin)
         String ruolo = utente.getIdRuolo() == 2 ? "admin" : "utente";
 
-        // 4. Creo e ritorno la risposta
+        // 4. Genero il token JWT
+        String token = jwtUtil.generateToken(utente);
+
+        // 5. Creo e ritorno la risposta con token
         // Nota: la password hashata viene comunque ritornata nell'oggetto Utente
         // In futuro potremmo rimuoverla per sicurezza
-        return new LoginResponse(utente, ruolo);
+        return new LoginResponse(utente, ruolo, token);
     }
 }

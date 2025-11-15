@@ -4,22 +4,22 @@ import com.immobiliaris.immobiliaris_be.model.Utente;
 
 /**
  * DTO per la risposta di login
- * Contiene i dati dell'utente autenticato e il suo ruolo
- * 
- * Nota: In futuro aggiungeremo anche il campo "token" per JWT
+ * Contiene i dati dell'utente autenticato, il suo ruolo e il token JWT
  */
 public class LoginResponse {
     
     private Utente user;
     private String ruolo;  // "admin" o "utente"
+    private String token;  // Token JWT per le richieste successive
 
     // Costruttori
     public LoginResponse() {
     }
 
-    public LoginResponse(Utente user, String ruolo) {
+    public LoginResponse(Utente user, String ruolo, String token) {
         this.user = user;
         this.ruolo = ruolo;
+        this.token = token;
     }
 
     // Getter e Setter
@@ -37,5 +37,13 @@ public class LoginResponse {
 
     public void setRuolo(String ruolo) {
         this.ruolo = ruolo;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
