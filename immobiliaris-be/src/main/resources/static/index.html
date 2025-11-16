@@ -6,11 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Immobiliaris - Home</title>
 
-    <!-- tuo CSS Tailwind -->
-    <link href="styles/style-tailwind.css" rel="stylesheet">
+    <!-- Script Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Configurazione colori personalizzati Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'my-green-dark': '#274239',
+                        'my-green-light': '#EBF0EE', // Una tonalità chiara per hover/faq
+                        'my-cream': '#F8F5F2', // Una tonalità crema per sfondi
+                        'my-orange': '#BA6830',
+                        'my-black': '#111A19',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- CSS Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="/styles/carousel-styles.css" />
+    
+    <!-- Stili aggiuntivi per il form e lo swiper -->
+    <style type="text/tailwindcss">
+        /* Stile per le card selezionate nel form */
+        .form-card.selected {
+            @apply border-my-green-dark ring-2 ring-my-green-dark bg-my-green-light;
+        }
+
+        /* Stili per i bottoni Swiper (se quelli di default non piacciono) */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #274239; /* Colore my-green-dark */
+        }
+        .swiper-pagination-bullet-active {
+            background: #274239; /* Colore my-green-dark */
+        }
+
+        /* Stile per la griglia dettagli card swiper */
+        .details-grid-gap {
+            grid-column-gap: 2rem; /* Aggiunge più spazio tra le colonne */
+        }
+
+        /* Transizione per le risposte FAQ */
+        .faq-answer {
+            transition: max-height 0.3s ease-out;
+        }
+
+        /* Icona FAQ ruotata */
+        .faq-question.open .faq-icon {
+            transform: rotate(45deg);
+        }
+    </style>
 </head>
 
 <body class="font-sans text-my-black antialiased">
@@ -58,6 +110,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
 
+                <!-- Colonna Sinistra: Titolo -->
                 <div>
                     <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-my-black">
                         Valuta <br>
@@ -69,22 +122,217 @@
                         esperti.
                     </p>
                     <div class="flex gap-4">
-                        <a href="#"
+                        <!-- Questo bottone ora può essere nascosto o puntare al form -->
+                         <a href="#valuation-form-container"
                             class="inline-flex py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg">
-                            Ottieni la tua valutazione gratuita
+                            Inizia la tua valutazione gratuita
                         </a>
                     </div>
                 </div>
 
-                <div>
-                    <div class="bg-my-cream border border-gray-300 rounded-xl p-8 text-center">
-                        <img src="https://via.placeholder.com/400x250" class="w-full h-auto rounded-lg">
+                <!-- Colonna Destra: FORM MULTISTEP -->
+                <div id="valuation-form-container" class="bg-white border border-gray-200 rounded-xl p-6 md:p-8 shadow-lg">
+                    
+                    <!-- Contenitore del Form -->
+                    <div id="valuation-form" class="relative overflow-hidden">
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="text-sm font-semibold text-gray-700 mb-1">Passo <span id="current-step-display">1</span> di 7</div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="progress-bar" class="bg-my-orange h-2 rounded-full transition-all duration-300" style="width: 14%"></div>
+                            </div>
+                        </div>
+
+                        <form id="multi-step-form">
+                            <!-- Step 1: CAP -->
+                            <div class="form-step active-step" data-step="1">
+                                <label for="cap" class="block text-lg font-semibold text-my-black mb-2">Inserisci il CAP del tuo immobile</label>
+                                <input type="text" id="cap" name="cap" inputmode="numeric" pattern="[0-9]{5}" placeholder="Es. 10121" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-my-green-dark focus:border-my-green-dark transition duration-150">
+                                <small class="text-red-500 hidden" id="error-step-1">Per favore, inserisci un CAP valido (5 cifre).</small>
+                                <button type="button" data-action="next"
+                                    class="w-full mt-4 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                    Avanti
+                                </button>
+                            </div>
+
+                            <!-- Step 2: Tipo di Abitazione -->
+                            <div class="form-step hidden" data-step="2">
+                                <label class="block text-lg font-semibold text-my-black mb-3">Seleziona il tipo di abitazione</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="form-card text-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="tipo" data-value="appartamento">
+                                        <!-- Icona SVG Semplice -->
+                                        <svg class="w-10 h-10 mx-auto mb-2 text-my-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m-1 4h1m6-4h1m-1 4h1m-1-8h1m-1 4h1m-1 4h1m-1-8h1"></path></svg>
+                                        <span class="font-semibold text-sm">Appartamento</span>
+                                    </div>
+                                    <div class="form-card text-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="tipo" data-value="villa">
+                                        <svg class="w-10 h-10 mx-auto mb-2 text-my-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                        <span class="font-semibold text-sm">Villa</span>
+                                    </div>
+                                    <div class="form-card text-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="tipo" data-value="ufficio">
+                                        <svg class="w-10 h-10 mx-auto mb-2 text-my-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m-1 4h1m6-4h1m-1 4h1m-1-8h1m-1 4h1m-1 4h1m-1-8h1"></path></svg>
+                                        <span class="font-semibold text-sm">Ufficio</span>
+                                    </div>
+                                </div>
+                                <small class="text-red-500 hidden" id="error-step-2">Seleziona un'opzione.</small>
+                                <button type="button" data-action="back"
+                                    class="w-full mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                    Indietro
+                                </button>
+                            </div>
+
+                            <!-- Step 3: Stato -->
+                            <div class="form-step hidden" data-step="3">
+                                <label class="block text-lg font-semibold text-my-black mb-3">Qual è lo stato dell'immobile?</label>
+                                <div class="space-y-3">
+                                    <div class="form-card w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="stato" data-value="nuova">
+                                        <span class="font-semibold">Nuova</span>
+                                        <p class="text-sm text-gray-600">Costruzione recente, mai abitato.</p>
+                                    </div>
+                                    <div class="form-card w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="stato" data-value="abitabile">
+                                        <span class="font-semibold">Abitabile</span>
+                                        <p class="text-sm text-gray-600">In buone condizioni, non richiede lavori.</p>
+                                    </div>
+                                    <div class="form-card w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150" data-field="stato" data-value="da ristrutturare">
+                                        <span class="font-semibold">Da Ristrutturare</span>
+                                        <p class="text-sm text-gray-600">Richiede interventi di manutenzione.</p>
+                                    </div>
+                                </div>
+                                <small class="text-red-500 hidden" id="error-step-3">Seleziona un'opzione.</small>
+                                <button type="button" data-action="back"
+                                    class="w-full mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                    Indietro
+                                </button>
+                            </div>
+
+                            <!-- Step 4: Metratura -->
+                            <div class="form-step hidden" data-step="4">
+                                <label for="metratura" class="block text-lg font-semibold text-my-black mb-2">Inserisci la metratura (m²)</label>
+                                <input type="number" id="metratura" name="metratura" inputmode="numeric" placeholder="Es. 80" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-my-green-dark focus:border-my-green-dark transition duration-150">
+                                <small class="text-red-500 hidden" id="error-step-4">Inserisci un valore valido.</small>
+                                <div class="flex gap-3">
+                                    <button type="button" data-action="back"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                        Indietro
+                                    </button>
+                                    <button type="button" data-action="next"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                        Avanti
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 5: Locali -->
+                            <div class="form-step hidden" data-step="5">
+                                <label for="locali" class="block text-lg font-semibold text-my-black mb-2">Quanti locali?</label>
+                                <input type="number" id="locali" name="locali" inputmode="numeric" placeholder="Es. 3" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-my-green-dark focus:border-my-green-dark transition duration-150">
+                                <small class="text-red-500 hidden" id="error-step-5">Inserisci un numero.</small>
+                                <div class="flex gap-3">
+                                    <button type="button" data-action="back"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                        Indietro
+                                    </button>
+                                    <button type="button" data-action="next"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                        Avanti
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 6: Bagni -->
+                            <div class="form-step hidden" data-step="6">
+                                <label for="bagni" class="block text-lg font-semibold text-my-black mb-2">Quanti bagni?</label>
+                                <input type="number" id="bagni" name="bagni" inputmode="numeric" placeholder="Es. 1" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-my-green-dark focus:border-my-green-dark transition duration-150">
+                                <small class="text-red-500 hidden" id="error-step-6">Inserisci un numero.</small>
+                                <div class="flex gap-3">
+                                    <button type="button" data-action="back"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                        Indietro
+                                    </button>
+                                    <button type="button" data-action="next"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                        Avanti
+                                    </button>
+                                </div>
+                            </div>
+
+                          <!-- NUOVO STEP 7: Opzioni Aggiuntive -->
+                            <div class="form-step hidden" data-step="7">
+                                <label class="block text-lg font-semibold text-my-black mb-3">L'immobile possiede...</label>
+                                <div class="space-y-3">
+                                    <!-- Giardino -->
+                                    <label for="giardino" class="flex items-center justify-between w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150 has-[:checked]:border-my-green-dark has-[:checked]:bg-my-green-light">
+                                        <span class="font-semibold">Giardino</span>
+                                        <input type="checkbox" id="giardino" name="giardino" class="form-checkbox h-5 w-5 text-my-green-dark rounded focus:ring-my-green-dark">
+                                    </label>
+                                    <!-- Garage -->
+                                    <label for="garage" class="flex items-center justify-between w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150 has-[:checked]:border-my-green-dark has-[:checked]:bg-my-green-light">
+                                        <span class="font-semibold">Garage / Posto auto</span>
+                                        <input type="checkbox" id="garage" name="garage" class="form-checkbox h-5 w-5 text-my-green-dark rounded focus:ring-my-green-dark">
+                                    </label>
+                                    <!-- Terrazzo -->
+                                    <label for="terrazzo" class="flex items-center justify-between w-full text-left p-4 border border-gray-300 rounded-lg cursor-pointer hover:border-my-green-dark transition duration-150 has-[:checked]:border-my-green-dark has-[:checked]:bg-my-green-light">
+                                        <span class="font-semibold">Terrazzo / Balcone</span>
+                                        <input type="checkbox" id="terrazzo" name="terrazzo" class="form-checkbox h-5 w-5 text-my-green-dark rounded focus:ring-my-green-dark">
+                                    </label>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="button" data-action="back"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                        Indietro
+                                    </button>
+                                    <button type="button" data-action="next"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                        Avanti
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 8: Email (ex Step 7) -->
+                            <div class="form-step hidden" data-step="8">
+                                <label for="email" class="block text-lg font-semibold text-my-black mb-2">Ultimo passo! Dove inviamo la valutazione?</label>
+                                <input type="email" id="email" name="email" placeholder="la-tua@email.it" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-my-green-dark focus:border-my-green-dark transition duration-150">
+                                <small class="text-red-500 hidden" id="error-step-8">Per favore, inserisci una mail valida.</small>
+                                <div class="flex gap-3">
+                                    <button type="button" data-action="back"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-150">
+                                        Indietro
+                                    </button>
+                                    <button type="button" data-action="submit"
+                                        class="w-1/2 mt-4 py-3 px-6 text-sm font-semibold bg-my-orange text-white rounded-lg hover:bg-opacity-90 transition duration-150">
+                                        Invia Valutazione
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Step 9: Messaggio di Conferma (ex Step 8) -->
+                        <div class="form-step hidden" data-step="9">
+                            <div class="text-center p-4">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-my-green-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <h3 class="text-2xl font-bold text-my-black mb-2">Richiesta Inviata!</h3>
+                                <p class="text-gray-600">Grazie! Un nostro esperto analizzerà i dati che hai fornito.</p>
+                                <p class="text-gray-600 font-semibold mt-2">Riceverai la tua valutazione gratuita via mail entro 72 ore.</p>
+                                
+                                <button type="button" id="start-over"
+                                    class="w-full mt-6 py-3 px-6 text-sm font-semibold bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition duration-150">
+                                    Inizia una nuova valutazione
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
             </div>
         </div>
     </section>
+
 
 
     <!-- SWIPER: ESEMPI DI VALUTAZIONI RECENTI -->
@@ -97,7 +345,7 @@
             <div class="swiper mySwiper relative">
                 <div class="swiper-wrapper">
 
-                    <div class="swiper-slide">
+                    <div class="swiper-slide pb-10"> <!-- Aggiunto pb-10 per spazio paginazione -->
                         <div class="w-full bg-white rounded-xl shadow-2xl overflow-hidden">
                             <div class="relative w-full h-48 bg-gray-200 overflow-hidden">
                                 <img src="./assets/appartamento1.jpg" alt="Appartamento"
@@ -130,7 +378,7 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide">
+                    <div class="swiper-slide pb-10">
                         <div class="w-full bg-white rounded-xl shadow-2xl overflow-hidden">
                             <div class="relative w-full h-48 bg-gray-200 overflow-hidden">
                                 <img src="./assets/appartamento2.jpg" alt="Appartamento"
@@ -164,10 +412,10 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide">
+                    <div class="swiper-slide pb-10">
                         <div class="w-full bg-white rounded-xl shadow-2xl overflow-hidden">
                             <div class="relative w-full h-48 bg-gray-200 overflow-hidden">
-                                <img src="./assets/appartamento4.jpg" alt="Appartamento"
+                                <img src="./assets/appartamento3.webp" alt="Appartamento"
                                     class="w-full h-full object-cover">
                             </div>
                             <div class="p-4">
@@ -198,10 +446,10 @@
                         </div>
                     </div>
 
-                    <div class="swiper-slide">
+                    <div class="swiper-slide pb-10">
                         <div class="w-full bg-white rounded-xl shadow-2xl overflow-hidden">
                             <div class="relative w-full h-48 bg-gray-200 overflow-hidden">
-                                <img src="./assets/appartamento3.webp" alt="Appartamento"
+                                <img src="./assets/appartamento4.jpg" alt="Appartamento"
                                     class="w-full h-full object-cover">
                             </div>
                             <div class="p-4">
@@ -245,24 +493,31 @@
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl font-bold mb-2 text-my-black">Cosa ottieni affidandoti a noi</h2>
-            <p class="text-gray-600 mb-1">Lavoriamo nel settore immobiliare da piu di 50 anni e abbiamo le soluzioni ai tuoi problemi</p>
+            <p class="text-gray-600 mb-1">Lavoriamo nel settore immobiliare da piu di 50 anni e abbiamo le soluzioni ai
+                tuoi problemi</p>
             <p class="text-gray-600 mb-8">Un servizio completo, rapido e costruito intorno alle tue esigenze.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-                <div class="h-full p-6 bg-my-cream rounded-xl shadow-md"> <img src="https://via.placeholder.com/100"
-                        alt="Benefit 1" class="mb-3 mx-auto">
+                <div class="h-full p-6 bg-my-cream rounded-xl shadow-md"> <img
+                        src="https://placehold.co/100x100/274239/FFFFFF?text=72h"
+                        alt="Benefit 1" class="mb-3 mx-auto rounded-lg">
                     <h5 class="text-xl font-semibold text-my-black">Valutazione immediata</h5>
-                    <p class="text-gray-600 mt-2">Ricevi un preventivo automatizzato e preciso in massimo 72 ore, basato su dati aggiornati del mercato immobiliare.</p>
+                    <p class="text-gray-600 mt-2">Ricevi un preventivo automatizzato e preciso in massimo 72 ore, basato
+                        su dati aggiornati del mercato immobiliare.</p>
                 </div>
                 <div class="h-full p-6 bg-my-cream rounded-xl shadow-md">
-                    <img src="https://via.placeholder.com/100" alt="Benefit 2" class="mb-3 mx-auto">
+                    <img src="https://placehold.co/100x100/274239/FFFFFF?text=Expert" alt="Benefit 2"
+                        class="mb-3 mx-auto rounded-lg">
                     <h5 class="text-xl font-semibold text-my-black">Supporto di un esperto reale</h5>
-                    <p class="text-gray-600 mt-2">Dopo la stima iniziale, un nostro consulente immobiliare analizzerà la tua casa con te per ottenere una valutazione ancora più accurata.</p>
+                    <p class="text-gray-600 mt-2">Dopo la stima iniziale, un nostro consulente immobiliare analizzerà la
+                        tua casa con te per ottenere una valutazione ancora più accurata.</p>
                 </div>
                 <div class="h-full p-6 bg-my-cream rounded-xl shadow-md">
-                    <img src="https://via.placeholder.com/100" alt="Benefit 3" class="mb-3 mx-auto">
+                    <img src="https://placehold.co/100x100/274239/FFFFFF?text=Sell" alt="Benefit 3"
+                        class="mb-3 mx-auto rounded-lg">
                     <h5 class="text-xl font-semibold text-my-black">Vendita garantita</h5>
-                    <p class="text-gray-600 mt-2">Se scegli di affidarci il tuo immobile, troviamo noi l’acquirente ideale, gestendo tutta la trattativa e offrendoti garanzia di vendita.</p>
+                    <p class="text-gray-600 mt-2">Se scegli di affidarci il tuo immobile, troviamo noi l’acquirente
+                        ideale, gestendo tutta la trattativa e offrendoti garanzia di vendita.</p>
                 </div>
             </div>
         </div>
@@ -277,13 +532,16 @@
                         <span class="text-5xl font-bold text-my-orange">darti sicurezza, chiarezza</span><br>
                         e un servizio trasparente.
                     </h2>
-                    <p class="my-3 text-lg text-my-cream">Valutare o vendere casa è un passo importante. Per questo mettiamo tecnologia avanzata e professionisti esperti al tuo servizio, così puoi prendere decisioni consapevoli senza stress o imprevisti.
-                        </p>
+                    <p class="my-3 text-lg text-my-cream">Valutare o vendere casa è un passo importante. Per questo
+                        mettiamo tecnologia avanzata e professionisti esperti al tuo servizio, così puoi prendere
+                        decisioni consapevoli senza stress o imprevisti.
+                    </p>
                     <a href="#"
-                        class="py-3 px-6 font-semibold rounded-lg bg-white text-my-black hover:bg-gray-200 transition duration-150">Richiedi una consulenza gratuita</a>
+                        class="py-3 px-6 font-semibold rounded-lg bg-white text-my-black hover:bg-gray-200 transition duration-150">Richiedi
+                        una consulenza gratuita</a>
                 </div>
                 <div class="text-center">
-                    <img src="https://via.placeholder.com/400x250" alt="Illustrazione CTA"
+                    <img src="https://placehold.co/400x250/F8F5F2/111A19?text=Consulenza" alt="Illustrazione CTA"
                         class="w-full h-auto rounded-lg shadow-xl mx-auto">
                 </div>
             </div>
@@ -294,13 +552,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
                 <div>
-                    <h3 class="text-2xl font-bold mb-3 text-my-black">Come funziona il nostro processo di valutazione</h3>
-                    <p class="mb-3 text-gray-600">La nostra piattaforma analizza centinaia di dati immobiliari tra cui zona, metratura, stato dell’immobile e trend di mercato.</p>
-                    <p class="text-gray-600">Il risultato è una prima stima affidabile, che poi viene perfezionata da un esperto immobiliare tramite consulenza dedicata.
-In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se stai solo valutando l’idea.</p>
+                    <h3 class="text-2xl font-bold mb-3 text-my-black">Come funziona il nostro processo di valutazione
+                    </h3>
+                    <p class="mb-3 text-gray-600">La nostra piattaforma analizza centinaia di dati immobiliari tra cui
+                        zona, metratura, stato dell’immobile e trend di mercato.</p>
+                    <p class="text-gray-600">Il risultato è una prima stima affidabile, che poi viene perfezionata da un
+                        esperto immobiliare tramite consulenza dedicata.
+                        In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se stai solo
+                        valutando l’idea.</p>
                 </div>
                 <div class="text-center">
-                    <img src="https://via.placeholder.com/400x250" alt="Approfondimento"
+                    <img src="https://placehold.co/400x250/EBF0EE/111A19?text=Processo" alt="Approfondimento"
                         class="w-full h-auto rounded-lg shadow-xl mx-auto">
                 </div>
             </div>
@@ -317,48 +579,52 @@ In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se 
                 <!-- CARD 1 -->
                 <div class="review-card flex p-4 border border-gray-200 rounded-xl shadow-lg bg-white h-full 
                         transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    <img src="https://via.placeholder.com/64" alt="Foto utente"
+                    <img src="https://placehold.co/64x64/F8F5F2/111A19?text=SL" alt="Foto utente"
                         class="rounded-full w-16 h-16 mr-4 flex-shrink-0">
                     <div>
                         <small class="uppercase text-xs font-semibold text-gray-500">Comune di Moncalieri(To)</small>
                         <h6 class="font-bold text-my-black m-0">Simone Landucci</h6>
-                        <p class="mt-2 text-sm italic text-gray-600">""Grazie alla valutazione in 72 ore ho finalmente capito il valore reale della mia casa. Il consulente è stato impeccabile!""</p>
+                        <p class="mt-2 text-sm italic text-gray-600">""Grazie alla valutazione in 72 ore ho finalmente
+                            capito il valore reale della mia casa. Il consulente è stato impeccabile!""</p>
                     </div>
                 </div>
 
                 <!-- CARD 2 -->
                 <div class="review-card flex p-4 border border-gray-200 rounded-xl shadow-lg bg-white h-full 
                         transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    <img src="https://via.placeholder.com/64" alt="Foto utente"
+                    <img src="https://placehold.co/64x64/F8F5F2/111A19?text=MV" alt="Foto utente"
                         class="rounded-full w-16 h-16 mr-4 flex-shrink-0">
                     <div>
                         <small class="uppercase text-xs font-semibold text-gray-500">Comune di Piossasco(To)</small>
                         <h6 class="font-bold text-my-black m-0">Mario Venuti</h6>
-                        <p class="mt-2 text-sm italic text-gray-600">""Ho ricevuto una stima molto precisa e poi un supporto umano eccellente. In due settimane mi sono convinta a vendere""</p>
+                        <p class="mt-2 text-sm italic text-gray-600">""Ho ricevuto una stima molto precisa e poi un
+                            supporto umano eccellente. In due settimane mi sono convinta a vendere""</p>
                     </div>
                 </div>
 
                 <!-- CARD 3 -->
                 <div class="review-card flex p-4 border border-gray-200 rounded-xl shadow-lg bg-white h-full 
                         transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    <img src="https://via.placeholder.com/64" alt="Foto utente"
+                    <img src="https://placehold.co/64x64/F8F5F2/111A19?text=CP" alt="Foto utente"
                         class="rounded-full w-16 h-16 mr-4 flex-shrink-0">
                     <div>
                         <small class="uppercase text-xs font-semibold text-gray-500">Comune di Nichelino(To)</small>
                         <h6 class="font-bold text-my-black m-0">Claudio Pizzu</h6>
-                        <p class="mt-2 text-sm italic text-gray-600">""Servizio professionale dall’inizio alla fine. Trasparenza totale e zero stress. Consigliatissimo.""</p>
+                        <p class="mt-2 text-sm italic text-gray-600">""Servizio professionale dall’inizio alla fine.
+                            Trasparenza totale e zero stress. Consigliatissimo.""</p>
                     </div>
                 </div>
 
                 <!-- CARD 4 -->
                 <div class="review-card flex p-4 border border-gray-200 rounded-xl shadow-lg bg-white h-full 
                         transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    <img src="https://via.placeholder.com/64" alt="Foto utente"
+                    <img src="https://placehold.co/64x64/F8F5F2/111A19?text=SV" alt="Foto utente"
                         class="rounded-full w-16 h-16 mr-4 flex-shrink-0">
                     <div>
                         <small class="uppercase text-xs font-semibold text-gray-500">Torino centro(To)</small>
                         <h6 class="font-bold text-my-black m-0">Sabrina Venturazza</h6>
-                        <p class="mt-2 text-sm italic text-gray-600">""Tempi rapidissimi, persone competenti e soprattutto un processo di vendita semplice ed intuitivo.""</p>
+                        <p class="mt-2 text-sm italic text-gray-600">""Tempi rapidissimi, persone competenti e
+                            soprattutto un processo di vendita semplice ed intuitivo.""</p>
                     </div>
                 </div>
 
@@ -376,39 +642,42 @@ In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se 
 
                 <div class="faq-item border border-gray-200 rounded-lg overflow-hidden">
                     <button
-                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center">
+                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center text-left">
                         <span>Come funziona il tool?</span>
-                        <span class="faq-icon transition-transform duration-300">+</span>
+                        <span class="faq-icon transition-transform duration-300 text-my-green-dark text-2xl font-light">+</span>
                     </button>
-                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300">
+                    <div class="faq-answer max-h-0 overflow-hidden">
                         <p class="p-4 text-gray-600 border-t border-gray-200">
-                            Il tool è progettato per garantire una valutazione senza impegni e accurata, basata su dati reali del mercato immobiliare.
+                            Il tool è progettato per garantire una valutazione senza impegni e accurata, basata su dati
+                            reali del mercato immobiliare.
                         </p>
                     </div>
                 </div>
 
                 <div class="faq-item border border-gray-200 rounded-lg overflow-hidden">
                     <button
-                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center">
+                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center text-left">
                         <span>È adatto anche a chi non è esperto?</span>
-                        <span class="faq-icon transition-transform duration-300">+</span>
+                        <span class="faq-icon transition-transform duration-300 text-my-green-dark text-2xl font-light">+</span>
                     </button>
-                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300">
+                    <div class="faq-answer max-h-0 overflow-hidden">
                         <p class="p-4 text-gray-600 border-t border-gray-200">
-                            Assolutamente sì: il processo è semplice, guidato e pensato anche per chi è alla prima esperienza nel settore immobiliare.
+                            Assolutamente sì: il processo è semplice, guidato e pensato anche per chi è alla prima
+                            esperienza nel settore immobiliare.
                         </p>
                     </div>
                 </div>
 
                 <div class="faq-item border border-gray-200 rounded-lg overflow-hidden">
                     <button
-                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center">
+                        class="faq-question w-full p-4 bg-my-green-light font-semibold cursor-pointer text-my-black flex justify-between items-center text-left">
                         <span>Posso provarlo gratuitamente?</span>
-                        <span class="faq-icon transition-transform duration-300">+</span>
+                        <span class="faq-icon transition-transform duration-300 text-my-green-dark text-2xl font-light">+</span>
                     </button>
-                    <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300">
+                    <div class="faq-answer max-h-0 overflow-hidden">
                         <p class="p-4 text-gray-600 border-t border-gray-200">
-                            Sì! La valutazione iniziale e il supporto del nostro consulente sono completamente gratuiti e senza obbligo di vendita.
+                            Sì! La valutazione iniziale e il supporto del nostro consulente sono completamente gratuiti
+                            e senza obbligo di vendita.
                         </p>
                     </div>
                 </div>
@@ -427,9 +696,10 @@ In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <img src="https://via.placeholder.com/120x40" alt="Logo" class="mb-3">
-                    <p class="text-gray-300">Il nostro core buisness è impegnarci ogni giorno per offrire soluzioni di qualità
-                    ai nostri clienti.</p>
+                    <img src="https://placehold.co/120x40/FFFFFF/111A19?text=Logo+White" alt="Logo" class="mb-3">
+                    <p class="text-gray-300">Il nostro core buisness è impegnarci ogni giorno per offrire soluzioni di
+                        qualità
+                        ai nostri clienti.</p>
                 </div>
 
                 <div>
@@ -450,7 +720,7 @@ In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se 
 
                 <div class="text-left md:text-right">
                     <p class="text-gray-300">Partner ufficiale di progetti innovativi nel settore digitale.</p>
-                    <img src="https://via.placeholder.com/100x30" alt="Logo" class="mt-4 inline-block">
+                    <img src="https://placehold.co/100x30/FFFFFF/111A19?text=Partner" alt="Logo" class="mt-4 inline-block">
                 </div>
             </div>
         </div>
@@ -458,9 +728,10 @@ In questo modo ottieni un valore reale, utile sia se vuoi vendere subito sia se 
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    <script src="/js/swiper-config.js"></script>
+    <script src="./js/swiper-config.js"></script>
     <script src="./js/login.js"></script>
     <script src="./js/faq.js"></script>
+    <script src="./js/form-multistep.js"></script>
 
 </body>
 
