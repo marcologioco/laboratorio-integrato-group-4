@@ -52,15 +52,25 @@ public class SecurityConfig {
                 .requestMatchers("/h2/**").permitAll()                    // Console H2 (SOLO SVILUPPO!)
                 .requestMatchers("/api/auth/login").permitAll()           // Login
                 .requestMatchers(HttpMethod.POST, "/api/utenti").permitAll()  // Registrazione (solo POST)
+                .requestMatchers(HttpMethod.POST, "/api/valutazioni/automatica").permitAll()  // Valutazione automatica
                 .requestMatchers("/api/zone/**").permitAll()              // Zone pubbliche
                 .requestMatchers("/swagger-ui/**").permitAll()            // Swagger UI
                 .requestMatchers("/api-docs/**").permitAll()              // OpenAPI docs
                 .requestMatchers("/swagger").permitAll()                  // Swagger redirect
                 
+                // ===== FILE STATICI PUBBLICI (HTML, CSS, JS, immagini) =====
+                .requestMatchers("/", "/index.html").permitAll()          // Homepage
+                .requestMatchers("/login.html").permitAll()               // Pagina login
+                .requestMatchers("/styles/**").permitAll()                // CSS
+                .requestMatchers("/js/**").permitAll()                    // JavaScript
+                .requestMatchers("/assets/**").permitAll()                // Immagini e assets
+                .requestMatchers("/*.html").permitAll()                   // Tutte le pagine HTML nella root
+                
                 // ===== ENDPOINT AUTENTICATI (qualsiasi utente loggato) =====
                 .requestMatchers("/api/auth/me").authenticated()          // Info utente corrente
                 .requestMatchers("/api/auth/validate").authenticated()    // Validazione token
                 .requestMatchers("/api/immobili/**").authenticated()      // Immobili (filtrati per ruolo nel controller)
+                .requestMatchers(HttpMethod.GET, "/api/valutazioni/utente/*").authenticated()  // Valutazioni proprie
                 
                 // ===== ENDPOINT SOLO ADMIN =====
                 .requestMatchers(HttpMethod.GET, "/api/utenti").hasRole("ADMIN")    // Lista utenti
