@@ -8,6 +8,10 @@
 
   <!-- Tailwind -->
   <link href="styles/style-tailwind.css" rel="stylesheet" />
+  
+  <!-- Auth Utils -->
+  <script src="js/auth-utils.js"></script>
+  <script src="js/login.js" defer></script>
 
   <style>
     body {
@@ -47,31 +51,30 @@
       <h1 class="text-3xl font-bold text-center mb-2">Accedi</h1>
       <p class="text-gray-500 text-center mb-8">Inserisci le tue credenziali per continuare</p>
 
-      <form class="space-y-5">
+      <!-- Messaggi di errore e successo -->
+      <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      </div>
+      <div id="success-message" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+      </div>
+
+      <form id="loginForm" class="space-y-5">
         <div>
           <label class="block text-sm font-medium mb-1">Email</label>
-          <input type="email" placeholder="Inserisci la tua email" required
+          <input id="email" name="email" type="email" placeholder="Inserisci la tua email" required
             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-my-green-dark">
         </div>
 
         <div>
           <label class="block text-sm font-medium mb-1">Password</label>
-          <input type="password" placeholder="Inserisci la password" required
+          <input id="password" name="password" type="password" placeholder="Inserisci la password" required
             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-my-green-dark">
         </div>
 
-        <div class="mt-8 flex flex-col justify-between gap-4 sm:flex-row">
-          <!-- Bottone utente -->
-          <a href="account.html"
-            class="bg-my-green-dark text-white text-center p-3 rounded-lg font-semibold hover:bg-[#111A19] transition">
-            Accedi come utente
-          </a>
-
-          <!-- Bottone admin -->
-          <a href="admin.html"
-            class="bg-my-green-dark text-white text-center p-3 rounded-lg font-semibold hover:bg-[#111A19] transition">
-            Accedi come admin
-          </a>
+        <div class="mt-8">
+          <button id="loginButton" type="submit"
+            class="w-full bg-my-green-dark text-white text-center p-3 rounded-lg font-semibold hover:bg-[#111A19] transition">
+            Accedi
+          </button>
         </div>
       </form>
 

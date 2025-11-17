@@ -1,65 +1,78 @@
+/**
+ * Login Form Handler
+ * Gestisce l'autenticazione con il backend
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    const modal = document.getElementById('loginModal');
-    const openBtn = document.getElementById('openModal');
-    const closeBtn = document.getElementById('closeModal');
-    const emailInput = document.getElementById('email');
-
-    if (!modal) throw new Error('Elemento modal non trovato (id=loginModal).');
-    if (!openBtn) throw new Error('Bottone openModal non trovato.');
-    if (!closeBtn) throw new Error('Bottone closeModal non trovato.');
-
-    // Funzioni per aprire/chiudere e bloccare scroll
-    const openModal = () => {
-      // mostra overlay e card
-      modal.style.display = 'flex';
-      // piccolo delay per permettere la transizione css se hai .modal-fade
-      requestAnimationFrame(() => modal.classList.add('show'));
-      modal.setAttribute('aria-hidden', 'false');
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      // autofocus campo email se presente
-      if (emailInput) {
-        // piccolo timeout per sicurezza (render)
-        setTimeout(() => emailInput.focus(), 120);
-      }
-    };
-
-    const closeModal = () => {
-      modal.classList.remove('show');
-      modal.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      // attendi la fine dell'animazione prima di nascondere per evitare flicker
-      setTimeout(() => {
-        // verifica ancora che non sia riaperto nel frattempo
-        if (!modal.classList.contains('show')) modal.style.display = 'none';
-      }, 300);
-    };
-
-    openBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal();
-    });
-
-    closeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      closeModal();
-    });
-
-    // Chiudi cliccando sullo sfondo
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // ESC per chiudere
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('show')) {
-        closeModal();
-      }
-    });
-
-  } catch (err) {
-    console.error('Errore init login modal:', err);
+  // Se già autenticato, redirect alla pagina appropriata
+  if (isAuthenticated()) {
+    redirectByRole();
+    return;
   }
+
+  const loginForm = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const loginButton = document.getElementById('loginButton');
+
+  if (!loginForm) {
+    console.error('Form di login non trovato');
+    return;
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    // Validazione base
+    if (!email || !password) {
+      showError('Inserisci email e password');
+      return;
+    }
+
+    // Disabilita il pulsante durante il login
+    loginButton.disabled = true;
+    loginButton.textContent = 'Accesso in corso...';
+
+    try {
+      // Chiamata API di login
+      const response = await fetch(`${AUTH_CONFIG.API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Email o password errati');
+        }
+        throw new Error('Errore durante il login');
+      }
+
+      const data = await response.json();
+
+      // Salva token e dati utente
+      saveAuthData(data.token, data.user);
+
+      // Mostra messaggio di successo
+      showSuccess('Login effettuato con successo!');
+
+      // Redirect basato sul ruolo
+      setTimeout(() => {
+        redirectByRole();
+      }, 500);
+
+    } catch (error) {
+      console.error('Errore login:', error);
+      showError(error.message || 'Errore durante il login');
+      
+      // Riabilita il pulsante
+      loginButton.disabled = false;
+      loginButton.textContent = 'Accedi';
+    }
+  });
 });
