@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-montserrat;
+  }
+
+  h1 {
+    @apply font-cinzel-decorative;
+  }
+
+  h2 {
+    @apply font-cinzel;
+  }
+}
