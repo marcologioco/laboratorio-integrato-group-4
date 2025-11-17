@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.immobiliaris.immobiliaris_be.model.Utente;
 import com.immobiliaris.immobiliaris_be.repos.UtenteRepo;
@@ -14,6 +15,9 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Autowired
     private UtenteRepo utenteRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<Utente> findAllUtenti() {
@@ -37,6 +41,10 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Override
     public Utente saveUtente(Utente utente) {
+        // Hasha la password prima di salvare
+        if (utente.getPassword() != null && !utente.getPassword().isBlank()) {
+            utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+        }
         return utenteRepo.save(utente);
     }
 
@@ -48,7 +56,10 @@ public class UtenteServiceImpl implements UtenteService {
         utente.setNome(utenteDetails.getNome());
         utente.setCognome(utenteDetails.getCognome());
         utente.setEmail(utenteDetails.getEmail());
-        utente.setPassword(utenteDetails.getPassword());
+        // Hasha la password se è stata modificata
+        if (utenteDetails.getPassword() != null && !utenteDetails.getPassword().isBlank()) {
+            utente.setPassword(passwordEncoder.encode(utenteDetails.getPassword()));
+        }
         utente.setTelefono(utenteDetails.getTelefono());
         utente.setIdRuolo(utenteDetails.getIdRuolo());
 
@@ -78,7 +89,8 @@ public class UtenteServiceImpl implements UtenteService {
         }
 
         if (patchUtente.getPassword() != null && !patchUtente.getPassword().isBlank()) {
-            existingUtente.setPassword(patchUtente.getPassword().trim());
+            // Hasha la password se viene cambiata
+            existingUtente.setPassword(passwordEncoder.encode(patchUtente.getPassword().trim()));
         }
 
         if (patchUtente.getTelefono() != null && !patchUtente.getTelefono().isBlank()) {
