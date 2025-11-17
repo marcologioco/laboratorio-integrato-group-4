@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/main/resources/static/**/*.{html,js}",
+    "./src/main/resources/static/**/*.{html,js}", 
   ],
   safelist: [
     'text-my-green-dark',
@@ -18,11 +18,6 @@ module.exports = {
         'my-black-dark': '#111A19',
         'my-orange': '#BA6830',
         'my-cream': '#F9F2E8',
-      },
-      fontFamily: {
-        'cinzel-decorative': ['"Cinzel Decorative"', 'serif'],
-        'cinzel': ['Cinzel', 'serif'],
-        'montserrat': ['Montserrat', 'sans-serif'],
       },
     },
   },
