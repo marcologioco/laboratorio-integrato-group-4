@@ -215,7 +215,7 @@ file creato con l'aiuto dell'ia per brevità e coerenza con i prossimi passi da 
 
 ### 1. Utente fa Login
 
-```
+```json
 POST /api/auth/login
 Body: { "email": "luca.rossi@example.com", "password": "pwd123" }
 
@@ -247,7 +247,7 @@ if (response.ruolo === 'admin') {
 
 ### 3. Chiamate API Successive
 
-```
+```json
 GET /api/utenti/2
 Headers: {
   "Authorization": "Bearer eyJhbGciOiJIUzI1NiIs...",
@@ -270,22 +270,54 @@ Headers: {
 
 ## 📝 ORDINE CONSIGLIATO
 
-1. ✅ Fase 1: Sicurezza password (PRIORITÀ ALTA)
-2. ✅ Fase 2.1-2.2: Sistema login base con JWT
-3. ✅ Fase 3.1: Configurare CORS
-4. ✅ Fase 2.3: Proteggere endpoint per ruolo
-5. ✅ Fase 3.2-3.3: Endpoint utilità e standardizzazione
-6. ✅ Fase 4: Routing e separazione utente/admin
-7. ✅ Fase 5: Testing completo
+1. ✅ **Fase 1: Sicurezza password** (COMPLETATO)
+   - ✅ Spring Security configurato
+   - ✅ BCryptPasswordEncoder installato
+   - ✅ Password hashate nel DataLoader
+
+2. ✅ **Fase 2: Autenticazione JWT** (COMPLETATO)
+   - ✅ JwtUtil creato
+   - ✅ AuthController con /login
+   - ✅ JwtAuthenticationFilter implementato
+   - ✅ Token generazione e validazione funzionante
+
+3. ✅ **Fase 3: Protezione Endpoint** (COMPLETATO)
+   - ✅ Endpoint pubblici configurati
+   - ✅ Endpoint admin-only protetti (ROLE_ADMIN richiesto)
+   - ✅ Endpoint autenticati (qualsiasi ruolo loggato)
+   - ✅ /api/auth/me - info utente corrente
+   - ✅ /api/auth/validate - validazione token
+
+4. ✅ **Testing Completo** (VERIFICATO)
+   - ✅ Login admin funzionante
+   - ✅ Login utente normale funzionante
+   - ✅ Admin può accedere a endpoint protetti
+   - ✅ Utente normale BLOCCATO da endpoint admin (403)
+   - ✅ Token JWT contiene userId, email, ruolo
+   - ✅ Swagger UI con autenticazione Bearer JWT
+
+5. ⬜ **Fase 4: Collegamento Frontend**
+   - ⬜ Implementare login page nel frontend
+   - ⬜ Salvare token in localStorage
+   - ⬜ Aggiungere Authorization header a tutte le chiamate
+   - ⬜ Implementare redirect basato su ruolo
+   - ⬜ Implementare logout (rimozione token)
+   - ⬜ Gestire errori 401/403 nel frontend
+
+6. ⬜ **Fase 5: Routing Utente vs Admin** (frontend)
+   - ⬜ Route protette con guard
+   - ⬜ Dashboard admin
+   - ⬜ Dashboard utente
+   - ⬜ Redirect automatico dopo login
 
 ---
 
 ## 🎓 RISORSE UTILI
 
-- Spring Security: https://spring.io/guides/gs/securing-web/
-- JWT Java: https://github.com/jwtk/jjwt
-- BCrypt: https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
-- CORS Spring Boot: https://spring.io/guides/gs/rest-service-cors/
+- Spring Security: <https://spring.io/guides/gs/securing-web/>
+- JWT Java: <https://github.com/jwtk/jjwt>
+- BCrypt: <https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html>
+- CORS Spring Boot: <https://spring.io/guides/gs/rest-service-cors/>
 
 ---
 
@@ -307,7 +339,7 @@ Headers: {
 - ✅ **Affidabile**: Backup, replica, transaction log
 - ✅ **Standard industry**: Usato da milioni di applicazioni in produzione
 
-### Passi per la migrazione:
+### Passi per la migrazione
 
 #### 1. Aggiungere dipendenza MySQL in `pom.xml`
 
@@ -322,6 +354,7 @@ Headers: {
 #### 2. Modificare `application.properties`
 
 **Commentare configurazione H2:**
+
 ```properties
 # H2 - SOLO SVILUPPO
 #spring.datasource.url=jdbc:h2:mem:ImmobiliarisDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -331,6 +364,7 @@ Headers: {
 ```
 
 **Aggiungere configurazione MySQL:**
+
 ```properties
 # MySQL - PRODUZIONE
 spring.datasource.url=jdbc:mysql://localhost:3306/immobiliaris_db?useSSL=false&serverTimezone=UTC
@@ -347,6 +381,7 @@ spring.jpa.show-sql=true
 #### 3. Rimuovere configurazioni H2 da SecurityConfig
 
 Rimuovere:
+
 ```java
 .requestMatchers("/h2/**").permitAll()
 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
@@ -365,10 +400,9 @@ Rimuovere:
 - DataLoader inserirà gli utenti
 - data-test.sql inserirà i dati di test
 
-### Note importanti:
+### Note importanti
 
 - **Environment variables**: In produzione, usa variabili d'ambiente per password DB
 - **Backup**: Implementa strategia di backup regolare
 - **Connection pooling**: HikariCP (già incluso) gestisce le connessioni
 - **Performance**: Considera l'aggiunta di indici su colonne frequentemente ricercate
-

@@ -1,12 +1,16 @@
 package com.immobiliaris.immobiliaris_be.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // RICORDARSI DI RIMUOVERE LE CONFIGURAZIONI DI SICUREZZA DI H2 PRIMA DI ANDARE IN PRODUZIONE!!!
 
@@ -14,6 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -28,23 +35,48 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-             // Disabilita CSRF (Cross-Site Request Forgery (attacco dove qualcuno fa richieste a tuo nome)) per API REST,CSRF è utile per applicazioni con sessioni e cookie, noi usiamo token
+            // Disabilita CSRF per API REST (usiamo JWT, non sessioni)
+            
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // STATELESS = non creare sessioni HTTP, usiamo solo JWT
+            )
+            
             .headers(headers -> headers
                 .frameOptions(frame -> frame.disable())
-                // Disabilita X-Frame-Options per permettere l'uso della console H2 in iframe
+                // Disabilita X-Frame-Options per console H2 (SOLO SVILUPPO!)
             )
+            
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2/**").permitAll() 
-                // Permette accesso alla console H2 senza autenticazione (solo in sviluppo!)
-                .anyRequest().permitAll() 
-                // Permesso  l'accesso a TUTTE le richieste senza autenticazione, Serve per non bloccare le API mentre sviluppiamo
-                // dopo sarà tipo 
-                // .authorizeHttpRequests(auth -> auth
-                //.requestMatchers("/api/auth/login").permitAll()  //           Login pubblico
-                //.requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo admin
-                //     .anyRequest().authenticated()  // Tutto il resto richiede login
-                // )
-            );        
+                // ===== ENDPOINT PUBBLICI (senza autenticazione) =====
+                .requestMatchers("/h2/**").permitAll()                    // Console H2 (SOLO SVILUPPO!)
+                .requestMatchers("/api/auth/login").permitAll()           // Login
+                .requestMatchers(HttpMethod.POST, "/api/utenti").permitAll()  // Registrazione (solo POST)
+                .requestMatchers("/api/zone/**").permitAll()              // Zone pubbliche
+                .requestMatchers("/swagger-ui/**").permitAll()            // Swagger UI
+                .requestMatchers("/api-docs/**").permitAll()              // OpenAPI docs
+                .requestMatchers("/swagger").permitAll()                  // Swagger redirect
+                
+                // ===== ENDPOINT AUTENTICATI (qualsiasi utente loggato) =====
+                .requestMatchers("/api/auth/me").authenticated()          // Info utente corrente
+                .requestMatchers("/api/auth/validate").authenticated()    // Validazione token
+                .requestMatchers("/api/immobili/**").authenticated()      // Immobili (filtrati per ruolo nel controller)
+                
+                // ===== ENDPOINT SOLO ADMIN =====
+                .requestMatchers(HttpMethod.GET, "/api/utenti").hasRole("ADMIN")    // Lista utenti
+                .requestMatchers(HttpMethod.GET, "/api/utenti/*").hasRole("ADMIN")  // Dettaglio utente
+                .requestMatchers(HttpMethod.DELETE, "/api/utenti/*").hasRole("ADMIN") // Elimina utente
+                .requestMatchers("/api/venditori/**").hasRole("ADMIN")    // Gestione venditori
+                .requestMatchers("/api/contratti/**").hasRole("ADMIN")    // Gestione contratti
+                .requestMatchers("/api/valutazioni/**").hasRole("ADMIN")  // Gestione valutazioni
+                
+                // ===== TUTTO IL RESTO RICHIEDE AUTENTICAZIONE =====
+                .anyRequest().authenticated()
+            )
+            
+            // Aggiungi il filtro JWT PRIMA del filtro standard di autenticazione
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            
         return http.build();
     }
 }
