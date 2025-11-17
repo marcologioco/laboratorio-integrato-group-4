@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
     // --- LOGICA FORM MULTISTEP ---
     const formContainer = document.getElementById('valuation-form-container');
-    // Se il form non è in questa pagina, non eseguire il codice
     if (!formContainer) return; 
 
     const form = document.getElementById('multi-step-form');
@@ -10,13 +9,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressBar = document.getElementById('progress-bar');
     const currentStepDisplay = document.getElementById('current-step-display');
     
-    const totalSteps = steps.filter(step => step.dataset.step !== '8').length; // 7 passi di input
+    // MODIFICA 1: Escludiamo lo step 9 (Conferma) dal conteggio della barra
+    const totalSteps = steps.filter(step => step.dataset.step !== '9').length; 
+    
     let currentStep = 1;
     const formData = {};
 
     // Funzione per mostrare lo step
     function showStep(stepNumber) {
         steps.forEach(step => {
+            // Assicuriamoci che il confronto sia tra numeri
             if (parseInt(step.dataset.step) === stepNumber) {
                 step.classList.remove('hidden');
                 step.classList.add('active-step');
@@ -28,13 +30,13 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Aggiorna la progress bar
         if (stepNumber <= totalSteps) {
-            const progress = ((stepNumber -1) / totalSteps) * 100 + (100 / totalSteps); // Inizia già "piena" per lo step 1
+            const progress = ((stepNumber -1) / totalSteps) * 100 + (100 / totalSteps); 
             progressBar.style.width = `${progress}%`;
             currentStepDisplay.textContent = stepNumber;
         } else {
-            // Step di conferma (step 8)
+            // Step di conferma (step 9)
             progressBar.style.width = '100%';
-            currentStepDisplay.textContent = '✓'; // Fatto!
+            currentStepDisplay.textContent = '✓'; 
         }
     }
     
@@ -44,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const errorDisplay = document.getElementById(`error-step-${stepNumber}`);
         let isValid = true;
         
-        // Pulisce l'errore precedente
         if(errorDisplay) errorDisplay.classList.add('hidden');
 
         switch(stepNumber) {
@@ -58,15 +59,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     formData.cap = cap.value;
                 }
                 break;
+            
             case 2: // Tipo
             case 3: // Stato
-                // La validazione avviene al click sulla card
                 const fieldName = stepNumber === 2 ? 'tipo' : 'stato';
                 if (!formData[fieldName]) {
                      isValid = false;
                      if(errorDisplay) errorDisplay.classList.remove('hidden');
                 }
                 break;
+
             case 4: // Metratura
                 const metratura = activeStep.querySelector('#metratura');
                 if (!metratura.value || parseInt(metratura.value) <= 0) {
@@ -76,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     formData.metratura = metratura.value;
                 }
                 break;
+
             case 5: // Locali
                 const locali = activeStep.querySelector('#locali');
                 if (!locali.value || parseInt(locali.value) <= 0) {
@@ -85,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     formData.locali = locali.value;
                 }
                 break;
+
             case 6: // Bagni
                 const bagni = activeStep.querySelector('#bagni');
                 if (!bagni.value || parseInt(bagni.value) <= 0) {
@@ -94,7 +98,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     formData.bagni = bagni.value;
                 }
                 break;
-            case 7: // Email
+
+            // MODIFICA 2: Il Case 7 ora gestisce i Checkbox (Opzionali)
+            case 7: 
+                // Qui non c'è validazione bloccante perché sono checkbox opzionali.
+                // Salviamo semplicemente i dati.
+                const giardino = activeStep.querySelector('input[name="giardino"]');
+                const garage = activeStep.querySelector('input[name="garage"]');
+                const terrazzo = activeStep.querySelector('input[name="terrazzo"]');
+                
+                formData.giardino = giardino ? giardino.checked : false;
+                formData.garage = garage ? garage.checked : false;
+                formData.terrazzo = terrazzo ? terrazzo.checked : false;
+                
+                isValid = true; 
+                break;
+
+            // MODIFICA 3: Aggiunto Case 8 per l'Email
+            case 8: 
                 const email = activeStep.querySelector('#email');
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(email.value)) {
@@ -126,12 +147,14 @@ document.addEventListener('DOMContentLoaded', function () {
         } 
         
         else if (action === 'submit') {
+            // Validiamo lo step corrente (che è l'8, email)
             if (validateStep(currentStep)) {
-                // Qui invieresti i dati a un server
-                console.log('Dati del Form Inviati:', formData);
                 
-                // Vai allo step di conferma (step 8)
-                currentStep = 8; // Vai direttamente allo step 8
+                console.log('Dati del Form Inviati:', formData);
+                // Qui puoi inserire la chiamata AJAX/Fetch
+                
+                // Vai allo step di conferma (step 9)
+                currentStep = 9; 
                 showStep(currentStep);
             }
         }
@@ -143,25 +166,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const field = card.dataset.field;
             const value = card.dataset.value;
             
-            // Salva il dato
             formData[field] = value;
 
-            // Aggiorna lo stile
             const parentStep = card.closest('.form-step');
-            parentStep.querySelectorAll('.form-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
+            parentStep.querySelectorAll('.form-card').forEach(c => c.classList.remove('selected', 'border-my-green-dark', 'bg-gray-50'));
+            // Aggiunge classi visive per la selezione
+            card.classList.add('selected', 'border-my-green-dark', 'bg-gray-50'); 
 
-            // Pulisce l'errore se presente
             const errorDisplay = parentStep.querySelector('small[id^="error-"]');
             if(errorDisplay) errorDisplay.classList.add('hidden');
             
-            // Vai automaticamente allo step successivo
             setTimeout(() => {
                 if (validateStep(currentStep)) {
                     currentStep++;
                     showStep(currentStep);
                 }
-            }, 200); // Piccolo ritardo per far vedere la selezione
+            }, 200); 
         });
     });
 
@@ -169,18 +189,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const startOverButton = document.getElementById('start-over');
     if (startOverButton) {
         startOverButton.addEventListener('click', function() {
-            // Resetta i dati
             Object.keys(formData).forEach(key => delete formData[key]);
-            
-            // Resetta gli input e le selezioni
             if(form) form.reset();
-            formContainer.querySelectorAll('.form-card').forEach(c => c.classList.remove('selected'));
+            
+            // Reset visuale delle card
+            formContainer.querySelectorAll('.form-card').forEach(c => 
+                c.classList.remove('selected', 'border-my-green-dark', 'bg-gray-50')
+            );
+            
             formContainer.querySelectorAll('small[id^="error-"]').forEach(err => err.classList.add('hidden'));
 
-            // Torna al primo step
             currentStep = 1;
             showStep(currentStep);
         });
     }
-
 });
