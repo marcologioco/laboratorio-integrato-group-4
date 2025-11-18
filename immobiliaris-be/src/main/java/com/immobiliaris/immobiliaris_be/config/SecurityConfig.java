@@ -66,19 +66,18 @@ public class SecurityConfig {
                 .requestMatchers("/assets/**").permitAll()                // Immagini e assets
                 .requestMatchers("/*.html").permitAll()                   // Tutte le pagine HTML nella root
                 
-                // ===== ENDPOINT AUTENTICATI (qualsiasi utente loggato) =====
+                // ===== ENDPOINT AUTENTICATI (qualsiasi utente loggato - USER e ADMIN) =====
                 .requestMatchers("/api/auth/me").authenticated()          // Info utente corrente
                 .requestMatchers("/api/auth/validate").authenticated()    // Validazione token
-                .requestMatchers("/api/immobili/**").authenticated()      // Immobili (filtrati per ruolo nel controller)
+                .requestMatchers(HttpMethod.GET, "/api/immobili/**").authenticated()  // GET immobili per tutti
                 .requestMatchers(HttpMethod.GET, "/api/valutazioni/utente/*").authenticated()  // Valutazioni proprie
                 
-                // ===== ENDPOINT SOLO ADMIN =====
-                .requestMatchers(HttpMethod.GET, "/api/utenti").hasRole("ADMIN")    // Lista utenti
-                .requestMatchers(HttpMethod.GET, "/api/utenti/*").hasRole("ADMIN")  // Dettaglio utente
-                .requestMatchers(HttpMethod.DELETE, "/api/utenti/*").hasRole("ADMIN") // Elimina utente
+                // ===== ENDPOINT SOLO ADMIN (hasRole richiede ROLE_ADMIN) =====
+                .requestMatchers("/api/immobili/**").hasRole("ADMIN")     // POST/PUT/PATCH/DELETE immobili solo admin
+                .requestMatchers("/api/utenti/**").hasRole("ADMIN")       // Gestione utenti (tutti i metodi)
                 .requestMatchers("/api/venditori/**").hasRole("ADMIN")    // Gestione venditori
                 .requestMatchers("/api/contratti/**").hasRole("ADMIN")    // Gestione contratti
-                .requestMatchers("/api/valutazioni/**").hasRole("ADMIN")  // Gestione valutazioni
+                .requestMatchers("/api/valutazioni/**").hasRole("ADMIN")  // Gestione valutazioni (automatica è già permitAll sopra)
                 
                 // ===== TUTTO IL RESTO RICHIEDE AUTENTICAZIONE =====
                 .anyRequest().authenticated()

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
+        String securitySchemeName = "bearer-jwt";
         return new OpenAPI()
                 .info(new Info()
                         .title("Immobiliaris API")
@@ -31,16 +33,17 @@ public class SwaggerConfig {
                                 1. Fare login con POST /api/auth/login
                                 2. Copiare il token dalla risposta
                                 3. Cliccare il bottone "Authorize" in alto
-                                4. Inserire: Bearer {token}
+                                4. Inserire SOLO il token (senza "Bearer")
                                 """)
                         .contact(new Contact()
                                 .name("Team InnovaRe - Immobiliaris")
                                 .url("https://github.com/marcologioco/laboratorio-integrato-group-4")))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
-                        .addSecuritySchemes("bearer-jwt", new SecurityScheme()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("Inserire il token JWT ottenuto dal login")));
+                                .description("Inserire SOLO il token JWT (senza 'Bearer')")));
     }
 }
