@@ -83,12 +83,24 @@ function validateCurrentStep() {
         return true;
     }
     
+    let isValid = true;
+    
+    // Validazione speciale per step 1: verifica radio button isProprietario
+    if (currentStep === 1) {
+        const isProprietarioSelected = document.querySelector('input[name="isProprietario"]:checked');
+        if (!isProprietarioSelected) {
+            isValid = false;
+            showError('Indica se sei il proprietario dell\'immobile');
+        }
+    }
+    
     const requiredInputs = currentStepEl.querySelectorAll('[required]');
     console.log('Campi richiesti nello step', currentStep, ':', requiredInputs.length);
     
-    let isValid = true;
-    
     requiredInputs.forEach(input => {
+        // Skip radio buttons già validati sopra
+        if (input.type === 'radio') return;
+        
         if (!input.value || input.value.trim() === '') {
             isValid = false;
             input.classList.add('border-red-500');
@@ -101,10 +113,10 @@ function validateCurrentStep() {
         }
     });
     
-    if (!isValid) {
+    if (!isValid && currentStep !== 1) {
         showError('Compila tutti i campi obbligatori');
         console.log('Validazione fallita');
-    } else {
+    } else if (isValid) {
         console.log('Validazione superata');
     }
     
@@ -130,6 +142,9 @@ async function inviaValutazione() {
             email: document.getElementById('email').value,
             telefono: document.getElementById('telefono').value,
             password: document.getElementById('password').value,
+            
+            // Indica se l'utente è il proprietario
+            isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
             
             // Dati immobile
             indirizzo: document.getElementById('indirizzo').value,

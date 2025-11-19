@@ -2,6 +2,7 @@ package com.immobiliaris.immobiliaris_be.services;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.immobiliaris.immobiliaris_be.enums.TipoImmobile;
 import com.immobiliaris.immobiliaris_be.model.Immobile;
 import com.immobiliaris.immobiliaris_be.model.Utente;
 import com.immobiliaris.immobiliaris_be.model.Valutazione;
+import com.immobiliaris.immobiliaris_be.model.Venditore;
 import com.immobiliaris.immobiliaris_be.model.Zona;
 import com.immobiliaris.immobiliaris_be.repos.ZonaRepo;
 
@@ -38,6 +40,9 @@ public class ValutazioneAutomaticaService {
     
     @Autowired
     private ValutazioneService valutazioneService;
+    
+    @Autowired
+    private VenditoreService venditoreService;
     
     @Autowired
     private ZonaRepo zonaRepository;
@@ -65,17 +70,20 @@ public class ValutazioneAutomaticaService {
         // 1. CREA O VERIFICA UTENTE
         Utente utente = creaORecuperaUtente(richiesta);
         
-        // 2. CREA IMMOBILE
-        Immobile immobile = creaImmobile(richiesta, utente);
+        // 2. CREA VENDITORE SE L'UTENTE È PROPRIETARIO
+        Integer idVenditore = gestisciVenditore(richiesta, utente);
         
-        // 3. CALCOLA VALUTAZIONE
+        // 3. CREA IMMOBILE
+        Immobile immobile = creaImmobile(richiesta, idVenditore);
+        
+        // 4. CALCOLA VALUTAZIONE
         Double valoreStimato = calcolaValoreImmobile(richiesta);
         Double valoreBaseZona = calcolaValoreBaseZona(richiesta.getCap(), richiesta.getMetriQuadri());
         
-        // 4. CREA VALUTAZIONE
+        // 5. CREA VALUTAZIONE
         Valutazione valutazione = creaValutazione(immobile, utente, valoreStimato, valoreBaseZona);
         
-        // 5. PREPARA RISPOSTA
+        // 6. PREPARA RISPOSTA
         String messaggio = String.format(
             "Valutazione completata! Il valore stimato del tuo immobile è di €%.2f. " +
             "Riceverai una valutazione più dettagliata entro 72 ore.",
@@ -116,13 +124,49 @@ public class ValutazioneAutomaticaService {
     }
     
     /**
+     * Gestisce la creazione del venditore se l'utente è il proprietario
+     * 
+     * @param richiesta DTO con flag isProprietario
+     * @param utente Utente che ha fatto la richiesta
+     * @return ID del venditore (può essere l'utente stesso o null se vende per terzi)
+     */
+    private Integer gestisciVenditore(RichiestaValutazioneDTO richiesta, Utente utente) {
+        // Se l'utente è il proprietario, crea o recupera il record venditore
+        if (Boolean.TRUE.equals(richiesta.getIsProprietario())) {
+            // Verifica se esiste già un venditore per questo utente
+            List<Venditore> venditori = venditoreService.findVenditoreByIdUtente(utente.getIdUtente());
+            
+            if (!venditori.isEmpty()) {
+                return venditori.get(0).getIdVenditore();
+            }
+            
+            // Crea nuovo venditore
+            Venditore venditore = new Venditore();
+            venditore.setIdUtente(utente.getIdUtente());
+            venditore.setNome(utente.getNome());
+            venditore.setCognome(utente.getCognome());
+            venditore.setEmail(utente.getEmail());
+            venditore.setTelefono(utente.getTelefono());
+            // Indirizzo verrà aggiunto dall'immobile
+            venditore.setCitta(richiesta.getCitta());
+            venditore.setProvincia(richiesta.getProvincia());
+            
+            Venditore venditoreSalvato = venditoreService.saveVenditore(venditore);
+            return venditoreSalvato.getIdVenditore();
+        }
+        
+        // Se non è proprietario, restituisce null (dovrà essere gestito diversamente)
+        return null;
+    }
+    
+    /**
      * Crea un nuovo immobile
      */
-    private Immobile creaImmobile(RichiestaValutazioneDTO richiesta, Utente utente) {
+    private Immobile creaImmobile(RichiestaValutazioneDTO richiesta, Integer idVenditore) {
         Immobile immobile = new Immobile();
         
-        // IMPORTANTE: L'utente che richiede la valutazione è anche il venditore
-        immobile.setIdVenditore(utente.getIdUtente());
+        // Imposta il venditore (può essere null se l'utente vende per terzi)
+        immobile.setIdVenditore(idVenditore);
         
         // Dati base
         immobile.setIndirizzo(richiesta.getIndirizzo());

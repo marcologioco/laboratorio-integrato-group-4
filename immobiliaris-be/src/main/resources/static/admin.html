@@ -23,6 +23,26 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
+
+        .contract-template {
+            background: white;
+            padding: 2rem;
+            line-height: 1.8;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .contract-field {
+            display: inline-block;
+            min-width: 150px;
+            border-bottom: 1px solid #333;
+            padding: 2px 4px;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -46,8 +66,9 @@
             <nav class="space-y-4 flex-1">
                 <a href="#" class="block text-gray-300 hover:text-white transition">🏠 Dashboard</a>
                 <a href="#" class="block text-gray-300 hover:text-white transition">👤 Utenti</a>
-                <a href="#" class="block text-gray-300 hover:text-white transition">🏘️ Valutazioni</a>
-                <a href="#" class="block text-gray-300 hover:text-white transition">🗃️ preventivi completati</a>
+                <a href="#" class="block text-gray-300 hover:text-white transition">🏙️ Valutazioni</a>
+                <a href="#" class="block text-gray-300 hover:text-white transition">🗃️ Preventivi completati</a>
+                <a href="#" class="block text-gray-300 hover:text-white transition">📄 Contratti</a>
             </nav>
             <a id="logout-btn" href="#"
                 class="block mt-4 text-red-400 hover:text-red-300 text-sm border-t border-gray-700 pt-4">🚪 Logout</a>
@@ -56,25 +77,31 @@
         </aside>
 
         <!-- Contenuto principale -->
-        <!-- Aggiungi il bottone X in alto a destra -->
         <main class="flex-1 flex flex-col min-h-screen p-6 lg:p-10 relative">
             <span id="close-overview"
                 class="close-btn text-black hover:text-red-500 hidden lg:hidden absolute top-4 right-4">✖</span>
-            <!-- Nuovo bottone X per tornare al login -->
             <a href="login.html"
                 class="absolute top-4 right-4 text-2xl text-gray-600 hover:text-gray-800 lg:block">✖</a>
 
             <h2 class="text-xl font-semibold mb-8">Panoramica</h2>
 
             <!-- Griglia card principali -->
-            <div id="overview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="overview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="card-admin bg-white p-6 rounded-xl shadow-md cursor-pointer flex flex-col justify-between"
                     data-type="utenti">
                     <div>
                         <h3 class="text-lg font-semibold mb-2">Utenti Registrati</h3>
                         <p class="text-gray-600 text-sm mb-4">Visualizza e gestisci gli utenti attivi</p>
                     </div>
-                    <div class="text-right text-3xl font-bold text-my-green-dark">124</div>
+                    <div class="text-right text-3xl font-bold text-my-green-dark" id="count-utenti">0</div>
+                </div>
+                <div class="card-admin bg-white p-6 rounded-xl shadow-md cursor-pointer flex flex-col justify-between"
+                    data-type="venditori">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Venditori</h3>
+                        <p class="text-gray-600 text-sm mb-4">Gestisci i venditori registrati</p>
+                    </div>
+                    <div class="text-right text-3xl font-bold text-my-orange" id="count-venditori">0</div>
                 </div>
                 <div class="card-admin bg-white p-6 rounded-xl shadow-md cursor-pointer flex flex-col justify-between"
                     data-type="immobili">
@@ -82,7 +109,7 @@
                         <h3 class="text-lg font-semibold mb-2">Immobili</h3>
                         <p class="text-gray-600 text-sm mb-4">Controlla gli immobili in attesa di preventivo</p>
                     </div>
-                    <div class="text-right text-3xl font-bold text-my-green-dark">32</div>
+                    <div class="text-right text-3xl font-bold text-my-green-dark" id="count-immobili">0</div>
                 </div>
                 <div class="card-admin bg-white p-6 rounded-xl shadow-md cursor-pointer flex flex-col justify-between"
                     data-type="valutazioni">
@@ -90,7 +117,7 @@
                         <h3 class="text-lg font-semibold mb-2">Valutazioni</h3>
                         <p class="text-gray-600 text-sm mb-4">Consulta gli ultimi preventivi generati</p>
                     </div>
-                    <div class="text-right text-3xl font-bold text-my-green-dark">89</div>
+                    <div class="text-right text-3xl font-bold text-my-green-dark" id="count-valutazioni">0</div>
                 </div>
             </div>
 
@@ -99,10 +126,248 @@
                 <h2 class="text-xl font-semibold mb-6" id="detail-title"></h2>
                 <div id="detail-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
+
+            <!-- Sezione Contratti -->
+            <div id="contracts-view" class="mt-8 hidden">
+                <h2 class="text-2xl font-semibold mb-6">Gestione Contratti</h2>
+                <div class="flex gap-4 mb-8">
+                    <button id="btn-view-contracts" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition">
+                        📋 Visualizza Contratti Esistenti
+                    </button>
+                    <button id="btn-create-contract" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition">
+                        ➕ Crea Nuovo Contratto
+                    </button>
+                </div>
+                <div id="contracts-content"></div>
+            </div>
+
+            <!-- Vista lista contratti -->
+            <div id="contracts-list-view" class="hidden">
+                <button id="btn-back-contracts" class="no-print mb-4 text-blue-600 hover:text-blue-800">
+                    ⬅ Torna alla gestione contratti
+                </button>
+                <h3 class="text-xl font-semibold mb-4">Contratti Esistenti</h3>
+                <div id="contracts-list" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <!-- Form creazione contratto -->
+            <div id="contract-form-view" class="hidden">
+                <button id="btn-back-from-form" class="no-print mb-4 text-blue-600 hover:text-blue-800">
+                    ⬅ Torna alla gestione contratti
+                </button>
+                <h3 class="text-xl font-semibold mb-6">Nuovo Contratto di Esclusiva</h3>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6 no-print">
+                    <h4 class="font-semibold mb-4">Dati Contratto</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Seleziona Immobile</label>
+                            <select id="select-immobile" class="w-full border rounded px-3 py-2">
+                                <option value="">-- Seleziona un immobile --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Seleziona Venditore</label>
+                            <select id="select-venditore" class="w-full border rounded px-3 py-2">
+                                <option value="">-- Seleziona un venditore --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Data Inizio</label>
+                            <input type="date" id="data-inizio" class="w-full border rounded px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Data Fine</label>
+                            <input type="date" id="data-fine" class="w-full border rounded px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Prezzo Minimo (€)</label>
+                            <input type="number" id="prezzo-minimo" class="w-full border rounded px-3 py-2" placeholder="150000">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Commissione (%)</label>
+                            <input type="number" id="commissione" class="w-full border rounded px-3 py-2" value="3" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Contratto -->
+                <div id="contract-template" class="contract-template shadow-lg rounded-lg">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold mb-2">CONTRATTO DI INCARICO IN ESCLUSIVA</h2>
+                        <h3 class="text-xl">PER LA VENDITA DI IMMOBILE</h3>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">TRA</p>
+                        <p>
+                            Il/La Sig./Sig.ra <span class="contract-field font-bold" id="venditore-nome">_______________</span>,
+                            nato/a a <span class="contract-field" id="venditore-luogo-nascita">_______________</span>
+                            il <span class="contract-field" id="venditore-data-nascita">_______________</span>,
+                            residente in <span class="contract-field" id="venditore-citta">_______________</span>,
+                            Via <span class="contract-field" id="venditore-indirizzo">_______________</span>,
+                            C.F. <span class="contract-field" id="venditore-cf">_______________</span>,
+                            Tel. <span class="contract-field" id="venditore-tel">_______________</span>,
+                            Email <span class="contract-field" id="venditore-email">_______________</span>
+                        </p>
+                        <p class="mt-2 font-semibold">(di seguito "Venditore")</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">E</p>
+                        <p>
+                            <strong>IMMOBILIARIS S.r.l.</strong>, con sede in Torino, Via Roma 123,
+                            P.IVA 12345678901, nella persona del legale rappresentante
+                        </p>
+                        <p class="mt-2 font-semibold">(di seguito "Agenzia")</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-4">SI CONVIENE E SI STIPULA QUANTO SEGUE:</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 1 - OGGETTO DEL CONTRATTO</p>
+                        <p>
+                            Il Venditore conferisce all'Agenzia l'incarico in esclusiva per la vendita dell'immobile
+                            di seguito descritto:
+                        </p>
+                        <ul class="mt-3 ml-6">
+                            <li><strong>Tipologia:</strong> <span class="contract-field" id="immobile-tipo">_______________</span></li>
+                            <li><strong>Indirizzo:</strong> <span class="contract-field" id="immobile-indirizzo">_______________</span></li>
+                            <li><strong>Città:</strong> <span class="contract-field" id="immobile-citta">_______________</span>
+                                (<span class="contract-field" id="immobile-provincia">__</span>)</li>
+                            <li><strong>CAP:</strong> <span class="contract-field" id="immobile-cap">_______________</span></li>
+                            <li><strong>Superficie:</strong> <span class="contract-field" id="immobile-mq">_______________</span> mq</li>
+                            <li><strong>Numero locali:</strong> <span class="contract-field" id="immobile-camere">_______________</span> camere,
+                                <span class="contract-field" id="immobile-bagni">_______________</span> bagni</li>
+                            <li><strong>Stato:</strong> <span class="contract-field" id="immobile-stato">_______________</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 2 - PREZZO DI VENDITA</p>
+                        <p>
+                            Il prezzo richiesto per la vendita dell'immobile è di Euro
+                            <span class="contract-field font-bold text-lg" id="immobile-prezzo">_______________</span>
+                            (€ <span id="immobile-prezzo-num">_______________</span>).
+                        </p>
+                        <p class="mt-2">
+                            Il prezzo minimo accettabile dal Venditore è di Euro
+                            <span class="contract-field font-bold" id="contratto-prezzo-minimo">_______________</span>.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 3 - ESCLUSIVITÀ E DURATA</p>
+                        <p>
+                            Il presente incarico ha carattere di esclusività. Il Venditore si impegna a non conferire
+                            ad altri soggetti, per tutta la durata del contratto, l'incarico di vendita dell'immobile.
+                        </p>
+                        <p class="mt-2">
+                            Il contratto ha validità dal <span class="contract-field font-bold" id="contratto-data-inizio">_______________</span>
+                            al <span class="contract-field font-bold" id="contratto-data-fine">_______________</span>.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 4 - COMPENSO DELL'AGENZIA</p>
+                        <p>
+                            A fronte dell'attività svolta, l'Agenzia avrà diritto ad una provvigione pari al
+                            <span class="contract-field font-bold" id="contratto-commissione">3</span>%
+                            del prezzo di vendita definitivo, oltre IVA come per legge.
+                        </p>
+                        <p class="mt-2">
+                            La provvigione è dovuta al momento della stipula del contratto di compravendita definitivo
+                            o del compromesso con caparra confirmatoria.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 5 - OBBLIGHI DELL'AGENZIA</p>
+                        <p>L'Agenzia si impegna a:</p>
+                        <ul class="mt-2 ml-6 list-disc">
+                            <li>Promuovere la vendita dell'immobile con tutti i mezzi a disposizione</li>
+                            <li>Pubblicizzare l'immobile sui principali portali immobiliari e sui propri canali</li>
+                            <li>Organizzare visite con potenziali acquirenti previa comunicazione al Venditore</li>
+                            <li>Fornire assistenza nella fase di trattativa e nella stipula del contratto</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 6 - OBBLIGHI DEL VENDITORE</p>
+                        <p>Il Venditore si impegna a:</p>
+                        <ul class="mt-2 ml-6 list-disc">
+                            <li>Garantire la veridicità delle informazioni fornite sull'immobile</li>
+                            <li>Consentire le visite dell'immobile concordate con l'Agenzia</li>
+                            <li>Fornire tutta la documentazione necessaria alla vendita</li>
+                            <li>Rispettare l'esclusiva per tutta la durata del contratto</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 7 - RISOLUZIONE ANTICIPATA</p>
+                        <p>
+                            In caso di risoluzione anticipata del contratto da parte del Venditore senza giusta causa,
+                            lo stesso si impegna a corrispondere all'Agenzia un importo pari al 50% della provvigione
+                            calcolata sul prezzo richiesto.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 8 - TRATTAMENTO DATI PERSONALI</p>
+                        <p>
+                            Il Venditore autorizza l'Agenzia al trattamento dei propri dati personali ai sensi del
+                            Regolamento UE 2016/679 (GDPR) per le finalità connesse all'esecuzione del presente contratto.
+                        </p>
+                    </div>
+
+                    <div class="mb-6">
+                        <p class="font-bold mb-2">Art. 9 - FORO COMPETENTE</p>
+                        <p>
+                            Per qualsiasi controversia derivante dal presente contratto sarà competente il Foro di Torino.
+                        </p>
+                    </div>
+
+                    <div class="mt-12 flex justify-between">
+                        <div class="text-center">
+                            <p class="mb-16">_________________________</p>
+                            <p class="font-semibold">Firma del Venditore</p>
+                            <p class="text-sm">Luogo e Data: <span id="firma-data">_______________</span></p>
+                        </div>
+                        <div class="text-center">
+                            <p class="mb-16">_________________________</p>
+                            <p class="font-semibold">Per IMMOBILIARIS S.r.l.</p>
+                            <p class="text-sm">Luogo e Data: <span id="firma-data-agenzia">_______________</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pulsanti azione -->
+                <div class="flex gap-4 mt-6 no-print">
+                    <button id="btn-preview-contract" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition">
+                        👁️ Anteprima
+                    </button>
+                    <button id="btn-save-contract" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition">
+                        💾 Salva Contratto
+                    </button>
+                    <button id="btn-send-contract" 
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition">
+                        📧 Salva e Invia via Email
+                    </button>
+                    <button onclick="window.print()" 
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition">
+                        🖨️ Stampa
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
 
-    <script src="js/admin.js"></script>
     <script>
         // Toggle sidebar mobile
         const sidebar = document.getElementById('sidebar');
