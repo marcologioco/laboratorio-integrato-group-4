@@ -66,6 +66,8 @@ public class RichiestaValutazioneDTO {
     private String tipo; // APPARTAMENTO, VILLA, ATTICO, etc.
     
     private String descrizione; // Opzionale
+    
+    private Boolean isProprietario; // Indica se l'utente è il proprietario dell'immobile
 
     // ===== GETTERS E SETTERS =====
     
@@ -219,5 +221,13 @@ public class RichiestaValutazioneDTO {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    public Boolean getIsProprietario() {
+        return isProprietario;
+    }
+
+    public void setIsProprietario(Boolean isProprietario) {
+        this.isProprietario = isProprietario;
     }
 }
