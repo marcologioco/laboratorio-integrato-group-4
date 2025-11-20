@@ -1,0 +1,92 @@
+
+
+/* Stili Swiper Puliti (Senza !important) */
+
+
+/* --- STILE NAVIGAZIONE (FRECCE) --- */
+
+/* Stile base del bottone rotondo */
+.swiper-button-prev,
+.swiper-button-next {
+    background-color: white;        /* Sfondo bianco pulito */
+    color: #274239;                 /* Freccia Verde Scuro (Brand) */
+    width: 45px;                    /* Larghezza fissa */
+    height: 45px;                   /* Altezza fissa */
+    border-radius: 50%;             /* Cerchio perfetto */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Ombra morbida per profondità */
+    transition: all 0.3s ease;      /* Animazione fluida */
+    
+    /* Posizionamento */
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+    z-index: 20;                    /* Assicura che stiano sopra le card */
+}
+
+/* Effetto quando passi sopra col mouse */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background-color: #274239;      /* Diventa Verde Scuro */
+    color: white;                   /* Freccia diventa bianca */
+    transform: translateY(-50%) scale(1.1); /* Leggero ingrandimento */
+    box-shadow: 0 6px 15px rgba(39, 66, 57, 0.3);
+}
+
+/* Dimensione dell'icona freccia interna */
+.swiper-button-prev:after,
+.swiper-button-next:after {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Posizione specifica laterale */
+/* Li distanzio leggermente dai bordi per non coprire le card */
+.swiper-button-prev {
+    left: 5px; 
+}
+.swiper-button-next {
+    right: 5px;
+}
+
+/* Nascondi le frecce su mobile se vuoi (opzionale, scommenta se serve) */
+/* @media (max-width: 640px) {
+    .swiper-button-prev, .swiper-button-next { display: none; }
+} */
+
+
+/* --- STILE PAGINAZIONE (PALLINI) --- */
+
+.swiper-pagination {
+    position: relative;
+    margin-top: 2.5rem; /* Più spazio tra card e pallini */
+    bottom: 0 !important; /* Sovrascrive default swiper */
+}
+
+.swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #cbd5e1; /* Grigio chiaro spento */
+    opacity: 1;
+    transition: all 0.3s ease;
+    margin: 0 6px !important;
+}
+
+/* Pallino Attivo */
+.swiper-pagination-bullet-active {
+    background: #BA6830;    /* Arancione per indicare la pagina corrente */
+    width: 25px;            /* Si allunga per effetto elegante */
+    border-radius: 5px;     /* Diventa una pillola */
+}
+
+
+/* Stile per le immagini circolari delle card benefici - VERSIOINE GRANDE */
+.benefit-img {
+    width: 150px;           /* AUMENTATO: Dimensione fissa più grande */
+    height: 150px;          /* AUMENTATO: Dimensione fissa uguale alla larghezza */
+    object-fit: cover;      /* Ritaglia l'immagine per riempire il cerchio senza deformarla */
+    border-radius: 50%;     /* Rende l'immagine perfettamente rotonda */
+    margin-left: auto;      /* Centra orizzontalmente */
+    margin-right: auto;     /* Centra orizzontalmente */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Leggera ombra */
+    border: 4px solid white; /* Bordo bianco leggermente più spesso */
+}
