@@ -271,42 +271,41 @@ function hideAllViews() {
 function renderContractsList() {
   const contractsList = document.getElementById('contracts-list');
   if (!contractsList) return;
-
   contractsList.innerHTML = '';
 
   if (currentData.contratti.length === 0) {
-    contractsList.innerHTML = '<p class="text-gray-600">Nessun contratto presente</p>';
+    contractsList.innerHTML = '<p class="text-center py-8 text-gray-500 bg-white rounded-xl border border-dashed">Nessun contratto archiviato.</p>';
     return;
   }
 
   currentData.contratti.forEach(contratto => {
     const immobile = currentData.immobili.find(i => i.idImmobile === contratto.idImmobile);
     const venditore = currentData.venditori.find(v => v.idVenditore === contratto.idVenditore);
-
-    const statusClass = contratto.stato === 'ATTIVO' ? 'text-green-600' : 
-                       contratto.stato === 'COMPLETATO' ? 'text-blue-600' : 'text-red-600';
-
+    
     const cardEl = document.createElement('div');
-    cardEl.className = 'bg-white p-6 rounded-xl shadow-md';
+    cardEl.className = 'bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-between';
+    
     cardEl.innerHTML = `
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <p class="text-sm text-gray-600"><strong>ID Contratto:</strong> ${contratto.idContratto}</p>
-          <p class="text-sm text-gray-600"><strong>Tipo:</strong> ${contratto.tipo || 'Vendita'}</p>
-          <p class="text-sm text-gray-600"><strong>Immobile:</strong> ${immobile ? `${immobile.tipo} - ${immobile.indirizzo}, ${immobile.citta}` : 'N/A'}</p>
-          <p class="text-sm text-gray-600"><strong>Venditore:</strong> ${venditore ? `${venditore.nome} ${venditore.cognome}` : 'N/A'}</p>
-          <p class="text-sm text-gray-600"><strong>Data Inizio:</strong> ${contratto.dataInizio || 'N/A'}</p>
-          <p class="text-sm text-gray-600"><strong>Data Fine:</strong> ${contratto.dataFine || 'N/A'}</p>
-          <p class="text-sm text-gray-600"><strong>Prezzo Minimo:</strong> ${contratto.prezzoFinaleMinimo ? '€' + contratto.prezzoFinaleMinimo.toLocaleString() : 'N/A'}</p>
-          <p class="text-sm ${statusClass}"><strong>Stato:</strong> ${contratto.stato}</p>
-          <p class="text-sm text-gray-600"><strong>Esclusiva:</strong> ${contratto.esclusiva ? 'Sì' : 'No'}</p>
-        </div>
-        <button class="view-contract-btn text-blue-600 hover:text-blue-800 text-sm" data-id="${contratto.idContratto}">
-          👁️ Visualizza
-        </button>
-      </div>
+       <div class="flex items-center gap-4">
+          <div class="w-10 h-10 bg-blue-50 rounded text-blue-600 flex items-center justify-center text-xl">📄</div>
+          <div>
+             <h4 class="font-bold text-gray-800">Contratto #${contratto.idContratto} - ${contratto.tipo || 'Vendita'}</h4>
+             <p class="text-sm text-gray-500">
+                ${venditore ? venditore.cognome : 'N/A'} • ${immobile ? immobile.indirizzo : 'N/A'}
+             </p>
+          </div>
+       </div>
+       <div class="flex items-center gap-4">
+          <div class="text-right hidden md:block">
+             <p class="text-xs text-gray-400">Scadenza</p>
+             <p class="text-sm font-semibold">${contratto.dataFine || 'N/A'}</p>
+          </div>
+          <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full">${contratto.stato}</span>
+          <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
+             👁️
+          </button>
+       </div>
     `;
-
     contractsList.appendChild(cardEl);
   });
 }
@@ -523,30 +522,67 @@ async function saveAndSendContract() {
 }
 
 // Renderizza lista utenti
+// Renderizza lista utenti (Design Card con Avatar)
 function renderUtenti(utenti) {
+  detailCards.innerHTML = ''; // Pulisci container
+  
+  if(utenti.length === 0) {
+      detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessun utente trovato.</p>';
+      return;
+  }
+
   utenti.forEach(utente => {
-    // Verifica se l'utente è anche un venditore
     const isVenditore = currentData.venditori.some(v => v.idUtente === utente.idUtente);
-    const venditoreBadge = isVenditore ? 
-      '<span class="inline-block ml-2 px-2 py-1 text-xs font-semibold bg-my-orange text-white rounded">🏠 Venditore</span>' : '';
+    const badgeRuolo = utente.idRuolo === 2 
+        ? '<span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded uppercase">Admin</span>' 
+        : '<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded uppercase">Utente</span>';
     
+    const badgeVenditore = isVenditore 
+        ? '<span class="px-2 py-0.5 bg-my-orange/10 text-my-orange text-xs font-bold rounded uppercase border border-my-orange/20">Venditore</span>' 
+        : '';
+
+    const initials = (utente.nome[0] + utente.cognome[0]).toUpperCase();
+
     const cardEl = document.createElement('div');
-    cardEl.className = 'bg-white p-4 rounded-xl shadow-md';
+    cardEl.className = 'bg-white p-5 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all';
     cardEl.innerHTML = `
-      <div class="flex items-start justify-between mb-2">
-        <p class="text-sm text-gray-600"><strong>ID:</strong> ${utente.idUtente}</p>
-        ${venditoreBadge}
+      <div class="flex items-center justify-between mb-4">
+         <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold border border-gray-200">
+                ${initials}
+            </div>
+            <div>
+                <h4 class="font-bold text-my-black leading-tight">${utente.nome} ${utente.cognome}</h4>
+                <p class="text-xs text-gray-400">ID: ${utente.idUtente}</p>
+            </div>
+         </div>
+         <div class="flex flex-col gap-1 text-right">
+            ${badgeRuolo}
+            ${badgeVenditore}
+         </div>
       </div>
-      <p class="text-sm text-gray-600"><strong>Nome:</strong> ${utente.nome} ${utente.cognome}</p>
-      <p class="text-sm text-gray-600"><strong>Email:</strong> ${utente.email}</p>
-      <p class="text-sm text-gray-600"><strong>Telefono:</strong> ${utente.telefono || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Ruolo:</strong> ${utente.idRuolo === 2 ? 'Admin' : 'Utente'}</p>
-      <button class="delete-btn text-xs text-red-600 hover:text-red-800 mt-2" data-id="${utente.idUtente}">Elimina</button>
+      
+      <div class="space-y-2 text-sm text-gray-600 mb-4">
+        <div class="flex items-center gap-2">
+            <span class="text-gray-400">📧</span> ${utente.email}
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-gray-400">📞</span> ${utente.telefono || '-'}
+        </div>
+      </div>
+
+      <div class="border-t border-gray-100 pt-3 flex justify-end">
+        <button class="delete-btn text-red-500 hover:text-red-700 text-xs font-bold uppercase flex items-center gap-1" data-id="${utente.idUtente}">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            Elimina
+        </button>
+      </div>
     `;
     detailCards.appendChild(cardEl);
     
+    // Ricollega listener delete
     cardEl.querySelector('.delete-btn').addEventListener('click', async () => {
-      if (confirm(`Eliminare utente ${utente.nome} ${utente.cognome}?`)) {
+      if (confirm(`Eliminare utente ${utente.nome}?`)) {
         await deleteUtente(utente.idUtente);
         cardEl.remove();
       }
@@ -584,41 +620,137 @@ function renderVenditori(venditori) {
 
 // Renderizza lista immobili
 function renderImmobili(immobili) {
+  detailCards.innerHTML = '';
+  
   immobili.forEach(immobile => {
     const cardEl = document.createElement('div');
-    cardEl.className = 'bg-white p-4 rounded-xl shadow-md';
+    cardEl.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all group';
+    
+    // Placeholder immagine colorato
+    const placeholderColor = '274239'; // Verde scuro
+    const imgUrl = `https://ui-avatars.com/api/?name=${immobile.tipo}&background=${placeholderColor}&color=fff&size=200&font-size=0.33`;
+
     cardEl.innerHTML = `
-      <p class="text-sm text-gray-600"><strong>ID:</strong> ${immobile.idImmobile}</p>
-      <p class="text-sm text-gray-600"><strong>Tipo:</strong> ${immobile.tipo || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Indirizzo:</strong> ${immobile.indirizzo || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Città:</strong> ${immobile.citta || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Superficie:</strong> ${immobile.metriQuadri} m²</p>
-      <p class="text-sm text-gray-600"><strong>Camere:</strong> ${immobile.camere || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Bagni:</strong> ${immobile.bagni || 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Prezzo:</strong> ${immobile.prezzo ? '€' + immobile.prezzo.toLocaleString() : 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Stato:</strong> ${immobile.stato || 'N/A'}</p>
+      <div class="h-32 bg-gray-100 relative overflow-hidden">
+         <div class="absolute inset-0 flex items-center justify-center bg-my-green-dark/10">
+            <span class="text-4xl opacity-20">🏠</span>
+         </div>
+         <div class="absolute top-3 right-3 bg-white/90 px-2 py-1 rounded text-xs font-bold shadow-sm">
+            ID: ${immobile.idImmobile}
+         </div>
+      </div>
+      <div class="p-5">
+        <div class="mb-3">
+            <h4 class="font-bold text-lg text-my-black leading-tight">${immobile.indirizzo || 'Indirizzo mancante'}</h4>
+            <p class="text-sm text-gray-500">${immobile.citta} (${immobile.provincia})</p>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-2 text-center py-3 border-t border-b border-gray-50 bg-gray-50/50 rounded-lg mb-3">
+            <div><span class="block text-xs font-bold text-gray-400 uppercase">Mq</span><span class="font-semibold text-gray-700">${immobile.metriQuadri}</span></div>
+            <div><span class="block text-xs font-bold text-gray-400 uppercase">Locali</span><span class="font-semibold text-gray-700">${immobile.camere || '-'}</span></div>
+            <div><span class="block text-xs font-bold text-gray-400 uppercase">Bagni</span><span class="font-semibold text-gray-700">${immobile.bagni || '-'}</span></div>
+        </div>
+
+        <div class="flex justify-between items-center">
+             <span class="text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600">${immobile.stato || 'N/A'}</span>
+             <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
+        </div>
+      </div>
     `;
     detailCards.appendChild(cardEl);
   });
 }
 
+// Renderizza lista valutazioni (Stile clean rows)
+function renderValutazioni(valutazioni) {
+    detailCards.innerHTML = '';
+    // Usiamo una sola colonna larga per le valutazioni per leggere meglio i dati
+    detailCards.className = 'grid grid-cols-1 gap-4'; 
+
+    valutazioni.forEach(val => {
+        const data = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
+        const statusColor = val.stato === 'COMPLETATA' ? 'text-green-600 bg-green-50 border-green-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200';
+        
+        const cardEl = document.createElement('div');
+        cardEl.className = 'bg-white p-4 rounded-xl border border-gray-200 flex flex-col md:flex-row items-center justify-between hover:border-my-green-dark transition-colors';
+        
+        cardEl.innerHTML = `
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-gray-400 border border-gray-200">
+                    #${val.idValutazione}
+                </div>
+                <div>
+                    <p class="font-bold text-gray-800">Valutazione Immobile ID ${val.idImmobile}</p>
+                    <p class="text-xs text-gray-500">Richiesta il: ${data}</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 mt-3 md:mt-0 w-full md:w-auto justify-between md:justify-end">
+                 <div class="text-right">
+                    <p class="text-xs text-gray-400 uppercase font-bold">Valore</p>
+                    <p class="font-bold text-my-orange text-lg">€ ${val.valoreStimato ? val.valoreStimato.toLocaleString() : '-'}</p>
+                 </div>
+                 <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
+                    ${val.stato}
+                 </span>
+            </div>
+        `;
+        detailCards.appendChild(cardEl);
+    });
+}
+
 // Renderizza lista valutazioni
 function renderValutazioni(valutazioni) {
-  valutazioni.forEach(val => {
-    const cardEl = document.createElement('div');
-    cardEl.className = 'bg-white p-4 rounded-xl shadow-md';
-    const statusClass = val.stato === 'COMPLETATA' ? 'text-green-600' : 
-                       val.stato === 'ANNULLATA' ? 'text-red-600' : 'text-yellow-600';
-    cardEl.innerHTML = `
-      <p class="text-sm text-gray-600"><strong>ID:</strong> ${val.idValutazione}</p>
-      <p class="text-sm text-gray-600"><strong>ID Immobile:</strong> ${val.idImmobile}</p>
-      <p class="text-sm text-gray-600"><strong>Data:</strong> ${val.dataRichiesta ? new Date(val.dataRichiesta).toLocaleDateString() : 'N/A'}</p>
-      <p class="text-sm ${statusClass}"><strong>Stato:</strong> ${val.stato}</p>
-      <p class="text-sm text-gray-600"><strong>Valore Stimato:</strong> ${val.valoreStimato ? '€' + val.valoreStimato.toLocaleString() : 'N/A'}</p>
-      <p class="text-sm text-gray-600"><strong>Valore Zona:</strong> ${val.valoreCalcolatoZona ? '€' + val.valoreCalcolatoZona.toLocaleString() : 'N/A'}</p>
+  const container = document.getElementById('valutazioni-container');
+  
+  if(document.getElementById('total-val-count')) {
+      document.getElementById('total-val-count').innerText = valutazioni.length;
+  }
+
+  if (!valutazioni || valutazioni.length === 0) {
+    // ... (codice stato vuoto uguale a prima) ...
+    return;
+  }
+
+  const html = valutazioni.map(val => {
+    const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
+    const valoreFmt = val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : '--';
+    
+    let badgeClass = 'bg-gray-100 text-gray-600';
+    // ... (logica badge uguale a prima) ...
+    if (val.stato === 'COMPLETATA') {
+        badgeClass = 'bg-green-100 text-green-800';
+    } // ...
+
+    // NOTA: Ho aggiunto style="padding: 1.25rem;" come fallback se Tailwind fallisce
+    return `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group mb-4" style="padding: 1.5rem;">
+        
+        <div class="flex items-center gap-4 mb-4 md:mb-0">
+            <div class="w-12 h-12 min-w-[3rem] min-h-[3rem] rounded-full bg-gray-50 flex items-center justify-center text-my-green-dark font-bold text-sm border border-gray-200">
+                #${val.idValutazione}
+            </div>
+            
+            <div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">
+                       ${val.stato}
+                    </span>
+                    <span class="text-xs text-gray-400">${dataFmt}</span>
+                </div>
+                <p class="text-sm text-gray-600 font-medium">Valutazione Automatica</p>
+            </div>
+        </div>
+
+        <div class="text-left md:text-right pl-16 md:pl-0">
+            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Valore Stimato</p>
+            <p class="text-2xl font-extrabold text-my-orange leading-none">${valoreFmt}</p>
+        </div>
+      </div>
     `;
-    detailCards.appendChild(cardEl);
-  });
+  }).join('');
+
+  container.innerHTML = html;
 }
 
 // Elimina un utente

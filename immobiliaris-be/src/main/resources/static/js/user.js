@@ -1,178 +1,128 @@
 /**
- * User Dashboard - Area Personale Utente
+ * User Dashboard - Area Personale
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Proteggi la pagina: solo utenti autenticati
-  if (!protectPage()) {
-    return;
-  }
+  // Controllo auth (presumo tu abbia auth-utils.js importato)
+  if (typeof protectPage === 'function' && !protectPage()) return;
 
-  // Carica i dati dell'utente
   await loadUserData();
-  
-  // Carica valutazioni e immobili
   await loadUserValutazioni();
 
-  // Gestione logout
+  // Logout
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      logout();
+      if (typeof logout === 'function') logout();
     });
   }
-
-  // Interazioni con le card degli immobili (se presenti)
-  document.querySelectorAll('.immobile-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      const overlay = card.querySelector('.immobile-overlay');
-      if (overlay) overlay.classList.add('opacity-100');
-    });
-    card.addEventListener('mouseleave', () => {
-      const overlay = card.querySelector('.immobile-overlay');
-      if (overlay) overlay.classList.remove('opacity-100');
-    });
-  });
 });
 
 /**
- * Carica i dati dell'utente corrente dal backend
+ * Carica Dati Utente (Header Sidebar)
  */
 async function loadUserData() {
   try {
-    const user = getUser();
+    const user = getUser(); // Da auth-utils.js
+    if (!user) return;
+
+    // Riempi Sidebar
+    if(document.getElementById('user-name')) document.getElementById('user-name').textContent = `${user.nome} ${user.cognome}`;
+    if(document.getElementById('user-email')) document.getElementById('user-email').textContent = user.email;
     
-    if (!user) {
-      logout();
-      return;
+    if(document.getElementById('user-initials')) {
+       const initials = (user.nome[0] + user.cognome[0]).toUpperCase();
+       document.getElementById('user-initials').textContent = initials;
     }
-
-    // Aggiorna UI con dati utente
-    const userNameEl = document.getElementById('user-name');
-    const userEmailEl = document.getElementById('user-email');
-    const userInitialsEl = document.getElementById('user-initials');
-
-    if (userNameEl) {
-      userNameEl.textContent = `${user.nome} ${user.cognome}`;
-    }
-
-    if (userEmailEl) {
-      userEmailEl.textContent = user.email;
-    }
-
-    if (userInitialsEl) {
-      const initials = `${user.nome.charAt(0)}${user.cognome.charAt(0)}`.toUpperCase();
-      userInitialsEl.textContent = initials;
-    }
-
-    // Opzionale: verifica token con il backend
-    await verifyToken();
 
   } catch (error) {
-    console.error('Errore caricamento dati utente:', error);
-    showError('Errore nel caricamento dei dati');
+    console.error('Errore user data:', error);
   }
 }
 
 /**
- * Verifica la validità del token con il backend
- */
-async function verifyToken() {
-  try {
-    const response = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/auth/validate`);
-    
-    if (!response.ok) {
-      throw new Error('Token non valido');
-    }
-
-    const data = await response.json();
-    console.log('Token valido:', data);
-
-  } catch (error) {
-    console.error('Errore verifica token:', error);
-    // Se il token non è valido, logout automatico (già gestito in authenticatedFetch)
-  }
-}
-
-/**
- * Carica le valutazioni dell'utente
+ * Carica Valutazioni (API)
  */
 async function loadUserValutazioni() {
   try {
     const user = getUser();
-    const response = await authenticatedFetch(
-      `${AUTH_CONFIG.API_BASE_URL}/valutazioni/utente/${user.idUtente}`
-    );
+    const response = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni/utente/${user.idUtente}`);
 
-    if (!response.ok) {
-      throw new Error('Errore nel caricamento delle valutazioni');
-    }
+    if (!response.ok) throw new Error('Errore fetch valutazioni');
 
     const valutazioni = await response.json();
-    console.log('Valutazioni utente:', valutazioni);
-
-    // Render valutazioni
+    
+    // Renderizza la nuova UI
     renderValutazioni(valutazioni);
     
-    // Carica anche gli immobili
+    // Carica Immobili correlati
     await loadUserImmobili(valutazioni);
 
   } catch (error) {
-    console.error('Errore caricamento valutazioni:', error);
-    const container = document.getElementById('valutazioni-container');
-    if (container) {
-      container.innerHTML = '<div class="text-center py-8 text-gray-500"><p>Nessuna valutazione trovata</p></div>';
-    }
+    console.error(error);
+    document.getElementById('valutazioni-container').innerHTML = '<p class="text-red-500">Errore caricamento dati.</p>';
   }
 }
 
 /**
- * Renderizza le valutazioni
+ * RENDER VALUTAZIONI (NUOVO DESIGN PREMIUM)
  */
 function renderValutazioni(valutazioni) {
   const container = document.getElementById('valutazioni-container');
-  if (!container) return;
+  
+  // Aggiorno contatore statistiche in alto
+  if(document.getElementById('total-val-count')) {
+      document.getElementById('total-val-count').innerText = valutazioni.length;
+  }
 
   if (!valutazioni || valutazioni.length === 0) {
     container.innerHTML = `
-      <div class="bg-white p-8 rounded-xl shadow-md text-center">
-        <p class="text-gray-600 mb-4">Non hai ancora valutazioni</p>
-        <a href="/index.html" class="inline-block px-6 py-2 bg-my-orange text-white rounded-lg hover:bg-[#a35728] transition">Richiedi una valutazione</a>
-      </div>
-    `;
+      <div class="bg-white p-8 rounded-xl shadow-sm text-center border border-dashed border-gray-300">
+        <p class="text-gray-500 mb-4">Non hai ancora richiesto valutazioni.</p>
+        <a href="/index.html" class="text-my-orange font-bold hover:underline">Richiedine una ora</a>
+      </div>`;
     return;
   }
 
   const html = valutazioni.map(val => {
-    const statoClass = getStatoClass(val.stato);
-    const statoText = getStatoText(val.stato);
-    const dataRichiesta = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
-    const dataCompletamento = val.dataCompletamento ? new Date(val.dataCompletamento).toLocaleDateString('it-IT') : 'In attesa';
+    const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
+    const valoreFmt = val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : '--';
     
+    // Determina colori e testi in base allo stato
+    let badgeClass = 'bg-gray-100 text-gray-600';
+    let iconStatus = ''; 
+    
+    if (val.stato === 'COMPLETATA') {
+        badgeClass = 'bg-green-100 text-green-800';
+        iconStatus = `<svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>`;
+    } else {
+        badgeClass = 'bg-yellow-100 text-yellow-800';
+        iconStatus = `<svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+    }
+
     return `
-      <div class="bg-white p-6 rounded-xl shadow-md mb-4">
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <h3 class="font-semibold text-lg">Valutazione #${val.idValutazione}</h3>
-            <p class="text-sm text-gray-500">Richiesta il ${dataRichiesta}</p>
-          </div>
-          <span class="px-3 py-1 ${statoClass} rounded-full text-sm font-semibold">${statoText}</span>
-        </div>
+      <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group">
         
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p class="text-gray-500 text-sm">Valore Stimato</p>
-            <p class="font-bold text-2xl text-my-orange">€${val.valoreStimato?.toLocaleString('it-IT') || 'N/A'}</p>
-          </div>
-          <div>
-            <p class="text-gray-500 text-sm">Valore Base Zona</p>
-            <p class="font-semibold text-lg text-gray-700">€${val.valoreCalcolatoZona?.toLocaleString('it-IT') || 'N/A'}</p>
-          </div>
+        <div class="flex items-center gap-4 mb-4 md:mb-0">
+            <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-my-green-dark font-bold text-sm border border-gray-200">
+                #${val.idValutazione}
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">
+                        ${iconStatus} ${val.stato}
+                    </span>
+                    <span class="text-xs text-gray-400">${dataFmt}</span>
+                </div>
+                <p class="text-sm text-gray-600">Valutazione Automatica</p>
+            </div>
         </div>
-        
-        ${val.dataCompletamento ? `<p class="text-sm text-gray-600">Completata il ${dataCompletamento}</p>` : ''}
-        ${val.note ? `<p class="text-sm text-gray-600 mt-2"><em>${val.note}</em></p>` : ''}
+
+        <div class="text-left md:text-right pl-16 md:pl-0">
+            <p class="text-xs text-gray-400 uppercase font-bold">Valore Stimato</p>
+            <p class="text-2xl font-extrabold text-my-orange leading-none">${valoreFmt}</p>
+        </div>
       </div>
     `;
   }).join('');
@@ -181,93 +131,82 @@ function renderValutazioni(valutazioni) {
 }
 
 /**
- * Carica gli immobili collegati alle valutazioni
+ * Carica Immobili (API)
  */
 async function loadUserImmobili(valutazioni) {
   const container = document.getElementById('immobili-container');
-  if (!container) return;
-
   try {
-    // Estrai gli ID immobili unici
-    const immobiliIds = [...new Set(valutazioni.map(v => v.idImmobile))];
-    
-    if (immobiliIds.length === 0) {
-      container.innerHTML = '<div class="text-center py-8 text-gray-500 col-span-full"><p>Nessun immobile trovato</p></div>';
-      return;
+    const ids = [...new Set(valutazioni.map(v => v.idImmobile))];
+    if (ids.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 col-span-full text-center">Nessun immobile salvato.</p>';
+        return;
     }
 
-    // Carica i dettagli degli immobili
-    const immobiliPromises = immobiliIds.map(id => 
-      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili/${id}`).then(r => r.json())
-    );
-    
-    const immobili = await Promise.all(immobiliPromises);
+    const promises = ids.map(id => authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili/${id}`).then(r => r.json()));
+    const immobili = await Promise.all(promises);
+
     renderImmobili(immobili, valutazioni);
 
   } catch (error) {
-    console.error('Errore caricamento immobili:', error);
-    container.innerHTML = '<div class="text-center py-8 text-gray-500 col-span-full"><p>Errore nel caricamento degli immobili</p></div>';
+    console.error(error);
+    container.innerHTML = '<p class="text-red-400">Errore caricamento immobili</p>';
   }
 }
 
 /**
- * Renderizza gli immobili
+ * RENDER IMMOBILI (NUOVO DESIGN PREMIUM - CARD BIANCHE)
  */
 function renderImmobili(immobili, valutazioni) {
   const container = document.getElementById('immobili-container');
-  if (!container) return;
-
+  
   const html = immobili.map(imm => {
-    const valutazione = valutazioni.find(v => v.idImmobile === imm.idImmobile);
-    const dataValutazione = valutazione ? new Date(valutazione.dataRichiesta).toLocaleDateString('it-IT') : 'N/A';
-    
+    // Trova l'ultima valutazione associata a questo immobile
+    const val = valutazioni.find(v => v.idImmobile === imm.idImmobile);
+    const ultimoPrezzo = val && val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : 'In lavorazione';
+
     return `
-      <div class="immobile-card bg-white p-6 rounded-2xl shadow-lg relative">
-        <h3 class="font-bold text-lg mb-4">${imm.indirizzo || 'Indirizzo non disponibile'}</h3>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group flex flex-col h-full">
         
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div><p class="text-gray-500 text-sm">Superficie</p><p class="font-semibold">${imm.metriQuadri || 'N/A'} m²</p></div>
-          <div><p class="text-gray-500 text-sm">Camere</p><p class="font-semibold">${imm.camere || 'N/A'}</p></div>
-          <div><p class="text-gray-500 text-sm">Bagni</p><p class="font-semibold">${imm.bagni || 'N/A'}</p></div>
-          <div><p class="text-gray-500 text-sm">Tipo</p><p class="font-semibold">${imm.tipo || 'N/A'}</p></div>
+        <div class="p-6 border-b border-gray-50 flex-grow">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 group-hover:bg-my-green-dark group-hover:text-white transition-colors flex-shrink-0">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold text-lg text-my-black leading-tight group-hover:text-my-orange transition-colors">
+                        ${imm.indirizzo || 'Indirizzo Sconosciuto'}
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        ${imm.citta} (${imm.provincia})
+                    </p>
+                </div>
+            </div>
         </div>
         
-        <div><p class="text-gray-500 text-sm">Città</p><p class="font-semibold">${imm.citta || 'N/A'}, ${imm.provincia || ''} - ${imm.cap || ''}</p></div>
-        
-        <div class="immobile-overlay rounded-2xl">
-          <p class="text-lg mb-2">Valutazione del <strong>${dataValutazione}</strong></p>
-          ${valutazione ? `<p class="text-sm opacity-90">Valore: <strong>€${valutazione.valoreStimato?.toLocaleString('it-IT')}</strong></p>` : ''}
-          <p class="text-sm opacity-90 mt-2">${imm.descrizione || 'Nessuna descrizione'}</p>
+        <div class="p-4 grid grid-cols-3 gap-2 text-center bg-gray-50/50">
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Mq</p>
+                <p class="font-semibold text-gray-700">${imm.metriQuadri}</p>
+            </div>
+            <div class="border-l border-r border-gray-200">
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Locali</p>
+                <p class="font-semibold text-gray-700">${imm.camere}</p>
+            </div>
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Bagni</p>
+                <p class="font-semibold text-gray-700">${imm.bagni}</p>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-between items-center">
+             <span class="text-xs text-gray-400 font-medium">Stima Recente</span>
+             <span class="text-my-green-dark font-bold text-lg">${ultimoPrezzo}</span>
         </div>
       </div>
     `;
   }).join('');
-
+  
   container.innerHTML = html;
-}
-
-/**
- * Ottieni classe CSS per stato valutazione
- */
-function getStatoClass(stato) {
-  switch(stato) {
-    case 'COMPLETATA': return 'bg-green-100 text-green-800';
-    case 'IN_ATTESA': return 'bg-yellow-100 text-yellow-800';
-    case 'IN_LAVORAZIONE': return 'bg-blue-100 text-blue-800';
-    case 'ANNULLATA': return 'bg-red-100 text-red-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
-}
-
-/**
- * Ottieni testo italiano per stato valutazione
- */
-function getStatoText(stato) {
-  switch(stato) {
-    case 'COMPLETATA': return 'Completata';
-    case 'IN_ATTESA': return 'In Attesa';
-    case 'IN_LAVORAZIONE': return 'In Lavorazione';
-    case 'ANNULLATA': return 'Annullata';
-    default: return stato;
-  }
 }
