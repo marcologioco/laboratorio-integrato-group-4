@@ -299,19 +299,29 @@ function renderContractsList() {
           <p class="text-sm text-gray-600"><strong>Data Fine:</strong> ${contratto.dataFine || 'N/A'}</p>
           <p class="text-sm text-gray-600"><strong>Prezzo Minimo:</strong> ${contratto.prezzoFinaleMinimo ? '€' + contratto.prezzoFinaleMinimo.toLocaleString() : 'N/A'}</p>
           <p class="text-sm ${statusClass}"><strong>Stato:</strong> ${contratto.stato}</p>
-          <p class="text-sm text-gray-600"><strong>Esclusiva:</strong> ${contratto.esclusiva ? 'Sì' : 'No'}</p>
-        </div>
-        <button class="view-contract-btn text-blue-600 hover:text-blue-800 text-sm" data-id="${contratto.idContratto}">
-          👁️ Visualizza
-        </button>
+           <p class="text-sm text-gray-600"><strong>Esclusiva:</strong> ${contratto.esclusiva ? 'Sì' : 'No'}</p>
+          <div class="mt-3">
+            <button class="delete-contratto-btn text-xs text-red-600 hover:text-red-800" data-id="${contratto.idContratto}">Elimina contratto</button>
+          </div>
+         </div>
+         <button class="view-contract-btn text-blue-600 hover:text-blue-800 text-sm" data-id="${contratto.idContratto}">
+           👁️ Visualizza
+         </button>
       </div>
     `;
 
-    contractsList.appendChild(cardEl);
-  });
-}
-
-// Popola i select del form contratto
+     contractsList.appendChild(cardEl);
+     const deleteBtn = cardEl.querySelector('.delete-contratto-btn');
+     if (deleteBtn) {
+       deleteBtn.addEventListener('click', async () => {
+         if (confirm(`Eliminare il contratto ID ${contratto.idContratto}?`)) {
+           await deleteContratto(contratto.idContratto);
+           cardEl.remove();
+         }
+       });
+     }
+   });
+ }// Popola i select del form contratto
 function populateContractSelects() {
   const selectImmobile = document.getElementById('select-immobile');
   const selectVenditore = document.getElementById('select-venditore');
@@ -577,8 +587,22 @@ function renderVenditori(venditori) {
       <p class="text-sm text-gray-600"><strong>Indirizzo:</strong> ${venditore.indirizzo || 'N/A'}</p>
       <p class="text-sm text-gray-600"><strong>Codice Fiscale:</strong> ${venditore.codiceFiscale || 'N/A'}</p>
       ${utenteAssociato ? `<p class="text-sm text-blue-600 mt-2"><strong>Account utente:</strong> ${utenteAssociato.email}</p>` : ''}
+      <div class="mt-3">
+        <button class="delete-venditore-btn text-xs text-red-600 hover:text-red-800" data-id="${venditore.idVenditore}">Elimina venditore</button>
+      </div>
     `;
     detailCards.appendChild(cardEl);
+    
+    // attach delete listener
+    const deleteBtn = cardEl.querySelector('.delete-venditore-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare il venditore ${venditore.nome} ${venditore.cognome || ''}?`)) {
+          await deleteVenditore(venditore.idVenditore);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
@@ -597,8 +621,21 @@ function renderImmobili(immobili) {
       <p class="text-sm text-gray-600"><strong>Bagni:</strong> ${immobile.bagni || 'N/A'}</p>
       <p class="text-sm text-gray-600"><strong>Prezzo:</strong> ${immobile.prezzo ? '€' + immobile.prezzo.toLocaleString() : 'N/A'}</p>
       <p class="text-sm text-gray-600"><strong>Stato:</strong> ${immobile.stato || 'N/A'}</p>
+      <div class="mt-3">
+        <button class="delete-immobile-btn text-xs text-red-600 hover:text-red-800" data-id="${immobile.idImmobile}">Elimina immobile</button>
+      </div>
     `;
     detailCards.appendChild(cardEl);
+    // attach delete listener
+    const deleteBtn = cardEl.querySelector('.delete-immobile-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare l'immobile ID ${immobile.idImmobile}?`)) {
+          await deleteImmobile(immobile.idImmobile);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
@@ -616,8 +653,21 @@ function renderValutazioni(valutazioni) {
       <p class="text-sm ${statusClass}"><strong>Stato:</strong> ${val.stato}</p>
       <p class="text-sm text-gray-600"><strong>Valore Stimato:</strong> ${val.valoreStimato ? '€' + val.valoreStimato.toLocaleString() : 'N/A'}</p>
       <p class="text-sm text-gray-600"><strong>Valore Zona:</strong> ${val.valoreCalcolatoZona ? '€' + val.valoreCalcolatoZona.toLocaleString() : 'N/A'}</p>
+      <div class="mt-3">
+        <button class="delete-valutazione-btn text-xs text-red-600 hover:text-red-800" data-id="${val.idValutazione}">Elimina valutazione</button>
+      </div>
     `;
     detailCards.appendChild(cardEl);
+    // attach delete listener
+    const deleteBtn = cardEl.querySelector('.delete-valutazione-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare la valutazione ID ${val.idValutazione}?`)) {
+          await deleteValutazione(val.idValutazione);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
@@ -644,4 +694,88 @@ async function deleteUtente(idUtente) {
 // Click X per tornare all'overview
 if (closeBtn) {
   closeBtn.addEventListener('click', () => showCards());
+}
+
+// Elimina un venditore
+async function deleteVenditore(idVenditore) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/venditori/${idVenditore}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione venditore');
+    }
+
+    console.log('Venditore eliminato con successo');
+    currentData.venditori = currentData.venditori.filter(v => v.idVenditore !== idVenditore);
+    // aggiorna contatore
+    updateCount('venditori', currentData.venditori.length);
+  } catch (error) {
+    console.error('Errore eliminazione venditore:', error);
+    alert('Errore durante l\'eliminazione del venditore');
+  }
+}
+
+// Elimina un immobile
+async function deleteImmobile(idImmobile) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/immobili/${idImmobile}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione immobile');
+    }
+
+    console.log('Immobile eliminato con successo');
+    currentData.immobili = currentData.immobili.filter(i => i.idImmobile !== idImmobile);
+    updateCount('immobili', currentData.immobili.length);
+  } catch (error) {
+    console.error('Errore eliminazione immobile:', error);
+    alert('Errore durante l\'eliminazione dell\'immobile');
+  }
+}
+
+// Elimina una valutazione
+async function deleteValutazione(idValutazione) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/valutazioni/${idValutazione}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione valutazione');
+    }
+
+    console.log('Valutazione eliminata con successo');
+    currentData.valutazioni = currentData.valutazioni.filter(v => v.idValutazione !== idValutazione);
+    updateCount('valutazioni', currentData.valutazioni.length);
+  } catch (error) {
+    console.error('Errore eliminazione valutazione:', error);
+    alert('Errore durante l\'eliminazione della valutazione');
+  }
+}
+
+// Elimina un contratto
+async function deleteContratto(idContratto) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/contratti/${idContratto}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione contratto');
+    }
+
+    console.log('Contratto eliminato con successo');
+    currentData.contratti = currentData.contratti.filter(c => c.idContratto !== idContratto);
+  } catch (error) {
+    console.error('Errore eliminazione contratto:', error);
+    alert('Errore durante l\'eliminazione del contratto');
+  }
 }
