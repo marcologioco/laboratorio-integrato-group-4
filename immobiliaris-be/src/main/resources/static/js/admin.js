@@ -132,7 +132,7 @@ function setupSidebarNavigation() {
       if (text.includes('dashboard')) showCards();
       else if (text.includes('utenti')) showDetailView('utenti');
       else if (text.includes('valutazioni')) showDetailView('valutazioni');
-      else if (text.includes('preventivi')) showDetailView('immobili');
+      else if (text.includes('immobili')) showDetailView('immobili');
       else if (text.includes('contratti')) showContractsView();
     });
   });
@@ -304,9 +304,22 @@ function renderContractsList() {
           <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
              👁️
           </button>
+          <button class="p-2 text-gray-400 hover:text-red-600 transition delete-contratto-btn" data-id="${contratto.idContratto}">
+             🗑️
+          </button>
        </div>
     `;
     contractsList.appendChild(cardEl);
+    
+    const deleteBtn = cardEl.querySelector('.delete-contratto-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare il contratto ID ${contratto.idContratto}?`)) {
+          await deleteContratto(contratto.idContratto);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
@@ -613,14 +626,35 @@ function renderVenditori(venditori) {
       <p class="text-sm text-gray-600"><strong>Indirizzo:</strong> ${venditore.indirizzo || 'N/A'}</p>
       <p class="text-sm text-gray-600"><strong>Codice Fiscale:</strong> ${venditore.codiceFiscale || 'N/A'}</p>
       ${utenteAssociato ? `<p class="text-sm text-blue-600 mt-2"><strong>Account utente:</strong> ${utenteAssociato.email}</p>` : ''}
+      <div class="mt-3">
+        <button class="delete-venditore-btn text-xs text-red-600 hover:text-red-800" data-id="${venditore.idVenditore}">Elimina venditore</button>
+      </div>
     `;
     detailCards.appendChild(cardEl);
+    
+    // attach delete listener
+    const deleteBtn = cardEl.querySelector('.delete-venditore-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare il venditore ${venditore.nome} ${venditore.cognome || ''}?`)) {
+          await deleteVenditore(venditore.idVenditore);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
 // Renderizza lista immobili
 function renderImmobili(immobili) {
+  if (!detailCards) return;
   detailCards.innerHTML = '';
+  detailCards.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
+  
+  if (immobili.length === 0) {
+    detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessun immobile trovato.</p>';
+    return;
+  }
   
   immobili.forEach(immobile => {
     const cardEl = document.createElement('div');
@@ -655,17 +689,37 @@ function renderImmobili(immobili) {
              <span class="text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600">${immobile.stato || 'N/A'}</span>
              <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
         </div>
+        
+        <div class="mt-4 pt-4 border-t border-gray-100">
+          <button class="delete-immobile-btn w-full text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
+        </div>
       </div>
     `;
     detailCards.appendChild(cardEl);
+    
+    // attach delete listener
+    const deleteBtn = cardEl.querySelector('.delete-immobile-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm(`Eliminare l'immobile ID ${immobile.idImmobile}?`)) {
+          await deleteImmobile(immobile.idImmobile);
+          cardEl.remove();
+        }
+      });
+    }
   });
 }
 
-// Renderizza lista valutazioni (Stile clean rows)
+// Renderizza lista valutazioni
 function renderValutazioni(valutazioni) {
+    if (!detailCards) return;
     detailCards.innerHTML = '';
-    // Usiamo una sola colonna larga per le valutazioni per leggere meglio i dati
-    detailCards.className = 'grid grid-cols-1 gap-4'; 
+    detailCards.className = 'grid grid-cols-1 gap-4';
+    
+    if (valutazioni.length === 0) {
+        detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessuna valutazione trovata.</p>';
+        return;
+    }
 
     valutazioni.forEach(val => {
         const data = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
@@ -693,64 +747,24 @@ function renderValutazioni(valutazioni) {
                  <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
                     ${val.stato}
                  </span>
+                 <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
+                    🗑️
+                 </button>
             </div>
         `;
         detailCards.appendChild(cardEl);
-    });
-}
-
-// Renderizza lista valutazioni
-function renderValutazioni(valutazioni) {
-  const container = document.getElementById('valutazioni-container');
-  
-  if(document.getElementById('total-val-count')) {
-      document.getElementById('total-val-count').innerText = valutazioni.length;
-  }
-
-  if (!valutazioni || valutazioni.length === 0) {
-    // ... (codice stato vuoto uguale a prima) ...
-    return;
-  }
-
-  const html = valutazioni.map(val => {
-    const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
-    const valoreFmt = val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : '--';
-    
-    let badgeClass = 'bg-gray-100 text-gray-600';
-    // ... (logica badge uguale a prima) ...
-    if (val.stato === 'COMPLETATA') {
-        badgeClass = 'bg-green-100 text-green-800';
-    } // ...
-
-    // NOTA: Ho aggiunto style="padding: 1.25rem;" come fallback se Tailwind fallisce
-    return `
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group mb-4" style="padding: 1.5rem;">
         
-        <div class="flex items-center gap-4 mb-4 md:mb-0">
-            <div class="w-12 h-12 min-w-[3rem] min-h-[3rem] rounded-full bg-gray-50 flex items-center justify-center text-my-green-dark font-bold text-sm border border-gray-200">
-                #${val.idValutazione}
-            </div>
-            
-            <div>
-                <div class="flex flex-wrap items-center gap-2 mb-1">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">
-                       ${val.stato}
-                    </span>
-                    <span class="text-xs text-gray-400">${dataFmt}</span>
-                </div>
-                <p class="text-sm text-gray-600 font-medium">Valutazione Automatica</p>
-            </div>
-        </div>
-
-        <div class="text-left md:text-right pl-16 md:pl-0">
-            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Valore Stimato</p>
-            <p class="text-2xl font-extrabold text-my-orange leading-none">${valoreFmt}</p>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.innerHTML = html;
+        // attach delete listener
+        const deleteBtn = cardEl.querySelector('.delete-valutazione-btn');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', async () => {
+            if (confirm(`Eliminare la valutazione ID ${val.idValutazione}?`)) {
+              await deleteValutazione(val.idValutazione);
+              cardEl.remove();
+            }
+          });
+        }
+    });
 }
 
 // Elimina un utente
@@ -776,4 +790,88 @@ async function deleteUtente(idUtente) {
 // Click X per tornare all'overview
 if (closeBtn) {
   closeBtn.addEventListener('click', () => showCards());
+}
+
+// Elimina un venditore
+async function deleteVenditore(idVenditore) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/venditori/${idVenditore}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione venditore');
+    }
+
+    console.log('Venditore eliminato con successo');
+    currentData.venditori = currentData.venditori.filter(v => v.idVenditore !== idVenditore);
+    // aggiorna contatore
+    updateCount('venditori', currentData.venditori.length);
+  } catch (error) {
+    console.error('Errore eliminazione venditore:', error);
+    alert('Errore durante l\'eliminazione del venditore');
+  }
+}
+
+// Elimina un immobile
+async function deleteImmobile(idImmobile) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/immobili/${idImmobile}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione immobile');
+    }
+
+    console.log('Immobile eliminato con successo');
+    currentData.immobili = currentData.immobili.filter(i => i.idImmobile !== idImmobile);
+    updateCount('immobili', currentData.immobili.length);
+  } catch (error) {
+    console.error('Errore eliminazione immobile:', error);
+    alert('Errore durante l\'eliminazione dell\'immobile');
+  }
+}
+
+// Elimina una valutazione
+async function deleteValutazione(idValutazione) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/valutazioni/${idValutazione}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione valutazione');
+    }
+
+    console.log('Valutazione eliminata con successo');
+    currentData.valutazioni = currentData.valutazioni.filter(v => v.idValutazione !== idValutazione);
+    updateCount('valutazioni', currentData.valutazioni.length);
+  } catch (error) {
+    console.error('Errore eliminazione valutazione:', error);
+    alert('Errore durante l\'eliminazione della valutazione');
+  }
+}
+
+// Elimina un contratto
+async function deleteContratto(idContratto) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/contratti/${idContratto}`,
+      { method: 'DELETE' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Errore eliminazione contratto');
+    }
+
+    console.log('Contratto eliminato con successo');
+    currentData.contratti = currentData.contratti.filter(c => c.idContratto !== idContratto);
+  } catch (error) {
+    console.error('Errore eliminazione contratto:', error);
+    alert('Errore durante l\'eliminazione del contratto');
+  }
 }
