@@ -690,8 +690,9 @@ function renderImmobili(immobili) {
              <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
         </div>
         
-        <div class="mt-4 pt-4 border-t border-gray-100">
-          <button class="delete-immobile-btn w-full text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+          <button class="edit-immobile-btn w-1/2 text-xs text-blue-600 hover:text-blue-800 font-bold" data-id="${immobile.idImmobile}">✏️ Modifica immobile</button>
+          <button class="delete-immobile-btn w-1/2 text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
         </div>
       </div>
     `;
@@ -707,8 +708,17 @@ function renderImmobili(immobili) {
         }
       });
     }
+
+    // attach edit listener
+    const editBtn = cardEl.querySelector('.edit-immobile-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditImmobileModal(immobile);
+      });
+    }
   });
 }
+
 
 // Renderizza lista valutazioni
 function renderValutazioni(valutazioni) {
@@ -873,5 +883,138 @@ async function deleteContratto(idContratto) {
   } catch (error) {
     console.error('Errore eliminazione contratto:', error);
     alert('Errore durante l\'eliminazione del contratto');
+  }
+}
+
+// Apri modal per modificare immobile
+function openEditImmobileModal(immobile) {
+  // crea overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:42rem;max-height:400px;overflow-y:auto;';
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Immobile ID ${immobile.idImmobile}</h3>
+      <button id="edit-imm-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Indirizzo</label>
+        <input id="edit-imm-indirizzo" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.indirizzo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Città</label>
+        <input id="edit-imm-citta" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.citta || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Provincia</label>
+        <input id="edit-imm-provincia" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.provincia || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">CAP</label>
+        <input id="edit-imm-cap" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.cap || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Metri quadri</label>
+        <input id="edit-imm-mq" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.metriQuadri || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Camere</label>
+        <input id="edit-imm-camere" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.camere || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Bagni</label>
+        <input id="edit-imm-bagni" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.bagni || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Prezzo</label>
+        <input id="edit-imm-prezzo" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.prezzo || ''}">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Descrizione</label>
+        <textarea id="edit-imm-desc" class="w-full border border-gray-300 rounded px-2 py-2">${immobile.descrizione || ''}</textarea>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Tipo</label>
+        <input id="edit-imm-tipo" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.tipo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <input id="edit-imm-stato" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.stato || ''}">
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-imm-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-imm-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-imm-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-imm-cancel').addEventListener('click', () => overlay.remove());
+  
+  modal.querySelector('#edit-imm-save').addEventListener('click', async () => {
+    const updated = {
+      indirizzo: document.getElementById('edit-imm-indirizzo').value.trim(),
+      citta: document.getElementById('edit-imm-citta').value.trim(),
+      provincia: document.getElementById('edit-imm-provincia').value.trim(),
+      cap: document.getElementById('edit-imm-cap').value.trim(),
+      metriQuadri: parseFloat(document.getElementById('edit-imm-mq').value) || null,
+      camere: parseInt(document.getElementById('edit-imm-camere').value) || null,
+      bagni: parseInt(document.getElementById('edit-imm-bagni').value) || null,
+      prezzo: parseFloat(document.getElementById('edit-imm-prezzo').value) || null,
+      descrizione: document.getElementById('edit-imm-desc').value.trim(),
+      tipo: document.getElementById('edit-imm-tipo').value.trim(),
+      stato: document.getElementById('edit-imm-stato').value.trim()
+    };
+
+    try {
+      const updatedImmobile = await updateImmobile(immobile.idImmobile, updated);
+      // Aggiorna currentData
+      currentData.immobili = currentData.immobili.map(i => i.idImmobile === updatedImmobile.idImmobile ? updatedImmobile : i);
+      // Rirenderizza la vista
+      renderImmobili(currentData.immobili);
+      overlay.remove();
+      alert('Immobile aggiornato con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento immobile:', e);
+      alert('Errore durante l\'aggiornamento dell\'immobile');
+    }
+  });
+}
+
+// Aggiorna immobile (PATCH)
+async function updateImmobile(idImmobile, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/immobili/${idImmobile}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update immobile');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
   }
 }
