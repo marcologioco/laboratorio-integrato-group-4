@@ -757,9 +757,12 @@ function renderValutazioni(valutazioni) {
                  <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
                     ${val.stato}
                  </span>
-                 <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
+                  <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-valutazione-btn" data-id="${val.idValutazione}">
+                    ✏️
+                  </button>
+                  <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
                     🗑️
-                 </button>
+                  </button>
             </div>
         `;
         detailCards.appendChild(cardEl);
@@ -772,6 +775,14 @@ function renderValutazioni(valutazioni) {
               await deleteValutazione(val.idValutazione);
               cardEl.remove();
             }
+          });
+        }
+
+        // attach edit listener
+        const editBtn = cardEl.querySelector('.edit-valutazione-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            openEditValutazioneModal(val);
           });
         }
     });
@@ -1010,6 +1021,103 @@ async function updateImmobile(idImmobile, data) {
     if (!response.ok) {
       const txt = await response.text();
       throw new Error(txt || 'Errore update immobile');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Apri modal per modificare una valutazione
+function openEditValutazioneModal(val) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-lg max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:36rem;max-height:480px;overflow-y:auto;';
+
+  // stato options (adatta se necessario)
+  const stati = ['RICHIESTA','IN_CORSO','COMPLETATA','ANNULLATA'];
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Valutazione ID ${val.idValutazione}</h3>
+      <button id="edit-val-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Valore Stimato (€)</label>
+        <input id="edit-val-valore" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${val.valoreStimato || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <select id="edit-val-stato" class="w-full border border-gray-300 rounded px-2 py-2">
+          ${stati.map(s => `<option value="${s}" ${val.stato === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Note</label>
+        <textarea id="edit-val-note" class="w-full border border-gray-300 rounded px-2 py-2">${val.note || val.noteValutazione || ''}</textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-val-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-val-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-val-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-val-cancel').addEventListener('click', () => overlay.remove());
+
+  modal.querySelector('#edit-val-save').addEventListener('click', async () => {
+    const updated = {
+      valoreStimato: parseFloat(document.getElementById('edit-val-valore').value) || null,
+      stato: document.getElementById('edit-val-stato').value.trim(),
+      note: document.getElementById('edit-val-note').value.trim()
+    };
+
+    try {
+      const updatedVal = await updateValutazione(val.idValutazione, updated);
+      // Aggiorna currentData
+      currentData.valutazioni = currentData.valutazioni.map(v => v.idValutazione === updatedVal.idValutazione ? updatedVal : v);
+      // Rirenderizza la vista
+      renderValutazioni(currentData.valutazioni);
+      overlay.remove();
+      alert('Valutazione aggiornata con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento valutazione:', e);
+      alert('Errore durante l\'aggiornamento della valutazione');
+    }
+  });
+}
+
+// Aggiorna valutazione (PATCH)
+async function updateValutazione(idValutazione, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/valutazioni/${idValutazione}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update valutazione');
     }
 
     const updated = await response.json();
