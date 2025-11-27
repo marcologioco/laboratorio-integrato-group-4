@@ -17,7 +17,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (typeof logout === 'function') logout();
     });
   }
+  handleAnchorLinks();
 });
+
+/**
+ * Gestisci i link anchor con scroll fluido
+ */
+function handleAnchorLinks() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href === '#') return;
+      
+      e.preventDefault();
+      const target = document.querySelector(href);
+      
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+}
 
 /**
  * Carica Dati Utente (Header Sidebar)
