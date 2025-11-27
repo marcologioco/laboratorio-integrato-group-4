@@ -125,9 +125,6 @@ function renderValutazioni(valutazioni) {
       <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group">
         
         <div class="flex items-center gap-4 mb-4 md:mb-0">
-            <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-my-green-dark font-bold text-sm border border-gray-200">
-                #${val.idValutazione}
-            </div>
             <div>
                 <div class="flex items-center gap-2 mb-1">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">
