@@ -106,7 +106,16 @@ function renderValutazioni(valutazioni) {
   }
 
   const html = valutazioni.map(val => {
-    const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
+    const data = new Date(val.dataRichiesta);
+    const giorno = data.getDate();
+    let mese = data.toLocaleDateString('it-IT', { month: 'long' });
+    const anno = data.getFullYear();
+
+    // Assicura che la prima lettera del mese sia maiuscola
+    mese = mese.charAt(0).toUpperCase() + mese.slice(1);
+
+    const dataFmt = `${giorno} ${mese} ${anno}`;
+    //const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
     //const valoreFmt = val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : '--';
     
     // Determina colori e testi in base allo stato
@@ -138,7 +147,7 @@ function renderValutazioni(valutazioni) {
 
         <div class="text-left md:text-right pl-16 md:pl-0">
             <p class="text-xs text-gray-600 uppercase font-bold">Valore Stimato</p>
-            <p class="text-2xl font-extrabold text-my-orange leading-none">€ ${val.valoreStimato ? val.valoreStimato.toLocaleString() : '-'}</p>
+            <p class="text-2xl font-extrabold text-my-orange leading-none">${val.valoreStimato ? `€${val.valoreStimato.toLocaleString()}` : 'In elaborazione...'}</p>
         </div>
       </div>
     `;
