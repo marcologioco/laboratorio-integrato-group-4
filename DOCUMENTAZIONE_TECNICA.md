@@ -6,7 +6,7 @@
 
 ---
 
-## 📑 Indice
+## Indice
 
 1. [Panoramica del Sistema](#panoramica-del-sistema)
 2. [Architettura Backend](#architettura-backend)
@@ -17,7 +17,7 @@
 
 ---
 
-## 🎯 Panoramica del Sistema
+## Panoramica del Sistema
 
 ### Stack Tecnologico
 
@@ -80,7 +80,7 @@ com.immobiliaris.immobiliaris_be/
 URL: jdbc:h2:mem:ImmobiliarisDB
 Username: sa
 Password: (vuota)
-Mode: In-memory (i dati vengono persi al riavvio)
+Mode: In-memory (i dati vengono istanziati nuovamente al riavvio)
 ```
 
 ### Schema Completo
@@ -382,31 +382,6 @@ FOREIGN KEY (id_venditore) REFERENCES venditore(id_venditore) ON DELETE CASCADE
 
 ```
 URL: http://localhost:8080/swagger
-```
-
-### Configurazione Swagger
-
-```java
-@Configuration
-public class SwaggerConfig {
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-            .info(new Info()
-                .title("Immobiliaris API")
-                .version("1.0.0")
-                .description("API REST per la gestione del sistema Immobiliaris")
-                .contact(new Contact()
-                    .name("Team InnovaRe - Immobiliaris")
-                    .url("https://github.com/marcologioco/laboratorio-integrato-group-4")))
-            .addSecurityItem(new SecurityRequirement().addList("bearer-jwt"))
-            .components(new Components()
-                .addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")));
-    }
-}
 ```
 
 ---
