@@ -1,185 +1,158 @@
 # Immobiliaris - Portale Immobiliare
 
-## 📋 Descrizione del Progetto
+## Descrizione del Progetto
 
-Il progetto è un portale web sviluppato per un'agenzia immobiliare piemontese del gruppo Immobiliaris, con l'obiettivo di modernizzare l'acquisizione di immobili in esclusiva e attrarre un target più giovane (35-55 anni).
+Portale web per un'agenzia immobiliare piemontese che modernizza l'acquisizione di immobili in esclusiva, con sistema di valutazione automatica e gestione contratti completa.
 
-Il progetto è stato realizzato come parte di un laboratorio integrando competenze di sviluppo software, web development e digital strategy.
+**Target:** 35-55 anni  
+**Area operativa:** Torino, Cuneo, Alessandria, Asti
 
-## 🎯 Obiettivi
+## Funzionalità Principali
 
-- Realizzazione di un portale web per l'acquisizione di immobili in esclusiva
-- Sistema di valutazione automatica degli immobili entro 72 ore
-- Gestione contratti di vendita in esclusiva
-- Backoffice per amministratori
-- Interfaccia responsive e ottimizzata SEO
+- **Valutazione automatica immobili** - Stima immediata basata su dati di mercato
+- **Dashboard utente** - Tracciamento richieste e valutazioni
+- **Dashboard admin** - Gestione completa immobili, utenti, valutazioni e contratti
+- **Sistema contratti** - Generazione e gestione contratti di vendita in esclusiva
+- **Autenticazione JWT** - Sistema sicuro con ruoli (utente/admin)
 
-## 🛠️ Tecnologie Utilizzate
+## Stack Tecnologico
 
-### Backend
+**Backend**
 
-- **Java 17**
-- **Spring Boot 3.5.6**
-  - Spring Web
-  - Spring Data JPA
-  - Spring Security
-  - Spring Validation
-- **Database**: H2 (in-memory)
-- **Autenticazione**: JWT (JSON Web Token)
-- **Documentazione API**: Swagger/OpenAPI (SpringDoc)
+- Java 17 + Spring Boot 3.5.6
+- Spring Security + JWT
+- H2 Database (in-memory)
+- Swagger/OpenAPI
 
-### Frontend
+**Frontend**
 
-- **HTML5/CSS3**
-- **JavaScript**
-- **Tailwind CSS**
-- **Swiper.js** (per carousel)
+- HTML5/CSS3 + Tailwind CSS
+- JavaScript Vanilla
+- Swiper.js
 
-### Tools & Versionamento
+**Tools**
 
-- **Maven** (gestione dipendenze e build)
-- **GitHub** (versionamento)
-- **GitHub Projects** (gestione progetto)
+- Maven
+- Git/GitHub
 
-## 📁 Struttura del Progetto
+## Struttura del Progetto
 
-```bash
+```
 immobiliaris-be/
-├── src/
-│   ├── main/
-│   │   ├── java/com/immobiliaris/immobiliaris_be/
-│   │   │   ├── config/          # Configurazioni (Security, JWT, Swagger)
-│   │   │   ├── controller/      # REST Controllers
-│   │   │   ├── dto/             # Data Transfer Objects
-│   │   │   ├── enums/           # Enumerazioni
-│   │   │   ├── model/           # Entità JPA
-│   │   │   ├── repos/           # Repository
-│   │   │   ├── services/        # Business Logic
-│   │   │   └── util/            # Utility classes
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       ├── data-test.sql    # Dati di test
-│   │       └── static/          # File statici (HTML, CSS, JS)
-│   └── test/                    # Test unitari
-├── pom.xml                      # Configurazione Maven
-└── README.md
+├── src/main/
+│   ├── java/com/immobiliaris/immobiliaris_be/
+│   │   ├── config/      # Security, JWT, Swagger
+│   │   ├── controller/  # REST API
+│   │   ├── model/       # Entità JPA
+│   │   ├── services/    # Business Logic
+│   │   └── repos/       # Repository
+│   └── resources/
+│       ├── static/      # Frontend (HTML/CSS/JS)
+│       └── data-test.sql
+└── pom.xml
 ```
 
-## 🚀 Installazione e Avvio
+## Installazione e Avvio
 
-### Prerequisiti
-
-- Java 17 o superiore
-- Maven 3.6+
-- Git
-
-### Installazione
-
-1. **Clona il repository**
+**Prerequisiti:** Java 17+, Maven 3.6+
 
 ```bash
+# Clona repository
 git clone https://github.com/marcologioco/laboratorio-integrato-group-4.git
 cd laboratorio-integrato-group-4/immobiliaris-be
-```
 
-2. **Build del progetto**
-
-```bash
-mvn clean install
-```
-
-3. **Avvia l'applicazione**
-
-```bash
+# Avvia applicazione
 mvn spring-boot:run
-```
-
-Oppure esegui il JAR compilato:
-
-```bash
-java -jar target/immobiliaris-be-0.0.1-SNAPSHOT.jar
 ```
 
 L'applicazione sarà disponibile su: `http://localhost:8080`
 
-## 📚 API Documentation
+## Accesso Rapido
 
-Una volta avviata l'applicazione, la documentazione Swagger è accessibile a:
+**Frontend:**
 
-- **Swagger UI**: <http://localhost:8080/swagger>
-- **API Docs (JSON)**: <http://localhost:8080/api-docs>
+- Homepage: `http://localhost:8080`
+- Login: `http://localhost:8080/login.html`
+- Dashboard Admin: `http://localhost:8080/admin.html`
 
-## 🗄️ Database
+**Backend:**
 
-Il progetto utilizza un database H2 in-memory per facilitare lo sviluppo e i test.
+- Swagger UI: `http://localhost:8080/swagger`
+- H2 Console: `http://localhost:8080/h2` (JDBC: `jdbc:h2:mem:ImmobiliarisDB`, user: `sa`, password: vuota)
 
-- **Console H2**: <http://localhost:8080/h2>
-  - JDBC URL: `jdbc:h2:mem:ImmobiliarisDB`
-  - Username: `sa`
-  - Password: *(vuota)*
+## Credenziali di Test
 
-## 🔑 Autenticazione
+| Email | Password | Ruolo |
+|-------|----------|-------|
+| <admin@immobiliaris.com> | admin123 | Admin |
+| <user@immobiliaris.com> | user123 | Utente |
 
-Il sistema utilizza JWT (JSON Web Token) per l'autenticazione:
+> **Nota:** Database in-memory - i dati si resettano ad ogni riavvio
 
-- Token valido per 24 ore
-- Endpoint di login: `/api/auth/login`
-- Endpoint di registrazione: `/api/auth/register`
+## API Principali
 
-## 📦 Funzionalità Principali
+**Pubbliche (no autenticazione):**
 
-### Per gli Utenti-Venditori
+- `POST /api/valutazioni/automatica` - Valutazione automatica immobile
+- `GET /api/immobili` - Lista immobili (con filtri)
+- `GET /api/zone` - Zone geografiche e prezzi medi
 
-- **Onboarding**: Form multi-step per inserimento dati immobile
-- **Valutazione automatica**: Richiesta di valutazione entro 72 ore
-- **Tracciamento**: Monitoraggio dello stato della propria richiesta
+**Protette (JWT richiesto):**
 
-### Per gli Amministratori
+- `POST /api/auth/login` - Login e generazione token
+- `GET /api/utenti` - Gestione utenti
+- `GET /api/valutazioni` - Gestione valutazioni
+- `POST /api/contratti` - Creazione contratti
 
-- **Gestione immobili**: CRUD completo su immobili
-- **Gestione valutazioni**: Approvazione e gestione richieste
-- **Gestione contratti**: Creazione e monitoraggio contratti di vendita
-- **Gestione utenti**: Amministrazione utenti e venditori
-- **Zone geografiche**: Gestione aree operative (Torino, Cuneo, Alessandria, Asti)
+> Documentazione completa: vedere [DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)
 
-## 🌍 Area Geografica Target
+## Struttura Database
 
-Il portale si concentra sulle principali città del Piemonte:
+7 tabelle principali:
 
-- Torino
-- Cuneo
-- Alessandria
-- Asti
+- **Ruolo** - Definizione ruoli utente
+- **Utente** - Utenti registrati (con autenticazione)
+- **Venditore** - Proprietari immobili (opzionalmente collegati a Utente)
+- **Zona** - Zone geografiche con prezzi medi al m²
+- **Immobile** - Immobili in gestione
+- **Valutazione** - Richieste di valutazione (automatica + manuale)
+- **Contratto** - Contratti di vendita in esclusiva
 
-## 👥 Team
+> Schema completo e relazioni: vedere [DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)
 
-Progetto realizzato dal **Group 4** nell'ambito del corso di Laboratorio Integrato.
+## Pagine Frontend
 
-**Repository**: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
+**Pubbliche:**
 
-## 📝 Note di Sviluppo
+- `index.html` - Homepage + form valutazione 3 step
+- `login.html` - Autenticazione
 
-- Il database H2 viene popolato automaticamente con dati di test all'avvio
-- La configurazione JWT utilizza una secret key di esempio (da modificare in produzione)
-- Il progetto include CORS configurato per lo sviluppo locale
-- Sono implementati filtri di sicurezza con Spring Security
+**Protette (autenticazione richiesta):**
 
-## 🔧 Comandi Utili
+- `account.html` - Dashboard utente (valutazioni personali)
+- `admin.html` - Dashboard admin (gestione completa sistema)
 
-```bash
-# Compilazione senza test
-mvn clean package -DskipTests
+**File JavaScript:**
 
-# Esecuzione test
-mvn test
+- `auth-utils.js` - Gestione JWT e autenticazione
+- `valutazione.js` - Form multi-step valutazione
+- `admin.js` - Dashboard amministratore
+- `user.js` - Dashboard utente
 
-# Pulizia progetto
-mvn clean
+## Documentazione
 
-# Verifica dipendenze
-mvn dependency:tree
-```
+- **[DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)** - Documentazione completa Backend, Database e Frontend
+- **Swagger UI**: <http://localhost:8080/swagger> - API interattiva
 
-## 📞 Supporto
+## Note di Produzione
 
-Per problemi o domande, aprire una issue nel repository GitHub del progetto.
+- Modificare `jwt.secret` in application.properties (usare variabile d'ambiente)
+- Sostituire H2 con database persistente (PostgreSQL/MySQL)
+- Configurare HTTPS/SSL
+- Aggiornare configurazione CORS
+
+## Team
+
+Progetto realizzato dal **Group 4** - Team InnovaRe  
+Corso: Laboratorio Integrato  
+Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
