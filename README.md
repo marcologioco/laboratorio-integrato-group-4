@@ -1,5 +1,22 @@
 # Immobiliaris - Portale Immobiliare
 
+## Team
+
+Progetto realizzato dal **Group 4** - Team InnovaRe  
+Corso: Laboratorio Integrato  
+Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
+
+**Membri:**
+- Lamguanouah Badr (Web Developer) -> https://github.com/pandabluh
+- Lo Gioco Marco (Web Developer) -> https://github.com/marcologioco
+- Vecchi Alessandro (Web Developer) -> https://github.com/itstyuda
+- Ferrero Tommaso Francesco (Software Developer) -> https://github.com/Tommaferre
+- Nechainikov Yaroslav (Software Developer) -> https://github.com/YaroslavNechainikov
+- Chimirri Simone (Software Developer) -> https://github.com/SimoneChimirri
+- Casabianca Ivan (Digital Strategist)
+- Lasagno Luca (Digital Strategist)
+- Affinito Clarissa (Digital Strategist)
+
 ## Descrizione del Progetto
 
 Portale web per un'agenzia immobiliare piemontese che modernizza l'acquisizione di immobili in esclusiva, con sistema di valutazione automatica e gestione contratti completa.
@@ -150,9 +167,3 @@ L'applicazione sarà disponibile su: `http://localhost:8080`
 - Sostituire H2 con database persistente (PostgreSQL/MySQL)
 - Configurare HTTPS/SSL
 - Aggiornare configurazione CORS
-
-## Team
-
-Progetto realizzato dal **Group 4** - Team InnovaRe  
-Corso: Laboratorio Integrato  
-Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
