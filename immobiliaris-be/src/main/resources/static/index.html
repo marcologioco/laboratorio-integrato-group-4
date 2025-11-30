@@ -28,7 +28,8 @@
     <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center space-x-6">
-                <a href="mailto:immobiliarishelp@gmail.com" class="flex items-center hover:text-white transition-colors">
+                <a href="mailto:immobiliarishelp@gmail.com"
+                    class="flex items-center hover:text-white transition-colors">
                     <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -337,163 +338,232 @@
                                 </div>
 
                                 <!-- Step 3: Caratteristiche -->
-<div id="step-3" class="form-step hidden">
-    <h3 class="text-2xl font-bold text-my-black mb-6">Caratteristiche immobile</h3>
+                                <div id="step-3" class="form-step hidden">
+                                    <h3 class="text-2xl font-bold text-my-black mb-6">Caratteristiche immobile</h3>
 
-    <div class="flex flex-col gap-6">
-        
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">1</span>
-                <label class="text-lg font-bold text-gray-800">Tipo di Immobile *</label>
-            </div>
-            
-            <select id="tipo" class="hidden" required>
-                <option value="">Seleziona...</option>
-                <option value="APPARTAMENTO">Appartamento</option>
-                <option value="VILLA">Villa</option>
-                <option value="UFFICIO">Ufficio</option>
-            </select>
+                                    <div class="flex flex-col gap-6">
 
-            <div class="grid grid-cols-3 gap-4">
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="tipo" 
-                     data-value="APPARTAMENTO">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    <span class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Appartamento</span>
-                </div>
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                            <div class="flex items-center mb-4">
+                                                <span
+                                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">1</span>
+                                                <label class="text-lg font-bold text-gray-800">Tipo di Immobile
+                                                    *</label>
+                                            </div>
 
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="tipo" 
-                     data-value="VILLA">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <span class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Villa</span>
-                </div>
+                                            <select id="tipo" class="hidden" required>
+                                                <option value="">Seleziona...</option>
+                                                <option value="APPARTAMENTO">Appartamento</option>
+                                                <option value="VILLA">Villa</option>
+                                                <option value="UFFICIO">Ufficio</option>
+                                            </select>
 
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="tipo" 
-                     data-value="UFFICIO">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <span class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Ufficio</span>
-                </div>
-            </div>
-        </div>
+                                            <div class="grid grid-cols-3 gap-4">
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="tipo" data-value="APPARTAMENTO">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Appartamento</span>
+                                                </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">2</span>
-                <label class="text-lg font-bold text-gray-800">Stato conservativo *</label>
-            </div>
-            
-            <select id="stato" class="hidden" required>
-                <option value="">Seleziona...</option>
-                <option value="NUOVA">Nuova costruzione</option>
-                <option value="RISTRUTTURATA">Ristrutturata</option>
-                <option value="ABITABILE">Abitabile</option>
-                <option value="DA_RISTRUTTURARE">Da ristrutturare</option>
-            </select>
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="tipo" data-value="VILLA">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Villa</span>
+                                                </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="stato" 
-                     data-value="NUOVA">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-                    <span class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Nuova</span>
-                </div>
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-4 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="tipo" data-value="UFFICIO">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-10 w-10 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm sm:text-base group-hover:text-my-orange transition-colors">Ufficio</span>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="stato" 
-                     data-value="RISTRUTTURATA">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm5.95-5.95a3 3 0 114.242 4.242 3 3 0 01-4.242-4.242z" /></svg>
-                    <span class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Ristrutturata</span>
-                </div>
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                            <div class="flex items-center mb-4">
+                                                <span
+                                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">2</span>
+                                                <label class="text-lg font-bold text-gray-800">Stato conservativo
+                                                    *</label>
+                                            </div>
 
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="stato" 
-                     data-value="ABITABILE">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Abitabile</span>
-                </div>
+                                            <select id="stato" class="hidden" required>
+                                                <option value="">Seleziona...</option>
+                                                <option value="NUOVA">Nuova costruzione</option>
+                                                <option value="RISTRUTTURATA">Ristrutturata</option>
+                                                <option value="ABITABILE">Abitabile</option>
+                                                <option value="DA_RISTRUTTURARE">Da ristrutturare</option>
+                                            </select>
 
-                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
-                     data-target="stato" 
-                     data-value="DA_RISTRUTTURARE">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
-                    <span class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Da rifare</span>
-                </div>
-            </div>
-        </div>
+                                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="stato" data-value="NUOVA">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Nuova</span>
+                                                </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center mb-4">
-                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">3</span>
-                <label class="text-lg font-bold text-gray-800">Pertinenze e Accessori</label>
-            </div>
-            
-            <div class="flex flex-col space-y-6">
-                <div class="flex items-center bg-gray-50 border border-gray-200 rounded-xl p-4">
-                    <div class="p-2 bg-white rounded-full mr-4 shadow-sm text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                        </svg>
-                    </div>
-                    <div class="flex-grow">
-                        <span class="font-bold text-gray-700 block">Numero Balconi</span>
-                    </div>
-                    <input type="number" id="balconi" min="0" value="0"
-                        class="w-20 text-center font-bold text-xl text-my-black border-b-2 border-gray-300 focus:border-my-orange focus:outline-none py-1 bg-transparent">
-                </div>
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="stato" data-value="RISTRUTTURATA">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm5.95-5.95a3 3 0 114.242 4.242 3 3 0 01-4.242-4.242z" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Ristrutturata</span>
+                                                </div>
 
-                <div class="grid grid-cols-3 gap-4">
-                    <input type="checkbox" id="terrazzo" class="hidden">
-                    <input type="checkbox" id="giardino" class="hidden">
-                    <input type="checkbox" id="garage" class="hidden">
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="stato" data-value="ABITABILE">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Abitabile</span>
+                                                </div>
 
-                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                         data-target="terrazzo">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                        <span class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Terrazzo</span>
-                    </div>
+                                                <div class="selection-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-2 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                    data-target="stato" data-value="DA_RISTRUTTURARE">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                                    </svg>
+                                                    <span
+                                                        class="font-bold text-gray-600 text-sm text-center group-hover:text-my-orange transition-colors">Da
+                                                        rifare</span>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                         data-target="giardino">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-                        <span class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Giardino</span>
-                    </div>
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                            <div class="flex items-center mb-4">
+                                                <span
+                                                    class="flex items-center justify-center w-8 h-8 rounded-full bg-orange-100 text-my-orange font-bold text-sm mr-3">3</span>
+                                                <label class="text-lg font-bold text-gray-800">Pertinenze e
+                                                    Accessori</label>
+                                            </div>
 
-                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
-                         data-target="garage">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
-                        <span class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Garage</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                            <div class="flex flex-col space-y-6">
+                                                <div
+                                                    class="flex items-center bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                                    <div class="p-2 bg-white rounded-full mr-4 shadow-sm text-gray-500">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex-grow">
+                                                        <span class="font-bold text-gray-700 block">Numero
+                                                            Balconi</span>
+                                                    </div>
+                                                    <input type="number" id="balconi" min="0" value="0"
+                                                        class="w-20 text-center font-bold text-xl text-my-black border-b-2 border-gray-300 focus:border-my-orange focus:outline-none py-1 bg-transparent">
+                                                </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <label class="block text-lg font-bold text-gray-800 mb-3">Note aggiuntive</label>
-            <textarea id="descrizione" rows="3" placeholder="Descrivi altri dettagli dell'immobile qui..."
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-my-orange focus:border-transparent"></textarea>
-        </div>
-    </div>
+                                                <div class="grid grid-cols-3 gap-4">
+                                                    <input type="checkbox" id="terrazzo" class="hidden">
+                                                    <input type="checkbox" id="giardino" class="hidden">
+                                                    <input type="checkbox" id="garage" class="hidden">
 
-    <div class="mt-8 flex justify-between items-center pt-4">
-        <button type="button"
-            class="btn-prev py-3 px-8 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition shadow-sm">
-            ← Indietro
-        </button>
-        <button type="submit" id="submit-btn"
-            class="py-3 px-8 bg-my-green-dark text-white font-bold rounded-xl hover:bg-[#111A19] shadow-lg transform hover:-translate-y-0.5 transition-all">
-            Calcola Valutazione
-        </button>
-    </div>
-</div>
+                                                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                        data-target="terrazzo">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Terrazzo</span>
+                                                    </div>
+
+                                                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                        data-target="giardino">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Giardino</span>
+                                                    </div>
+
+                                                    <div class="feature-card group cursor-pointer bg-white border-2 border-gray-100 rounded-xl p-3 flex flex-col items-center justify-center gap-3 hover:border-orange-300 transition-all duration-200 aspect-square"
+                                                        data-target="garage">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-8 w-8 text-gray-400 group-hover:text-my-orange transition-colors"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-bold text-gray-600 text-xs sm:text-base text-center group-hover:text-my-orange transition-colors">Garage</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                                            <label class="block text-lg font-bold text-gray-800 mb-3">Note
+                                                aggiuntive</label>
+                                            <textarea id="descrizione" rows="3"
+                                                placeholder="Descrivi altri dettagli dell'immobile qui..."
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-my-orange focus:border-transparent"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-8 flex justify-between items-center pt-4">
+                                        <button type="button"
+                                            class="btn-prev py-3 px-8 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition shadow-sm">
+                                            ← Indietro
+                                        </button>
+                                        <button type="submit" id="submit-btn"
+                                            class="py-3 px-8 bg-my-green-dark text-white font-bold rounded-xl hover:bg-[#111A19] shadow-lg transform hover:-translate-y-0.5 transition-all">
+                                            Calcola Valutazione
+                                        </button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
