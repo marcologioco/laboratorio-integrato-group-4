@@ -9,7 +9,12 @@ module.exports = {
     'text-my-green-light',
     'text-my-black-dark',
     'text-my-orange',
-    'text-my-cream'
+    'text-my-cream',
+    'bg-my-green-dark',
+    'bg-my-green-light',
+    'bg-my-black-dark',
+    'bg-my-orange',
+    'bg-my-cream',
   ],
   theme: {
     extend: {

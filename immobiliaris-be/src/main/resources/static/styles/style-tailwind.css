@@ -1363,6 +1363,9 @@ video {
   background-color: rgb(128 144 116 / 0.3);
 }
 
+.bg-my-green-light {
+  background-color: rgb(128 144 116);
+}
 .bg-my-orange {
   --tw-bg-opacity: 1;
   background-color: rgb(186 104 48 / var(--tw-bg-opacity, 1));

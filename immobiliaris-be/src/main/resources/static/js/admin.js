@@ -132,7 +132,7 @@ function setupSidebarNavigation() {
       if (text.includes('dashboard')) showCards();
       else if (text.includes('utenti')) showDetailView('utenti');
       else if (text.includes('valutazioni')) showDetailView('valutazioni');
-      else if (text.includes('preventivi')) showDetailView('immobili');
+      else if (text.includes('immobili')) showDetailView('immobili');
       else if (text.includes('contratti')) showContractsView();
     });
   });
@@ -700,58 +700,6 @@ function renderValutazioni(valutazioni) {
 }
 
 // Renderizza lista valutazioni
-function renderValutazioni(valutazioni) {
-  const container = document.getElementById('valutazioni-container');
-  
-  if(document.getElementById('total-val-count')) {
-      document.getElementById('total-val-count').innerText = valutazioni.length;
-  }
-
-  if (!valutazioni || valutazioni.length === 0) {
-    // ... (codice stato vuoto uguale a prima) ...
-    return;
-  }
-
-  const html = valutazioni.map(val => {
-    const dataFmt = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
-    const valoreFmt = val.valoreStimato ? '€ ' + val.valoreStimato.toLocaleString('it-IT') : '--';
-    
-    let badgeClass = 'bg-gray-100 text-gray-600';
-    // ... (logica badge uguale a prima) ...
-    if (val.stato === 'COMPLETATA') {
-        badgeClass = 'bg-green-100 text-green-800';
-    } // ...
-
-    // NOTA: Ho aggiunto style="padding: 1.25rem;" come fallback se Tailwind fallisce
-    return `
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between group mb-4" style="padding: 1.5rem;">
-        
-        <div class="flex items-center gap-4 mb-4 md:mb-0">
-            <div class="w-12 h-12 min-w-[3rem] min-h-[3rem] rounded-full bg-gray-50 flex items-center justify-center text-my-green-dark font-bold text-sm border border-gray-200">
-                #${val.idValutazione}
-            </div>
-            
-            <div>
-                <div class="flex flex-wrap items-center gap-2 mb-1">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">
-                       ${val.stato}
-                    </span>
-                    <span class="text-xs text-gray-400">${dataFmt}</span>
-                </div>
-                <p class="text-sm text-gray-600 font-medium">Valutazione Automatica</p>
-            </div>
-        </div>
-
-        <div class="text-left md:text-right pl-16 md:pl-0">
-            <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Valore Stimato</p>
-            <p class="text-2xl font-extrabold text-my-orange leading-none">${valoreFmt}</p>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.innerHTML = html;
-}
 
 // Elimina un utente
 async function deleteUtente(idUtente) {
