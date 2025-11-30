@@ -63,8 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 6. Determina il ruolo (1 = ROLE_USER, 2 = ROLE_ADMIN)
                     String role = ruoloId == 2 ? "ROLE_ADMIN" : "ROLE_USER";
                     
-                    System.out.println("🔍 DEBUG: ruoloId dal token = " + ruoloId);
-                    System.out.println("🔍 DEBUG: role assegnato = " + role);
+                    System.out.println("DEBUG: ruoloId dal token = " + ruoloId);
+                    System.out.println("DEBUG: role assegnato = " + role);
 
                     // 7. Crea l'oggetto autenticazione
                     // Spring Security usa questo per sapere chi è l'utente e che ruolo ha
@@ -83,12 +83,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
                     // Debug log (opzionale)
-                    System.out.println("✅ Token valido per: " + email + " (userId: " + userId + ", ruolo: " + role + ")");
-                    System.out.println("🔍 DEBUG: Authorities = " + authentication.getAuthorities());
+                    System.out.println("Token valido per: " + email + " (userId: " + userId + ", ruolo: " + role + ")");
+                    System.out.println("DEBUG: Authorities = " + authentication.getAuthorities());
                 }
             } catch (Exception e) {
                 // Token non valido o scaduto
-                System.out.println("❌ Token non valido: " + e.getMessage());
+                System.out.println("Token non valido: " + e.getMessage());
                 // Non facciamo nulla, la richiesta continuerà ma senza autenticazione
             }
         }
