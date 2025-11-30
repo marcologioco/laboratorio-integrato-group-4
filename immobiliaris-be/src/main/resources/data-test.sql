@@ -13,6 +13,12 @@ INSERT INTO ruolo (nome) VALUES
 -- =============================
 -- VENDITORI
 -- =============================
+-- Gli ID degli utenti corrispondono a quelli creati dal DataLoader
+-- Utente 1: Luca Rossi (admin viene creato come ID 0, quindi Luca è ID 1)
+-- Utente 2: Marta Bianchi
+-- Utente 3: Giulia Verdi
+-- Altri venditori non sono utenti registrati (id_utente = NULL)
+
 INSERT INTO venditore (id_utente, nome, cognome, email, telefono, indirizzo, citta, provincia, codice_fiscale) VALUES
 (1, 'Luca', 'Rossi', 'luca.rossi@vendite.it', '3456789012', 'Via Roma 10', 'Torino', 'TO', 'RSSLCU80A01L219Z'),
 (NULL, 'Elena', 'Gallo', 'elena.gallo@vendite.it', '3475678901', 'Corso Francia 25', 'Torino', 'TO', 'GLLLNE85B41L219K'),
@@ -80,13 +86,23 @@ INSERT INTO immobile (id_venditore, tipo, indirizzo, citta, provincia, cap, metr
 -- =============================
 -- VALUTAZIONI
 -- =============================
-INSERT INTO valutazione (id_immobile, id_utente, stato, valore_stimato, valore_calcolato_zona, deadline, note) VALUES
-(1, 2, 'COMPLETATA', 165000, 152000, '2024-06-01 00:00:00', 'Valore in linea con il mercato'),
-(2, 1, 'IN_CORSO', NULL, 540000, '2024-06-20 00:00:00', 'In verifica dati catastali'),
-(3, 5, 'ANNULLATA', NULL, NULL, '2024-06-10 00:00:00', 'Richiesta ritirata dal venditore'),
-(4, 3, 'IN_CORSO', NULL, 560000, '2024-06-15 00:00:00', 'In attesa di sopralluogo'),
-(5, 4, 'COMPLETATA', 225000, 220000, '2024-07-01 00:00:00', 'Valutazione confermata'),
-(6, 2, 'IN_CORSO', NULL, 145000, '2024-06-18 00:00:00', 'Controllo dati catastali');
+-- Tutte le valutazioni sono COMPLETATE automaticamente con algoritmo di valutazione
+-- 
+-- Calcoli:
+-- 1. Via Genova 12 (10137 - Santa Rita Nord): 80m² × 2100€/m² = 168.000€ + garage(12k) = 180.000€ × 1.0 (abitabile) = 180.000€
+-- 2. Via dei Fiori 5 (10126 - Lingotto): 180m² × 2400€/m² = 432.000€ + 2bagni(10k) + piscina/giardino(20k) + 2garage(24k) = 486.000€ × 1.15 (nuova) = 558.900€
+-- 3. Via Chambery 45 (10141 - Borgo San Paolo): 65m² × 2200€/m² = 143.000€ × 0.75 (da ristrutturare) = 107.250€
+-- 4. Viale Europa 33 (14100 - Asti): 200m² × 1900€/m² = 380.000€ + 2bagni(10k) + giardino(20k) = 410.000€ × 1.0 (abitabile) = 410.000€
+-- 5. Corso Alessandria 10 (15121 - Alessandria): 90m² × 1700€/m² = 153.000€ + 1bagno(5k) = 158.000€ × 1.0 (abitabile) = 158.000€
+-- 6. Via Cuneo 5 (12100 - Cuneo): 75m² × 2200€/m² = 165.000€ × 1.0 (abitabile) = 165.000€
+
+INSERT INTO valutazione (id_immobile, id_utente, stato, valore_stimato, valore_calcolato_zona, data_richiesta, data_completamento, deadline, note) VALUES
+(1, 2, 'COMPLETATA', 180000, 168000, '2024-05-28 10:30:00', '2024-05-28 10:30:05', '2024-05-31 10:30:00', 'Valutazione automatica completata istantaneamente'),
+(2, 1, 'COMPLETATA', 558900, 432000, '2024-04-10 14:15:00', '2024-04-10 14:15:05', '2024-04-13 14:15:00', 'Valutazione automatica completata istantaneamente'),
+(3, 5, 'COMPLETATA', 107300, 143000, '2024-05-15 09:00:00', '2024-05-15 09:00:05', '2024-05-18 09:00:00', 'Valutazione automatica completata istantaneamente'),
+(4, 3, 'COMPLETATA', 410000, 380000, '2024-02-20 16:45:00', '2024-02-20 16:45:05', '2024-02-23 16:45:00', 'Valutazione automatica completata istantaneamente'),
+(5, 4, 'COMPLETATA', 158000, 153000, '2024-05-25 11:20:00', '2024-05-25 11:20:05', '2024-05-28 11:20:00', 'Valutazione automatica completata istantaneamente'),
+(6, 2, 'COMPLETATA', 165000, 165000, '2024-05-05 13:30:00', '2024-05-05 13:30:05', '2024-05-08 13:30:00', 'Valutazione automatica completata istantaneamente');
 
 -- =============================
 -- CONTRATTI
