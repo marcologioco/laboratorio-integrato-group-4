@@ -2,6 +2,7 @@ package com.immobiliaris.immobiliaris_be.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    // Pattern per validazione
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^3\\d{9}$");
 
     @Override
     public List<Utente> findAllUtenti() {
@@ -41,6 +46,22 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Override
     public Utente saveUtente(Utente utente) {
+        // Valida email se presente
+        if (utente.getEmail() != null && !utente.getEmail().isBlank()) {
+            if (!EMAIL_PATTERN.matcher(utente.getEmail()).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+        }
+        
+        // Valida telefono se presente
+        if (utente.getTelefono() != null && !utente.getTelefono().isBlank()) {
+            String cleanPhone = utente.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            utente.setTelefono(cleanPhone); // Salva numero pulito
+        }
+        
         // Hasha la password prima di salvare
         if (utente.getPassword() != null && !utente.getPassword().isBlank()) {
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));
@@ -53,14 +74,31 @@ public class UtenteServiceImpl implements UtenteService {
         Utente utente = utenteRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato con id: " + id));
 
+        // Valida email se modificata
+        if (utenteDetails.getEmail() != null && !utenteDetails.getEmail().isBlank()) {
+            if (!EMAIL_PATTERN.matcher(utenteDetails.getEmail()).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+            utente.setEmail(utenteDetails.getEmail());
+        }
+        
+        // Valida telefono se modificato
+        if (utenteDetails.getTelefono() != null && !utenteDetails.getTelefono().isBlank()) {
+            String cleanPhone = utenteDetails.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            utente.setTelefono(cleanPhone);
+        }
+
         utente.setNome(utenteDetails.getNome());
         utente.setCognome(utenteDetails.getCognome());
-        utente.setEmail(utenteDetails.getEmail());
+        
         // Hasha la password se è stata modificata
         if (utenteDetails.getPassword() != null && !utenteDetails.getPassword().isBlank()) {
             utente.setPassword(passwordEncoder.encode(utenteDetails.getPassword()));
         }
-        utente.setTelefono(utenteDetails.getTelefono());
+        
         utente.setIdRuolo(utenteDetails.getIdRuolo());
 
         return utenteRepo.save(utente);
@@ -85,7 +123,11 @@ public class UtenteServiceImpl implements UtenteService {
         }
 
         if (patchUtente.getEmail() != null && !patchUtente.getEmail().isBlank()) {
-            existingUtente.setEmail(patchUtente.getEmail().trim());
+            String email = patchUtente.getEmail().trim();
+            if (!EMAIL_PATTERN.matcher(email).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+            existingUtente.setEmail(email);
         }
 
         if (patchUtente.getPassword() != null && !patchUtente.getPassword().isBlank()) {
@@ -94,7 +136,11 @@ public class UtenteServiceImpl implements UtenteService {
         }
 
         if (patchUtente.getTelefono() != null && !patchUtente.getTelefono().isBlank()) {
-            existingUtente.setTelefono(patchUtente.getTelefono().trim());
+            String cleanPhone = patchUtente.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            existingUtente.setTelefono(cleanPhone);
         }
 
         if (patchUtente.getIdRuolo() != null) {

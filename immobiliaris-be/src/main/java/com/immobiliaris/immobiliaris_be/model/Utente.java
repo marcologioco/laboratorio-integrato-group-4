@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "utente")
@@ -33,12 +35,14 @@ public class Utente {
     @Column(name = "cognome")
     private String cognome;
 
+    @Email(message = "Email non valida")
     @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
 
+    @Pattern(regexp = "^3\\d{9}$", message = "Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)")
     @Column(name = "telefono")
     private String telefono;
 

@@ -85,6 +85,18 @@ function validateCurrentStep() {
 
     // Step 1: Dati personali & Checkbox Proprietario
     if (currentStep === 1) {
+        // Valida email
+        const emailInput = document.getElementById('email');
+        if (emailInput && !validateEmailField(emailInput)) {
+            isValid = false;
+        }
+        
+        // Valida telefono
+        const telefonoInput = document.getElementById('telefono');
+        if (telefonoInput && !validatePhoneField(telefonoInput)) {
+            isValid = false;
+        }
+        
         const isProprietarioSelected = document.querySelector('input[name="isProprietario"]:checked');
         if (!isProprietarioSelected) {
             isValid = false;
@@ -111,7 +123,7 @@ function validateCurrentStep() {
     }
 
     // Validazione input generici (text, number, email, etc.)
-    const requiredInputs = currentStepEl.querySelectorAll('input[required], select[required]:not(.hidden)');
+    const requiredInputs = currentStepEl.querySelectorAll('input[required]:not([type="email"]):not([name="telefono"]), select[required]:not(.hidden)');
     requiredInputs.forEach(input => {
         if (!input.value || input.value.trim() === '') {
             isValid = false;

@@ -3,6 +3,7 @@ package com.immobiliaris.immobiliaris_be.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
 /**
@@ -23,6 +24,7 @@ public class RichiestaValutazioneDTO {
     private String email;
     
     @NotBlank(message = "Telefono obbligatorio")
+    @Pattern(regexp = "^3\\d{9}$", message = "Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)")
     private String telefono;
     
     @NotBlank(message = "Password obbligatoria")

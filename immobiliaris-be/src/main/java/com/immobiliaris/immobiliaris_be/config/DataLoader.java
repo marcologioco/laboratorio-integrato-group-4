@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
         admin.setCognome("Default");
         admin.setEmail("admin@example.com");
         admin.setPassword("admin123"); // Verrà hashata automaticamente
-        admin.setTelefono("0000000000");
+        admin.setTelefono("3331234567"); // Numero cellulare valido
         admin.setIdRuolo(2); // Admin
         utenteService.saveUtente(admin);
 

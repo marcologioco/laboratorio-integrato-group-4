@@ -1,12 +1,19 @@
 package com.immobiliaris.immobiliaris_be.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * DTO per la richiesta di login
  * Contiene le credenziali che l'utente invia per autenticarsi
  */
 public class LoginRequest {
     
+    @NotBlank(message = "Email obbligatoria")
+    @Email(message = "Email non valida")
     private String email;
+    
+    @NotBlank(message = "Password obbligatoria")
     private String password;
 
     // Costruttori
