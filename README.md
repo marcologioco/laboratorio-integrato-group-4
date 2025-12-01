@@ -9,14 +9,14 @@ Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/labo
 **Membri:**
 
 - Lamguanouah Badr (Web Developer) -> <https://github.com/pandabluh>
-- Lo Gioco Marco (Web Developer) -> <https://github.com/marcologioco>
+- Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/marcologioco>
 - Vecchi Alessandro (Web Developer) -> <https://github.com/itstyuda>
-- Ferrero Tommaso Francesco (Software Developer) -> <https://github.com/Tommaferre>
+- Ferrero Tommaso Francesco (Software Developer) - REFERENTE SWD -> <https://github.com/Tommaferre>
 - Nechainikov Yaroslav (Software Developer) -> <https://github.com/YaroslavNechainikov>
 - Chimirri Simone (Software Developer) -> <https://github.com/SimoneChimirri>
 - Casabianca Ivan (Digital Strategist)
 - Lasagno Luca (Digital Strategist)
-- Affinito Clarissa (Digital Strategist)
+- Affinito Clarissa (Digital Strategist) - REFERENTE DIGITAL STRATEGIST
 
 ## Descrizione del Progetto
 
