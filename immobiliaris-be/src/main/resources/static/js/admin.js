@@ -304,6 +304,9 @@ function renderContractsList() {
           <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
              👁️
           </button>
+          <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-contratto-btn" data-id="${contratto.idContratto}">
+             ✏️
+          </button>
           <button class="p-2 text-gray-400 hover:text-red-600 transition delete-contratto-btn" data-id="${contratto.idContratto}">
              🗑️
           </button>
@@ -318,6 +321,13 @@ function renderContractsList() {
           await deleteContratto(contratto.idContratto);
           cardEl.remove();
         }
+      });
+    }
+
+    const editBtn = cardEl.querySelector('.edit-contratto-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditContractModal(contratto);
       });
     }
   });
@@ -1118,6 +1128,122 @@ async function updateValutazione(idValutazione, data) {
     if (!response.ok) {
       const txt = await response.text();
       throw new Error(txt || 'Errore update valutazione');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Apri modal per modificare un contratto
+function openEditContractModal(contratto) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:42rem;max-height:500px;overflow-y:auto;';
+
+  const stati = ['ATTIVO', 'COMPLETATO', 'ANNULLATO'];
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Contratto ID ${contratto.idContratto}</h3>
+      <button id="edit-contr-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Tipo</label>
+        <input id="edit-contr-tipo" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.tipo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <select id="edit-contr-stato" class="w-full border border-gray-300 rounded px-2 py-2">
+          ${stati.map(s => `<option value="${s}" ${contratto.stato === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Data Inizio</label>
+        <input id="edit-contr-datainizio" type="date" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.dataInizio || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Data Fine</label>
+        <input id="edit-contr-datafine" type="date" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.dataFine || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Prezzo Finale Minimo</label>
+        <input id="edit-contr-prezzo" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.prezzoFinaleMinimo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Esclusiva</label>
+        <input id="edit-contr-esclusiva" type="checkbox" class="w-4 h-4 border border-gray-300 rounded" ${contratto.esclusiva ? 'checked' : ''}>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Note</label>
+        <textarea id="edit-contr-note" class="w-full border border-gray-300 rounded px-2 py-2">${contratto.note || ''}</textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-contr-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-contr-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-contr-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-contr-cancel').addEventListener('click', () => overlay.remove());
+
+  modal.querySelector('#edit-contr-save').addEventListener('click', async () => {
+    const updated = {
+      tipo: document.getElementById('edit-contr-tipo').value.trim(),
+      stato: document.getElementById('edit-contr-stato').value.trim(),
+      dataInizio: document.getElementById('edit-contr-datainizio').value.trim(),
+      dataFine: document.getElementById('edit-contr-datafine').value.trim(),
+      prezzoFinaleMinimo: parseFloat(document.getElementById('edit-contr-prezzo').value) || null,
+      esclusiva: document.getElementById('edit-contr-esclusiva').checked,
+      note: document.getElementById('edit-contr-note').value.trim()
+    };
+
+    try {
+      const updatedContratto = await updateContract(contratto.idContratto, updated);
+      // Aggiorna currentData
+      currentData.contratti = currentData.contratti.map(c => c.idContratto === updatedContratto.idContratto ? updatedContratto : c);
+      // Rirenderizza la lista
+      renderContractsList();
+      overlay.remove();
+      alert('Contratto aggiornato con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento contratto:', e);
+      alert('Errore durante l\'aggiornamento del contratto');
+    }
+  });
+}
+
+// Aggiorna contratto (PATCH)
+async function updateContract(idContratto, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/contratti/${idContratto}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update contratto');
     }
 
     const updated = await response.json();
