@@ -4,21 +4,26 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Se già autenticato, redirect alla pagina appropriata
-  if (isAuthenticated()) {
+  // Controlla se siamo in modalità "logged" (utente sta richiedendo nuova valutazione)
+  const urlParams = new URLSearchParams(window.location.search);
+  const isLoggedMode = urlParams.get('mode') === 'logged';
+  
+  // Se già autenticato E non siamo in modalità logged, redirect alla pagina appropriata
+  if (isAuthenticated() && !isLoggedMode) {
     redirectByRole();
     return;
   }
 
   const loginForm = document.getElementById('loginForm');
+  
+  // Se non c'è il form di login, siamo su un'altra pagina (es. index.html)
+  if (!loginForm) {
+    return; // Esci silenziosamente senza errori
+  }
+  
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
   const loginButton = document.getElementById('loginButton');
-
-  if (!loginForm) {
-    console.error('Form di login non trovato');
-    return;
-  }
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

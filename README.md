@@ -7,6 +7,7 @@ Corso: Laboratorio Integrato
 Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
 
 **Membri:**
+
 - Lamguanouah Badr (Web Developer) -> https://github.com/pandabluh
 - Lo Gioco Marco (Web Developer) -> https://github.com/marcologioco
 - Vecchi Alessandro (Web Developer) -> https://github.com/itstyuda
@@ -101,8 +102,8 @@ L'applicazione sarà disponibile su: `http://localhost:8080`
 
 | Email | Password | Ruolo |
 |-------|----------|-------|
-| <admin@immobiliaris.com> | admin123 | Admin |
-| <user@immobiliaris.com> | user123 | Utente |
+| <admin@example.com> | admin123 | Admin |
+| <luca.rossi@example.com> | pwd123 | Utente |
 
 > **Nota:** Database in-memory - i dati si resettano ad ogni riavvio
 
@@ -146,7 +147,7 @@ L'applicazione sarà disponibile su: `http://localhost:8080`
 
 **Protette (autenticazione richiesta):**
 
-- `account.html` - Dashboard utente (valutazioni personali)
+- `user.html` - Dashboard utente (valutazioni personali)
 - `admin.html` - Dashboard admin (gestione completa sistema)
 
 **File JavaScript:**

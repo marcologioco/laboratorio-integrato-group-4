@@ -71,6 +71,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/validate").authenticated()    // Validazione token
                 .requestMatchers(HttpMethod.GET, "/api/immobili/**").authenticated()  // GET immobili per tutti
                 .requestMatchers(HttpMethod.GET, "/api/valutazioni/utente/*").authenticated()  // Valutazioni proprie
+                .requestMatchers(HttpMethod.POST, "/api/valutazioni/logged").authenticated()  // Nuova valutazione per utente loggato
                 
                 // ===== ENDPOINT SOLO ADMIN (hasRole richiede ROLE_ADMIN) =====
                 .requestMatchers("/api/immobili/**").hasRole("ADMIN")     // POST/PUT/PATCH/DELETE immobili solo admin

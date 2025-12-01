@@ -1,17 +1,75 @@
 /**
- * Form Valutazione Immobile - Multi-step (5 Step Version)
+ * Form Valutazione Immobile - Multi-step (6 Step Version con step 0)
  */
 
-let currentStep = 1;
-const totalSteps = 5; // AUMENTATO A 5
+let currentStep = 0;
+const totalSteps = 5; // Step da 1 a 5 (lo step 0 non conta nel progresso)
+let isLoggedMode = false;
 
 // --- INIZIALIZZAZIONE ---
 document.addEventListener('DOMContentLoaded', () => {
+    checkLoggedMode();
+    setupRegistrationChoice();
     setupFormNavigation();
     setupFormSubmit();
     setupCustomCards();
     updateProgressBar(); // Inizializza la barra
 });
+
+// --- CONTROLLO MODALITÀ UTENTE LOGGATO ---
+function checkLoggedMode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    isLoggedMode = urlParams.get('mode') === 'logged';
+    
+    if (isLoggedMode) {
+        // Utente già loggato: salta lo step 0 e lo step 1 (dati personali)
+        const token = getToken();
+        if (!token) {
+            // Se non c'è il token, redirect al login
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Nascondi step 0 e step 1
+        document.getElementById('step-0').classList.add('hidden');
+        document.getElementById('step-0').classList.remove('active');
+        document.getElementById('step-1').classList.add('hidden');
+        
+        // IMPORTANTE: Rimuovi required dai campi dello step 1 per evitare errori di validazione HTML5
+        const step1 = document.getElementById('step-1');
+        if (step1) {
+            step1.querySelectorAll('[required]').forEach(input => {
+                input.removeAttribute('required');
+            });
+        }
+        
+        // Mostra la progress bar e vai allo step 2
+        document.getElementById('progress-container').style.display = 'block';
+        currentStep = 2;
+        goToStep(2);
+    }
+}
+
+// --- GESTIONE SCELTA REGISTRAZIONE ---
+function setupRegistrationChoice() {
+    document.querySelectorAll('.registration-choice').forEach(card => {
+        card.addEventListener('click', function() {
+            const choice = this.getAttribute('data-choice');
+            
+            if (choice === 'yes') {
+                // Redirect al login
+                window.location.href = 'login.html';
+            } else {
+                // Procedi con la registrazione normale
+                document.getElementById('step-0').classList.add('hidden');
+                document.getElementById('step-0').classList.remove('active');
+                document.getElementById('progress-container').style.display = 'block';
+                currentStep = 1;
+                goToStep(1);
+            }
+        });
+    });
+}
 
 // --- NAVIGAZIONE FORM ---
 function setupFormNavigation() {
@@ -37,7 +95,10 @@ function setupFormNavigation() {
 }
 
 function goToStep(step) {
-    if (step < 1 || step > totalSteps) return;
+    if (step < 0 || step > totalSteps) return;
+    
+    // Step 0 è speciale, non permettere di tornarci
+    if (step === 0 && currentStep > 0) return;
     
     // Nascondi tutti gli step
     document.querySelectorAll('.form-step').forEach(s => {
@@ -63,6 +124,9 @@ function goToStep(step) {
 }
 
 function updateProgressBar() {
+    // Lo step 0 non conta nel progresso
+    if (currentStep === 0) return;
+    
     const progress = (currentStep / totalSteps) * 100;
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) {
@@ -83,8 +147,8 @@ function validateCurrentStep() {
     let isValid = true;
     let errorMessage = '';
 
-    // Step 1: Dati personali & Checkbox Proprietario
-    if (currentStep === 1) {
+    // Step 1: Dati personali & Checkbox Proprietario (SALTA SE LOGGED)
+    if (currentStep === 1 && !isLoggedMode) {
         // Valida email
         const emailInput = document.getElementById('email');
         if (emailInput && !validateEmailField(emailInput)) {
@@ -123,8 +187,15 @@ function validateCurrentStep() {
     }
 
     // Validazione input generici (text, number, email, etc.)
+    // Escludiamo anche gli input che sono in step nascosti
     const requiredInputs = currentStepEl.querySelectorAll('input[required]:not([type="email"]):not([name="telefono"]), select[required]:not(.hidden)');
     requiredInputs.forEach(input => {
+        // Salta la validazione se l'input è in uno step nascosto
+        const parentStep = input.closest('.form-step');
+        if (parentStep && parentStep.classList.contains('hidden')) {
+            return;
+        }
+        
         if (!input.value || input.value.trim() === '') {
             isValid = false;
             input.classList.add('border-red-500');
@@ -207,6 +278,9 @@ function setupFormSubmit() {
 }
 
 async function inviaValutazione() {
+    console.log('=== INIZIO INVIO VALUTAZIONE ===');
+    console.log('isLoggedMode:', isLoggedMode);
+    
     const submitBtn = document.getElementById('submit-btn');
     const loadingEl = document.getElementById('loading');
     const formContainer = document.getElementById('form-container');
@@ -216,43 +290,109 @@ async function inviaValutazione() {
     if (formContainer) formContainer.classList.add('hidden');
     
     try {
-        const formData = {
-            nome: document.getElementById('nome').value,
-            cognome: document.getElementById('cognome').value,
-            email: document.getElementById('email').value,
-            telefono: document.getElementById('telefono').value,
-            password: document.getElementById('password').value,
-            isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
-            indirizzo: document.getElementById('indirizzo').value,
-            citta: document.getElementById('citta').value,
-            provincia: document.getElementById('provincia').value,
-            cap: document.getElementById('cap').value,
-            metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
-            camere: parseInt(document.getElementById('camere').value),
-            bagni: parseInt(document.getElementById('bagni').value),
-            balconi: parseInt(document.getElementById('balconi').value) || 0,
-            terrazzo: document.getElementById('terrazzo').checked,
-            giardino: document.getElementById('giardino').checked,
-            garage: document.getElementById('garage').checked,
-            stato: document.getElementById('stato').value,
-            tipo: document.getElementById('tipo').value,
-            descrizione: document.getElementById('descrizione').value
-        };
+        let formData;
+        
+        if (isLoggedMode) {
+            // Utente già loggato: invia solo i dati dell'immobile
+            const token = getToken();
+            
+            formData = {
+                indirizzo: document.getElementById('indirizzo').value,
+                citta: document.getElementById('citta').value,
+                provincia: document.getElementById('provincia').value,
+                cap: document.getElementById('cap').value,
+                metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+                camere: parseInt(document.getElementById('camere').value),
+                bagni: parseInt(document.getElementById('bagni').value),
+                balconi: parseInt(document.getElementById('balconi').value) || 0,
+                terrazzo: document.getElementById('terrazzo').checked,
+                giardino: document.getElementById('giardino').checked,
+                garage: document.getElementById('garage').checked,
+                stato: document.getElementById('stato').value,
+                tipo: document.getElementById('tipo').value,
+                descrizione: document.getElementById('descrizione').value
+            };
 
-        // Simulazione chiamata API (Sostituire URL in produzione)
-        const response = await fetch('http://localhost:8080/api/valutazioni/automatica', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        
-        if (!response.ok) throw new Error('Errore valutazione');
-        
-        const data = await response.json();
-        mostraRisultato(data);
+            // Chiamata API per utente loggato (endpoint diverso)
+            console.log('Invio dati utente loggato:', formData);
+            console.log('Token:', token);
+            
+            const response = await fetch('http://localhost:8080/api/valutazioni/logged', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Errore response:', errorText);
+                throw new Error('Errore valutazione: ' + response.status);
+            }
+            
+            const data = await response.json();
+            console.log('Dati ricevuti:', data);
+            mostraRisultatoLogged(data);
+            
+        } else {
+            // Utente nuovo: invia tutti i dati (inclusi dati personali)
+            formData = {
+                nome: document.getElementById('nome').value,
+                cognome: document.getElementById('cognome').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                password: document.getElementById('password').value,
+                isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
+                indirizzo: document.getElementById('indirizzo').value,
+                citta: document.getElementById('citta').value,
+                provincia: document.getElementById('provincia').value,
+                cap: document.getElementById('cap').value,
+                metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+                camere: parseInt(document.getElementById('camere').value),
+                bagni: parseInt(document.getElementById('bagni').value),
+                balconi: parseInt(document.getElementById('balconi').value) || 0,
+                terrazzo: document.getElementById('terrazzo').checked,
+                giardino: document.getElementById('giardino').checked,
+                garage: document.getElementById('garage').checked,
+                stato: document.getElementById('stato').value,
+                tipo: document.getElementById('tipo').value,
+                descrizione: document.getElementById('descrizione').value
+            };
+
+            // Chiamata API per nuovo utente
+            console.log('Invio dati nuovo utente:', formData);
+            
+            const response = await fetch('http://localhost:8080/api/valutazioni/automatica', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Errore response:', errorText);
+                throw new Error('Errore valutazione: ' + response.status);
+            }
+            
+            const data = await response.json();
+            console.log('Dati ricevuti:', data);
+            mostraRisultato(data);
+        }
         
     } catch (error) {
-        console.error(error);
+        console.error('=== ERRORE VALUTAZIONE ===');
+        console.error('Errore:', error);
+        console.error('Messaggio:', error.message);
+        console.error('Stack:', error.stack);
+        
         showError('Errore durante la valutazione. Riprova più tardi.');
         if (submitBtn) submitBtn.disabled = false;
         if (loadingEl) loadingEl.classList.add('hidden');
@@ -271,6 +411,29 @@ function mostraRisultato(data) {
         document.getElementById('result-valore').textContent = `€${data.valoreStimato.toLocaleString('it-IT')}`;
         document.getElementById('result-base').textContent = `€${data.valoreBaseZona.toLocaleString('it-IT')}`;
         document.getElementById('result-messaggio').textContent = data.messaggio;
+        resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function mostraRisultatoLogged(data) {
+    const loadingEl = document.getElementById('loading');
+    const resultEl = document.getElementById('result');
+    
+    if (loadingEl) loadingEl.classList.add('hidden');
+    
+    if (resultEl) {
+        resultEl.classList.remove('hidden');
+        document.getElementById('result-valore').textContent = `€${data.valoreStimato.toLocaleString('it-IT')}`;
+        document.getElementById('result-base').textContent = `€${data.valoreBaseZona.toLocaleString('it-IT')}`;
+        document.getElementById('result-messaggio').textContent = data.messaggio;
+        
+        // Modifica il bottone per tornare alla dashboard invece di reset
+        const resetBtn = resultEl.querySelector('button');
+        if (resetBtn) {
+            resetBtn.textContent = 'Torna alla Dashboard';
+            resetBtn.onclick = () => window.location.href = 'user.html';
+        }
+        
         resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
@@ -301,7 +464,15 @@ function resetForm() {
         if(text) { text.classList.remove('text-my-orange'); text.classList.add('text-gray-600'); }
     });
     
-    goToStep(1);
+    // Torna allo step iniziale corretto
+    if (isLoggedMode) {
+        goToStep(2);
+    } else {
+        document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('step-0').classList.remove('hidden');
+        document.getElementById('step-0').classList.add('active');
+        currentStep = 0;
+    }
     
     document.getElementById('form-container').classList.remove('hidden');
     document.getElementById('result').classList.add('hidden');
