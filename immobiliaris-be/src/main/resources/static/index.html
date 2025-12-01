@@ -9,8 +9,15 @@
     <!-- tuo CSS Tailwind -->
     <link href="styles/style-tailwind.css" rel="stylesheet">
 
+    <!-- Google Fonts: Montserrat (base), Cinzel, Cinzel Decorative -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Cinzel+Decorative:wght@400;700&family=Montserrat:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="./styles/home-styles.css" />
+    <!-- custom font utilities & base overrides (loaded after Tailwind so it wins) -->
+    <link rel="stylesheet" href="./styles/custom-fonts.css" />
 
     <style>
         .form-step {
@@ -23,7 +30,7 @@
     </style>
 </head>
 
-<body class="font-sans text-my-black antialiased">
+<body class="font-montserrat text-my-black antialiased">
 
     <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -138,7 +145,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
 
                 <div>
-                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-my-black">
+                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-my-black font-cinzel-decorative">
                         Valuta <br>
                         <span class="text-my-orange">la tua casa</span><br>
                         ora in pochi click
@@ -505,7 +512,7 @@
     <section class="py-20 bg-my-cream">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-my-black mb-3">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-my-black mb-3 font-cinzel">
                     Successi Recenti
                 </h2>
                 <p class="text-gray-600">Ecco alcuni degli immobili che abbiamo valutato e venduto nell'ultimo mese.</p>
@@ -702,7 +709,7 @@
 
     <section id="servizi" class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold mb-2 text-my-black">Cosa ottieni affidandoti a noi</h2>
+            <h2 class="text-3xl font-bold mb-2 text-my-black font-cinzel">Cosa ottieni affidandoti a noi</h2>
             <p class="text-gray-600 mb-1">Lavoriamo nel settore immobiliare da più di 50 anni e abbiamo le soluzioni ai
                 tuoi problemi</p>
             <p class="text-gray-600 mb-8">Un servizio completo, rapido e costruito intorno alle tue esigenze.</p>
@@ -740,7 +747,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
                 <div class="relative z-10">
-                    <h2 class="text-4xl font-extrabold leading-tight">
+                    <h2 class="text-4xl font-extrabold leading-tight font-cinzel">
                         Siamo qui per<br>
                         <span class="text-4xl md:text-5xl font-bold text-my-orange">darti sicurezza,
                             chiarezza</span><br>

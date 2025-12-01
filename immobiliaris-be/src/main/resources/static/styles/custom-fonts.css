@@ -1,0 +1,35 @@
+/* custom-fonts.css
+   - Loads font-family utilities and sets base fonts for the site.
+   - Loaded after Tailwind so rules here override generated Tailwind defaults where needed.
+*/
+
+:root {
+  --font-montserrat: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  --font-cinzel: 'Cinzel', serif;
+  --font-cinzel-decorative: 'Cinzel Decorative', 'Cinzel', serif;
+}
+
+/* utility classes (behave similarly to Tailwind's font-* utilities) */
+.font-montserrat { font-family: var(--font-montserrat) !important; }
+.font-cinzel { font-family: var(--font-cinzel) !important; }
+.font-cinzel-decorative { font-family: var(--font-cinzel-decorative) !important; }
+
+/* explicit base override for the page — prevents other style rules from unintentionally forcing another font */
+html, body {
+  font-family: var(--font-montserrat) !important;
+}
+
+/* Headings: make sure h1 uses Cinzel Decorative and h2 uses Cinzel */
+h1, .h1, .heading-1 {
+  font-family: var(--font-cinzel-decorative) !important;
+}
+
+h2, .h2, .heading-2 {
+  font-family: var(--font-cinzel) !important;
+}
+
+/* Keep small text and UI elements in Montserrat explicitly to avoid fallback surprises */
+small, a, button, input, textarea, select, label { font-family: var(--font-montserrat) !important; }
+
+/* Accessibility: ensure the headings preserve weight and spacing but use our fonts */
+h1, h2 { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }

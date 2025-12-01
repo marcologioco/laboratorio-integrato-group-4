@@ -13,6 +13,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        montserrat: ["Montserrat", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+        cinzel: ["Cinzel", "serif"],
+        'cinzel-decorative': ["Cinzel Decorative", "Cinzel", "serif"],
+      },
       colors: {
         'my-green-dark': '#274239',
         'my-green-light': '#809074',
