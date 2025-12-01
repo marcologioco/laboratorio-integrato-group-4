@@ -1,27 +1,28 @@
-# 🔄 Flussi di Valutazione Immobiliare
+# Flussi di Valutazione Immobiliare
 
 Questo documento descrive i due flussi disponibili per richiedere una valutazione immobiliare nel sistema Immobiliaris.
 
 ---
 
-## 📊 Flusso 1: Utente NON Registrato
+## Flusso 1: Utente NON Registrato
 
-### 🎯 Scenario
+### Scenario
+
 L'utente non ha ancora un account e vuole registrarsi + richiedere una valutazione in un unico flusso.
 
-### 📍 Percorso Completo
+### Percorso Completo
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ 1. PAGINA INIZIALE                                          │
 │    URL: http://localhost:8080/index.html                    │
-│                                                              │
-│    ┌────────────────────────────────────────┐              │
-│    │  Step 0: Sei già registrato?           │              │
-│    │  ┌──────────┐      ┌──────────┐       │              │
-│    │  │   SÌ     │      │   NO ✓   │       │              │
-│    │  └──────────┘      └──────────┘       │              │
-│    └────────────────────────────────────────┘              │
+│                                                             │
+│    ┌────────────────────────────────────────┐               │
+│    │  Step 0: Sei già registrato?           │               │
+│    │  ┌──────────┐      ┌──────────┐        │               │
+│    │  │   SÌ     │      │   NO x   │        │               │
+│    │  └──────────┘      └──────────┘        │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    L'utente clicca "NO"                                     │
@@ -30,51 +31,51 @@ L'utente non ha ancora un account e vuole registrarsi + richiedere una valutazio
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 2. COMPILAZIONE FORM COMPLETO                               │
-│                                                              │
+│                                                             │
 │    Step 1 - Dati Personali:                                 │
-│    ┌────────────────────────────────────────┐              │
-│    │ • Nome: Mario                           │              │
-│    │ • Cognome: Rossi                        │              │
-│    │ • Email: mario.rossi@email.com          │              │
-│    │ • Telefono: 3331234567                  │              │
-│    │ • Password: ********                    │              │
-│    │ • Sei proprietario? ○ Sì  ○ No         │              │
-│    └────────────────────────────────────────┘              │
+│    ┌────────────────────────────────────────┐               │
+│    │ • Nome: Mario                          │               │
+│    │ • Cognome: Rossi                       │               │
+│    │ • Email: mario.rossi@email.com         │               │
+│    │ • Telefono: 3331234567                 │               │
+│    │ • Password: ********                   │               │
+│    │ • Sei proprietario? ○ Sì  ○ No         │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    Step 2 - Dati Immobile (Posizione):                      │
-│    ┌────────────────────────────────────────┐              │
-│    │ • Indirizzo: Via Roma 15                │              │
-│    │ • Città: Torino                         │              │
-│    │ • Provincia: TO                         │              │
-│    │ • CAP: 10121                            │              │
-│    │ • Metri quadri: 85                      │              │
-│    │ • Camere: 3                             │              │
-│    │ • Bagni: 2                              │              │
-│    └────────────────────────────────────────┘              │
+│    ┌────────────────────────────────────────┐               │
+│    │ • Indirizzo: Via Roma 15               │               │
+│    │ • Città: Torino                        │               │
+│    │ • Provincia: TO                        │               │
+│    │ • CAP: 10121                           │               │
+│    │ • Metri quadri: 85                     │               │
+│    │ • Camere: 3                            │               │
+│    │ • Bagni: 2                             │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    Step 3 - Tipo Immobile:                                  │
-│    ┌────────────────────────────────────────┐              │
-│    │  [APPARTAMENTO ✓]  [VILLA]  [UFFICIO]  │              │
-│    └────────────────────────────────────────┘              │
+│    ┌────────────────────────────────────────┐               │
+│    │  [APPARTAMENTO x]  [VILLA]  [UFFICIO]  │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    Step 4 - Stato Immobile:                                 │
-│    ┌────────────────────────────────────────┐              │
-│    │ [NUOVA] [RISTRUTTURATA ✓]              │              │
-│    │ [ABITABILE] [DA_RISTRUTTURARE]          │              │
-│    └────────────────────────────────────────┘              │
+│    ┌────────────────────────────────────────┐               │
+│    │ [NUOVA] [RISTRUTTURATA x]              │               │
+│    │ [ABITABILE] [DA_RISTRUTTURARE]         │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    Step 5 - Pertinenze:                                     │
-│    ┌────────────────────────────────────────┐              │
-│    │ • Balconi: 1                            │              │
-│    │ • Terrazzo: ☑                           │              │
-│    │ • Giardino: ☐                           │              │
-│    │ • Garage: ☑                             │              │
+│    ┌────────────────────────────────────────┐               │
+│    │ • Balconi: 1                           │               │
+│    │ • Terrazzo: ☑                         │                │
+│    │ • Giardino: ☐                          │               │
+│    │ • Garage: ☑                            │               │
 │    │ • Descrizione: Appartamento luminoso... │              │
-│    └────────────────────────────────────────┘              │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │              [Calcola Valutazione]                          │
@@ -84,7 +85,7 @@ L'utente non ha ancora un account e vuole registrarsi + richiedere una valutazio
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. ELABORAZIONE BACKEND                                     │
 │    Endpoint: POST /api/valutazioni/automatica               │
-│                                                              │
+│                                                             │
 │    Request Body (RichiestaValutazioneDTO):                  │
 │    {                                                         │
 │      "nome": "Mario",                                        │
@@ -125,9 +126,9 @@ L'utente non ha ancora un account e vuole registrarsi + richiedere una valutazio
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 4. RISULTATO                                                │
-│                                                              │
-│    ┌────────────────────────────────────────┐              │
-│    │  ✅ Valutazione Completata!             │              │
+│                                                             │
+│    ┌────────────────────────────────────────┐               │
+│    │     Valutazione Completata!             │              │
 │    │                                         │              │
 │    │  Valore Stimato: € 375.000              │              │
 │    │  Valore Base Zona: € 340.000            │              │
@@ -136,11 +137,11 @@ L'utente non ha ancora un account e vuole registrarsi + richiedere una valutazio
 │    │  dettagliata entro 72 ore.              │              │
 │    │                                         │              │
 │    │  [Nuova Valutazione]                    │              │
-│    └────────────────────────────────────────┘              │
+│    └────────────────────────────────────────┘               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 📝 Dati Creati nel Database
+### Dati Creati nel Database
 
 ```sql
 -- Tabella: utente
@@ -169,12 +170,13 @@ VALUES (7, 6, 'COMPLETATA', 375000, 340000, NOW(), NOW());
 
 ---
 
-## 📊 Flusso 2: Utente GIÀ Registrato
+## Flusso 2: Utente GIÀ Registrato
 
-### 🎯 Scenario
+### Scenario
+
 L'utente ha già un account e vuole richiedere una valutazione per un nuovo immobile.
 
-### 📍 Percorso Completo
+### Percorso Completo
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -216,16 +218,16 @@ L'utente ha già un account e vuole richiedere una valutazione per un nuovo immo
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. DASHBOARD UTENTE                                         │
 │    URL: http://localhost:8080/user.html                     │
-│                                                              │
-│    ┌────────────────────────────────────────┐              │
-│    │  Benvenuto, Luca Rossi                 │              │
-│    │                                         │              │
-│    │  [➕ Richiedi Nuova Valutazione]       │ ← CLICK QUI  │
-│    │                                         │              │
-│    │  Le mie Valutazioni:                   │              │
-│    │  • Valutazione #1 - Via Genova 12      │              │
-│    │  • Valutazione #2 - Corso Italia 5     │              │
-│    └────────────────────────────────────────┘              │
+│                                                             │
+│    ┌────────────────────────────────────────┐               │
+│    │  Benvenuto, Luca Rossi                 │               │
+│    │                                        │               │
+│    │  [ Richiedi Nuova Valutazione]         │  ← CLICK QUI  │
+│    │                                        │               │
+│    │  Le mie Valutazioni:                   │               │
+│    │  • Valutazione #1 - Via Genova 12      │               │
+│    │  • Valutazione #2 - Corso Italia 5     │               │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    ➜ REDIRECT AUTOMATICO a index.html?mode=logged          │
@@ -235,16 +237,16 @@ L'utente ha già un account e vuole richiedere una valutazione per un nuovo immo
 ┌─────────────────────────────────────────────────────────────┐
 │ 4. FORM SEMPLIFICATO (SOLO IMMOBILE)                        │
 │    URL: http://localhost:8080/index.html?mode=logged        │
-│                                                              │
+│                                                             │
 │    JavaScript rileva: mode=logged                           │
 │    ✓ Verifica token JWT in localStorage                     │
 │    ✓ Salta Step 0 (scelta registrazione)                    │
 │    ✓ Salta Step 1 (dati personali)                          │
 │    ✓ Inizia da Step 2                                       │
-│                                                              │
+│                                                             │
 │    Step 2 - Dati Immobile (Posizione):                      │
-│    ┌────────────────────────────────────────┐              │
-│    │ • Indirizzo: Corso Vittorio 88         │              │
+│    ┌────────────────────────────────────────┐               │
+│    │ • Indirizzo: Corso Vittorio 88         │               │
 │    │ • Città: Torino                         │              │
 │    │ • Provincia: TO                         │              │
 │    │ • CAP: 10138                            │              │
@@ -322,9 +324,9 @@ L'utente ha già un account e vuole richiedere una valutazione per un nuovo immo
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 6. RISULTATO                                                │
-│                                                              │
-│    ┌────────────────────────────────────────┐              │
-│    │  ✅ Nuova Valutazione Completata!       │              │
+│                                                             │
+│    ┌────────────────────────────────────────┐               │
+│    │    Nuova Valutazione Completata!       │               │
 │    │                                         │              │
 │    │  Valore Stimato: € 380.650              │              │
 │    │  Valore Base Zona: € 288.000            │              │
@@ -333,14 +335,14 @@ L'utente ha già un account e vuole richiedere una valutazione per un nuovo immo
 │    │  dettagliata entro 72 ore.              │              │
 │    │                                         │              │
 │    │  [Torna alla Dashboard]                 │              │
-│    └────────────────────────────────────────┘              │
+│    └────────────────────────────────────────┘               │
 │                              │                              │
 │                              ▼                              │
 │    ➜ REDIRECT a user.html (dashboard)                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 📝 Dati Creati nel Database
+### Dati Creati nel Database
 
 ```sql
 -- Utente già esistente (creato durante il login iniziale)
@@ -365,24 +367,24 @@ VALUES (8, 1, 'COMPLETATA', 380650, 288000, NOW(), NOW());
 
 ---
 
-## 📊 Confronto tra i Due Flussi
+## Confronto tra i Due Flussi
 
 | Caratteristica | Flusso 1 (Nuovo Utente) | Flusso 2 (Utente Loggato) |
 |----------------|------------------------|---------------------------|
 | **Punto di partenza** | `index.html` | `index.html` → Login → Dashboard |
-| **Autenticazione** | ❌ Nessuna | ✅ Token JWT richiesto |
+| **Autenticazione** |  Nessuna |  Token JWT richiesto |
 | **Step da compilare** | 0 → 1 → 2 → 3 → 4 → 5 | 2 → 3 → 4 → 5 |
 | **Dati richiesti** | Utente + Immobile | Solo Immobile |
 | **Endpoint backend** | `/api/valutazioni/automatica` | `/api/valutazioni/logged` |
 | **DTO utilizzato** | `RichiestaValutazioneDTO` | `RichiestaValutazioneImmobileDTO` |
-| **Crea nuovo utente** | ✅ Sì | ❌ No (già esistente) |
-| **Crea nuovo venditore** | ✅ Se proprietario | ⚠️ Solo se non esiste |
+| **Crea nuovo utente** |  Sì | No (già esistente) |
+| **Crea nuovo venditore** |  Se proprietario | Solo se non esiste |
 | **Bottone finale** | "Nuova Valutazione" | "Torna alla Dashboard" |
 | **Tempo compilazione** | ~3-5 minuti | ~2 minuti |
 
 ---
 
-## 🧪 Come Testare
+## Come Testare
 
 ### Test Flusso 1 (Nuovo Utente)
 
@@ -396,10 +398,12 @@ VALUES (8, 1, 'COMPLETATA', 380650, 288000, NOW(), NOW());
 ### Test Flusso 2 (Utente Loggato)
 
 **Credenziali di test:**
+
 - Email: `luca.rossi@example.com`
 - Password: `pwd123`
 
 **Passi:**
+
 1. Avvia backend: `mvn spring-boot:run`
 2. Vai su: `http://localhost:8080/index.html`
 3. Clicca "SÌ" su "Sei già registrato?"
@@ -411,19 +415,22 @@ VALUES (8, 1, 'COMPLETATA', 380650, 288000, NOW(), NOW());
 
 ---
 
-## 🔐 Note di Sicurezza
+## Note di Sicurezza
 
 ### Token JWT
+
 - **Generato**: Al login in `/api/auth/login`
 - **Salvato**: In `localStorage` con chiave `jwtToken`
 - **Validità**: Configurabile (default: diverse ore)
 - **Formato**: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
 
 ### Endpoint Protetti
-- ✅ `/api/valutazioni/logged` - Richiede autenticazione (qualsiasi utente loggato)
-- ❌ `/api/valutazioni/automatica` - Pubblico (per nuovi utenti)
+
+- `/api/valutazioni/logged` - Richiede autenticazione (qualsiasi utente loggato)
+- `/api/valutazioni/automatica` - Pubblico (per nuovi utenti)
 
 ### Configurazione SecurityConfig.java
+
 Per permettere agli utenti autenticati di creare valutazioni, la regola per `/api/valutazioni/logged` deve essere posizionata **PRIMA** della regola generale per admin:
 
 ```java
@@ -433,54 +440,56 @@ Per permettere agli utenti autenticati di creare valutazioni, la regola per `/ap
 .requestMatchers("/api/valutazioni/**").hasRole("ADMIN")  // Tutti gli altri endpoint solo admin
 ```
 
-⚠️ **IMPORTANTE**: L'ordine è fondamentale! Spring Security valuta le regole dall'alto verso il basso. Se metti la regola generale prima, `/logged` verrebbe bloccato.
+ **IMPORTANTE**: L'ordine è fondamentale! Spring Security valuta le regole dall'alto verso il basso. Se metti la regola generale prima, `/logged` verrebbe bloccato.
 
 ### Verifica Token
+
 Il backend verifica automaticamente il token JWT nell'header `Authorization` prima di processare la richiesta. Se il token non è valido o mancante, restituisce `401 Unauthorized`.
 
 ---
 
-## 📈 Vantaggi del Sistema
+## Vantaggi del Sistema
 
 ### Per l'Utente Nuovo
-- ✅ Registrazione + valutazione in un unico flusso
-- ✅ Non serve accedere separatamente
-- ✅ Esperienza guidata passo-passo
+
+- Registrazione + valutazione in un unico flusso
+- Non serve accedere separatamente
+- Esperienza guidata passo-passo
 
 ### Per l'Utente Esistente
-- ✅ Non re-inserisce dati personali
-- ✅ Processo più veloce (4 step invece di 6)
-- ✅ Tutte le valutazioni raccolte nella dashboard
-- ✅ Storico completo immobili e valutazioni
+
+- Non re-inserisce dati personali
+- Processo più veloce (4 step invece di 6)
+- Tutte le valutazioni raccolte nella dashboard
+- Storico completo immobili e valutazioni
 
 ### Per il Sistema
-- ✅ Un utente può avere N immobili
-- ✅ Un immobile può avere N valutazioni nel tempo
-- ✅ Tracciabilità completa
-- ✅ Separazione chiara tra utenti e venditori
+
+- Un utente può avere N immobili
+- Un immobile può avere N valutazioni nel tempo
+- Tracciabilità completa
+- Separazione chiara tra utenti e venditori
 
 ---
 
-## 🐛 Risoluzione Problemi
+## Risoluzione Problemi
 
 ### Problema: Token non valido
+
 **Sintomo**: Errore 401 quando si invia la valutazione  
 **Soluzione**: Rifare il login per ottenere un nuovo token
 
 ### Problema: Redirect al login anche se loggato
+
 **Sintomo**: Viene reindirizzato a login.html  
 **Soluzione**: Il token è scaduto o non esiste in localStorage
 
 ### Problema: Database ricreato, token non funziona
+
 **Sintomo**: Dopo `mvn spring-boot:run` il token salvato non funziona  
 **Soluzione**: Rifare il login (il database è stato ricreato con nuovi utenti)
 
 ### Problema: Form inizia da Step 1 invece di Step 2
+
 **Sintomo**: Utente loggato ma vede dati personali  
 **Soluzione**: Verificare che l'URL contenga `?mode=logged`
-
----
-
-**Data creazione**: 1 Dicembre 2025  
-**Versione**: 1.0  
-**Branch**: Ferrero-IMPL-validazione

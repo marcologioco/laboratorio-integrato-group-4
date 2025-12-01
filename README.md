@@ -8,15 +8,15 @@ Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/labo
 
 **Membri:**
 
-- Lamguanouah Badr (Web Developer) -> https://github.com/pandabluh
-- Lo Gioco Marco (Web Developer) -> https://github.com/marcologioco
-- Vecchi Alessandro (Web Developer) -> https://github.com/itstyuda
-- Ferrero Tommaso Francesco (Software Developer) -> https://github.com/Tommaferre
-- Nechainikov Yaroslav (Software Developer) -> https://github.com/YaroslavNechainikov
-- Chimirri Simone (Software Developer) -> https://github.com/SimoneChimirri
+- Lamguanouah Badr (Web Developer) -> <https://github.com/pandabluh>
+- Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/marcologioco>
+- Vecchi Alessandro (Web Developer) -> <https://github.com/itstyuda>
+- Ferrero Tommaso Francesco (Software Developer) - REFERENTE SWD -> <https://github.com/Tommaferre>
+- Nechainikov Yaroslav (Software Developer) -> <https://github.com/YaroslavNechainikov>
+- Chimirri Simone (Software Developer) -> <https://github.com/SimoneChimirri>
 - Casabianca Ivan (Digital Strategist)
 - Lasagno Luca (Digital Strategist)
-- Affinito Clarissa (Digital Strategist)
+- Affinito Clarissa (Digital Strategist) - REFERENTE DIGITAL STRATEGIST
 
 ## Descrizione del Progetto
 
@@ -55,7 +55,7 @@ Portale web per un'agenzia immobiliare piemontese che modernizza l'acquisizione 
 
 ## Struttura del Progetto
 
-```
+```bash
 immobiliaris-be/
 ├── src/main/
 │   ├── java/com/immobiliaris/immobiliaris_be/
@@ -80,7 +80,13 @@ git clone https://github.com/marcologioco/laboratorio-integrato-group-4.git
 cd laboratorio-integrato-group-4/immobiliaris-be
 
 # Avvia applicazione
-mvn spring-boot:run
+mvn spring-boot:run 
+
+oppure lanciare il programma .bat
+
+laboratorio-integrato-group-4\immobiliaris-be\start-backend.bat
+
+e attendere l'avvio del progetto
 ```
 
 L'applicazione sarà disponibile su: `http://localhost:8080`
@@ -161,10 +167,3 @@ L'applicazione sarà disponibile su: `http://localhost:8080`
 
 - **[DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)** - Documentazione completa Backend, Database e Frontend
 - **Swagger UI**: <http://localhost:8080/swagger> - API interattiva
-
-## Note di Produzione
-
-- Modificare `jwt.secret` in application.properties (usare variabile d'ambiente)
-- Sostituire H2 con database persistente (PostgreSQL/MySQL)
-- Configurare HTTPS/SSL
-- Aggiornare configurazione CORS

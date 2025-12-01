@@ -8,8 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const isLoggedMode = urlParams.get('mode') === 'logged';
   
-  // Se già autenticato E non siamo in modalità logged, redirect alla pagina appropriata
-  if (isAuthenticated() && !isLoggedMode) {
+  // Controlla se siamo su index.html - non fare redirect automatico
+  const isIndexPage = window.location.pathname.endsWith('index.html') || 
+                      window.location.pathname === '/' || 
+                      window.location.pathname.endsWith('/');
+  
+  // Se già autenticato E non siamo in modalità logged E non siamo su index, redirect alla pagina appropriata
+  if (isAuthenticated() && !isLoggedMode && !isIndexPage) {
     redirectByRole();
     return;
   }
