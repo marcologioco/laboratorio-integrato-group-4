@@ -1,93 +1,110 @@
 /**
- * Form Valutazione Immobile - Multi-step (6 Step Version con step 0)
+ * JS VALUTAZIONE - Versione Definitiva (Compatibile con Step 0)
  */
 
-let currentStep = 0;
-const totalSteps = 5; // Step da 1 a 5 (lo step 0 non conta nel progresso)
-let isLoggedMode = false;
+let currentStep = 0; // Partiamo da Step 0 (Scelta login)
+const totalSteps = 5;
 
-// --- INIZIALIZZAZIONE ---
-document.addEventListener('DOMContentLoaded', () => {
-    checkLoggedMode();
-    setupRegistrationChoice();
-    setupFormNavigation();
-    setupFormSubmit();
-    setupCustomCards();
-    updateProgressBar(); // Inizializza la barra
+// Parametri di calcolo
+const PREZZI = {
+    MQ_BASE: 1800,
+    GARAGE: 15000,
+    GIARDINO: 10000,
+    TERRAZZO: 5000,
+    BALCONE: 3000
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    setupRegistrationChoice(); // Gestisce i click su "Sì/No" nello step 0
+    setupNavigation();
+    setupCards();
+    setupSubmit();
+    
+    // Controllo Login all'avvio
+    await checkLoginState();
 });
 
-// --- CONTROLLO MODALITÀ UTENTE LOGGATO ---
-function checkLoggedMode() {
-    const urlParams = new URLSearchParams(window.location.search);
-    isLoggedMode = urlParams.get('mode') === 'logged';
-    
-    if (isLoggedMode) {
-        // Utente già loggato: salta lo step 0 e lo step 1 (dati personali)
-        const token = getToken();
-        if (!token) {
-            // Se non c'è il token, redirect al login
-            window.location.href = 'login.html';
-            return;
-        }
+// --- 1. GESTIONE LOGICA LOGIN ---
+async function checkLoginState() {
+    if (typeof getUser !== 'function') return;
+    const user = getUser();
+
+    // Nascondi tutti gli step inizialmente per evitare flash
+    document.querySelectorAll('.form-step').forEach(s => {
+        s.classList.remove('active');
+        s.classList.add('hidden');
+    });
+
+    if (user) {
+        console.log("Utente loggato:", user.email);
         
-        // Nascondi step 0 e step 1
-        document.getElementById('step-0').classList.add('hidden');
-        document.getElementById('step-0').classList.remove('active');
-        document.getElementById('step-1').classList.add('hidden');
+        // SE LOGGATO: Saltiamo Step 0 e Step 1
+        // Precompiliamo i campi nascosti per sicurezza
+        fillHiddenFields(user);
         
-        // IMPORTANTE: Rimuovi required dai campi dello step 1 per evitare errori di validazione HTML5
-        const step1 = document.getElementById('step-1');
-        if (step1) {
-            step1.querySelectorAll('[required]').forEach(input => {
-                input.removeAttribute('required');
-            });
-        }
-        
-        // Mostra la progress bar e vai allo step 2
-        document.getElementById('progress-container').style.display = 'block';
-        currentStep = 2;
+        // Andiamo diretti allo Step 2 (Immobile)
         goToStep(2);
+        
+        // Mostra un piccolo avviso "Bentornato" sopra il form (opzionale)
+        showWelcomeBanner(user);
+
+    } else {
+        // SE OSPITE: Mostriamo Step 0
+        goToStep(0);
     }
 }
 
-// --- GESTIONE SCELTA REGISTRAZIONE ---
+function fillHiddenFields(user) {
+    if(document.getElementById('nome')) document.getElementById('nome').value = user.nome || 'Utente';
+    if(document.getElementById('cognome')) document.getElementById('cognome').value = user.cognome || 'Loggato';
+    if(document.getElementById('email')) document.getElementById('email').value = user.email;
+    if(document.getElementById('telefono')) document.getElementById('telefono').value = user.telefono || '0000000000';
+    if(document.getElementById('password')) document.getElementById('password').value = "LoggedUserPass";
+    
+    // Proprietario: SI di default
+    const propSi = document.querySelector('input[name="isProprietario"][value="true"]');
+    if(propSi) propSi.checked = true;
+}
+
+function showWelcomeBanner(user) {
+    const container = document.getElementById('form-container');
+    const banner = document.createElement('div');
+    banner.className = 'bg-green-50 text-green-800 px-4 py-3 rounded-lg mb-4 text-sm flex items-center justify-between';
+    banner.innerHTML = `
+        <span>👋 Ciao <strong>${user.nome}</strong>, sei loggato.</span>
+        <a href="#" onclick="logout()" class="underline hover:text-red-600 ml-4">Esci</a>
+    `;
+    container.insertBefore(banner, container.firstChild);
+}
+
+// --- 2. GESTIONE SCELTA INIZIALE (Step 0) ---
 function setupRegistrationChoice() {
     document.querySelectorAll('.registration-choice').forEach(card => {
         card.addEventListener('click', function() {
             const choice = this.getAttribute('data-choice');
             
             if (choice === 'yes') {
-                // Redirect al login
+                // Ha già un account -> Mandalo al login
                 window.location.href = 'login.html';
             } else {
-                // Procedi con la registrazione normale
-                document.getElementById('step-0').classList.add('hidden');
-                document.getElementById('step-0').classList.remove('active');
-                document.getElementById('progress-container').style.display = 'block';
-                currentStep = 1;
+                // Non ha un account -> Vai a Step 1 (Registrazione)
                 goToStep(1);
             }
         });
     });
 }
 
-// --- NAVIGAZIONE FORM ---
-function setupFormNavigation() {
-    // Pulsanti Avanti
-    const nextButtons = document.querySelectorAll('.btn-next');
-    nextButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+// --- 3. NAVIGAZIONE ---
+function setupNavigation() {
+    document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            if (validateCurrentStep()) {
-                goToStep(currentStep + 1);
-            }
+            if(validateStep(currentStep)) goToStep(currentStep + 1);
         });
     });
     
-    // Pulsanti Indietro
-    const prevButtons = document.querySelectorAll('.btn-prev');
-    prevButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
             goToStep(currentStep - 1);
         });
@@ -95,386 +112,258 @@ function setupFormNavigation() {
 }
 
 function goToStep(step) {
+    // Controlli limiti
     if (step < 0 || step > totalSteps) return;
-    
-    // Step 0 è speciale, non permettere di tornarci
-    if (step === 0 && currentStep > 0) return;
-    
-    // Nascondi tutti gli step
+
+    // Nascondi tutti
     document.querySelectorAll('.form-step').forEach(s => {
         s.classList.remove('active');
-        s.classList.add('hidden'); // Usa la classe hidden di Tailwind
+        s.classList.add('hidden');
     });
     
-    // Mostra step corrente
-    const stepEl = document.getElementById(`step-${step}`);
-    if (stepEl) {
-        stepEl.classList.remove('hidden');
-        stepEl.classList.add('active');
+    // Mostra target
+    const target = document.getElementById(`step-${step}`);
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('active');
     }
     
     currentStep = step;
-    updateProgressBar();
     
-    // Scroll in cima al form per UX su mobile
-    const formContainer = document.getElementById('form-container');
-    if(formContainer) {
-        formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Aggiorna Barra Progresso (Visibile solo da step 1 in poi)
+    const progressContainer = document.getElementById('progress-container');
+    if (step > 0) {
+        progressContainer.style.display = 'block';
+        const bar = document.getElementById('progress-bar');
+        const ind = document.getElementById('step-indicator');
+        if(bar) bar.style.width = `${(step/totalSteps)*100}%`;
+        if(ind) ind.textContent = `Step ${step} di ${totalSteps}`;
+    } else {
+        progressContainer.style.display = 'none';
     }
+    
+    // NO SCROLL (Come richiesto)
 }
 
-function updateProgressBar() {
-    // Lo step 0 non conta nel progresso
-    if (currentStep === 0) return;
-    
-    const progress = (currentStep / totalSteps) * 100;
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) {
-        progressBar.style.width = `${progress}%`;
-    }
-    
-    const stepIndicator = document.getElementById('step-indicator');
-    if (stepIndicator) {
-        stepIndicator.textContent = `Step ${currentStep} di ${totalSteps}`;
-    }
-}
+// --- 4. VALIDAZIONE ---
+function validateStep(step) {
+    const stepEl = document.getElementById(`step-${step}`);
+    if (!stepEl) return true;
 
-// --- VALIDAZIONE ---
-function validateCurrentStep() {
-    const currentStepEl = document.getElementById(`step-${currentStep}`);
-    if (!currentStepEl) return true;
+    const inputs = stepEl.querySelectorAll('input[required], select[required]');
+    let valid = true;
     
-    let isValid = true;
-    let errorMessage = '';
-
-    // Step 1: Dati personali & Checkbox Proprietario (SALTA SE LOGGED)
-    if (currentStep === 1 && !isLoggedMode) {
-        // Valida email
-        const emailInput = document.getElementById('email');
-        if (emailInput && !validateEmailField(emailInput)) {
-            isValid = false;
-        }
-        
-        // Valida telefono
-        const telefonoInput = document.getElementById('telefono');
-        if (telefonoInput && !validatePhoneField(telefonoInput)) {
-            isValid = false;
-        }
-        
-        const isProprietarioSelected = document.querySelector('input[name="isProprietario"]:checked');
-        if (!isProprietarioSelected) {
-            isValid = false;
-            errorMessage = 'Indica se sei il proprietario dell\'immobile';
-        }
-    }
-    
-    // Step 3: Tipo Immobile (adesso è isolato)
-    if (currentStep === 3) {
-        const tipoInput = document.getElementById('tipo');
-        if (!tipoInput.value) {
-            isValid = false;
-            errorMessage = 'Seleziona il tipo di immobile';
-        }
-    }
-
-    // Step 4: Stato Immobile (adesso è isolato)
-    if (currentStep === 4) {
-        const statoInput = document.getElementById('stato');
-        if (!statoInput.value) {
-            isValid = false;
-            errorMessage = 'Seleziona lo stato dell\'immobile';
-        }
-    }
-
-    // Validazione input generici (text, number, email, etc.)
-    // Escludiamo anche gli input che sono in step nascosti
-    const requiredInputs = currentStepEl.querySelectorAll('input[required]:not([type="email"]):not([name="telefono"]), select[required]:not(.hidden)');
-    requiredInputs.forEach(input => {
-        // Salta la validazione se l'input è in uno step nascosto
-        const parentStep = input.closest('.form-step');
-        if (parentStep && parentStep.classList.contains('hidden')) {
-            return;
-        }
-        
-        if (!input.value || input.value.trim() === '') {
-            isValid = false;
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            valid = false;
             input.classList.add('border-red-500');
-            input.addEventListener('input', function() {
-                this.classList.remove('border-red-500');
-            }, { once: true });
+            input.addEventListener('input', () => input.classList.remove('border-red-500'), { once: true });
         }
     });
-    
-    if (!isValid) {
-        showError(errorMessage || 'Compila tutti i campi obbligatori per proseguire');
-    }
-    
-    return isValid;
+
+    if(!valid) alert("Compila tutti i campi obbligatori!");
+    return valid;
 }
 
-// --- GESTIONE CARD PERSONALIZZATE ---
-function setupCustomCards() {
-    // Helper attivazione/disattivazione visiva
-    const updateCardStyle = (card, isActive) => {
-        const icon = card.querySelector('svg');
-        const text = card.querySelector('span');
-
-        if (isActive) {
-            card.classList.remove('border-gray-100', 'bg-white');
-            card.classList.add('border-my-orange', 'bg-orange-50');
-            if(icon) { icon.classList.remove('text-gray-400'); icon.classList.add('text-my-orange'); }
-            if(text) { text.classList.remove('text-gray-600'); text.classList.add('text-my-orange'); }
-        } else {
-            card.classList.remove('border-my-orange', 'bg-orange-50');
-            card.classList.add('border-gray-100', 'bg-white');
-            if(icon) { icon.classList.remove('text-my-orange'); icon.classList.add('text-gray-400'); }
-            if(text) { text.classList.remove('text-my-orange'); text.classList.add('text-gray-600'); }
-        }
-    };
-
-    // Card Selezione Singola (Tipo e Stato)
+// --- 5. CARDS & CHECKBOX ---
+function setupCards() {
+    // Selezione Singola
     document.querySelectorAll('.selection-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const value = this.getAttribute('data-value');
+        card.addEventListener('click', () => {
+            const targetId = card.dataset.target;
+            const val = card.dataset.value;
+            document.getElementById(targetId).value = val;
             
-            // Aggiorna select nascosta
-            const hiddenSelect = document.getElementById(targetId);
-            if (hiddenSelect) hiddenSelect.value = value;
-
-            // Aggiorna UI: disattiva fratelli, attiva corrente
-            document.querySelectorAll(`.selection-card[data-target="${targetId}"]`).forEach(c => updateCardStyle(c, false));
-            updateCardStyle(this, true);
+            document.querySelectorAll(`.selection-card[data-target="${targetId}"]`).forEach(c => {
+                c.classList.remove('border-my-orange', 'bg-orange-50');
+            });
+            card.classList.add('border-my-orange', 'bg-orange-50');
         });
     });
 
-    // Card Selezione Multipla (Checkbox: Terrazzo, Garage...)
+    // Selezione Multipla
     document.querySelectorAll('.feature-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
+        card.addEventListener('click', () => {
+            const targetId = card.dataset.target;
             const checkbox = document.getElementById(targetId);
-            
-            if (checkbox) {
+            if(checkbox) {
                 checkbox.checked = !checkbox.checked;
-                updateCardStyle(this, checkbox.checked);
+                if(checkbox.checked) card.classList.add('border-my-orange', 'bg-orange-50');
+                else card.classList.remove('border-my-orange', 'bg-orange-50');
             }
         });
     });
 }
 
-// --- INVIO FORM ---
-function setupFormSubmit() {
+// --- 6. INVIO DATI ---
+function setupSubmit() {
     const form = document.getElementById('valutazione-form');
-    if (!form) return;
-    
+    if(!form) return;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Validazione finale (Step 5)
-        if (!validateCurrentStep()) return;
+        // 1. Calcolo Prezzo Frontend (immediato)
+        const stima = calcolaPrezzoFrontend();
         
-        await inviaValutazione();
+        const btn = document.getElementById('submit-btn');
+        const loading = document.getElementById('loading');
+        const formContainer = document.getElementById('form-container');
+        
+        btn.disabled = true;
+        formContainer.classList.add('hidden');
+        loading.classList.remove('hidden');
+        
+        try {
+            const user = typeof getUser === 'function' ? getUser() : null;
+            let resultData = null;
+
+            if (user) {
+                // --- UTENTE LOGGATO: Salva Immobile + Valutazione ---
+                const immobile = await salvaImmobile(user);
+                const valutazione = await salvaValutazione(immobile.idImmobile, user.idUtente, stima);
+                
+                resultData = {
+                    valoreStimato: valutazione.valoreStimato,
+                    valoreBaseZona: valutazione.valoreCalcolatoZona,
+                    messaggio: "Valutazione salvata nel tuo account!"
+                };
+
+            } else {
+                // --- OSPITE: Chiamata automatica ---
+                resultData = await inviaValutazioneOspite();
+            }
+            
+            // Mostra risultato
+            mostraRisultato(resultData);
+
+        } catch (error) {
+            console.error(error);
+            alert("Errore: " + error.message);
+            btn.disabled = false;
+            loading.classList.add('hidden');
+            formContainer.classList.remove('hidden');
+        }
     });
 }
 
-async function inviaValutazione() {
-    console.log('=== INIZIO INVIO VALUTAZIONE ===');
-    console.log('isLoggedMode:', isLoggedMode);
-    
-    const submitBtn = document.getElementById('submit-btn');
-    const loadingEl = document.getElementById('loading');
-    const formContainer = document.getElementById('form-container');
-    
-    if (submitBtn) submitBtn.disabled = true;
-    if (loadingEl) loadingEl.classList.remove('hidden');
-    if (formContainer) formContainer.classList.add('hidden');
-    
-    try {
-        let formData;
-        
-        if (isLoggedMode) {
-            // Utente già loggato: invia solo i dati dell'immobile
-            const token = getToken();
-            
-            formData = {
-                indirizzo: document.getElementById('indirizzo').value,
-                citta: document.getElementById('citta').value,
-                provincia: document.getElementById('provincia').value,
-                cap: document.getElementById('cap').value,
-                metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
-                camere: parseInt(document.getElementById('camere').value),
-                bagni: parseInt(document.getElementById('bagni').value),
-                balconi: parseInt(document.getElementById('balconi').value) || 0,
-                terrazzo: document.getElementById('terrazzo').checked,
-                giardino: document.getElementById('giardino').checked,
-                garage: document.getElementById('garage').checked,
-                stato: document.getElementById('stato').value,
-                tipo: document.getElementById('tipo').value,
-                descrizione: document.getElementById('descrizione').value
-            };
+// --- 7. FUNZIONI CALCOLO & API ---
 
-            // Chiamata API per utente loggato (endpoint diverso)
-            console.log('Invio dati utente loggato:', formData);
-            console.log('Token:', token);
-            
-            const response = await fetch('http://localhost:8080/api/valutazioni/logged', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Errore response:', errorText);
-                throw new Error('Errore valutazione: ' + response.status);
-            }
-            
-            const data = await response.json();
-            console.log('Dati ricevuti:', data);
-            mostraRisultatoLogged(data);
-            
-        } else {
-            // Utente nuovo: invia tutti i dati (inclusi dati personali)
-            formData = {
-                nome: document.getElementById('nome').value,
-                cognome: document.getElementById('cognome').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                password: document.getElementById('password').value,
-                isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
-                indirizzo: document.getElementById('indirizzo').value,
-                citta: document.getElementById('citta').value,
-                provincia: document.getElementById('provincia').value,
-                cap: document.getElementById('cap').value,
-                metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
-                camere: parseInt(document.getElementById('camere').value),
-                bagni: parseInt(document.getElementById('bagni').value),
-                balconi: parseInt(document.getElementById('balconi').value) || 0,
-                terrazzo: document.getElementById('terrazzo').checked,
-                giardino: document.getElementById('giardino').checked,
-                garage: document.getElementById('garage').checked,
-                stato: document.getElementById('stato').value,
-                tipo: document.getElementById('tipo').value,
-                descrizione: document.getElementById('descrizione').value
-            };
+function calcolaPrezzoFrontend() {
+    const mq = parseFloat(document.getElementById('metriQuadri').value) || 0;
+    const bagni = parseInt(document.getElementById('bagni').value) || 1;
+    const balconi = parseInt(document.getElementById('balconi').value) || 0;
+    const garage = document.getElementById('garage').checked;
+    const giardino = document.getElementById('giardino').checked;
+    const terrazzo = document.getElementById('terrazzo').checked;
+    const stato = document.getElementById('stato').value;
 
-            // Chiamata API per nuovo utente
-            console.log('Invio dati nuovo utente:', formData);
-            
-            const response = await fetch('http://localhost:8080/api/valutazioni/automatica', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Errore response:', errorText);
-                throw new Error('Errore valutazione: ' + response.status);
-            }
-            
-            const data = await response.json();
-            console.log('Dati ricevuti:', data);
-            mostraRisultato(data);
-        }
-        
-    } catch (error) {
-        console.error('=== ERRORE VALUTAZIONE ===');
-        console.error('Errore:', error);
-        console.error('Messaggio:', error.message);
-        console.error('Stack:', error.stack);
-        
-        showError('Errore durante la valutazione. Riprova più tardi.');
-        if (submitBtn) submitBtn.disabled = false;
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (formContainer) formContainer.classList.remove('hidden');
-    }
+    let valore = mq * PREZZI.MQ_BASE;
+    if(garage) valore += PREZZI.GARAGE;
+    if(giardino) valore += PREZZI.GIARDINO;
+    if(terrazzo) valore += PREZZI.TERRAZZO;
+    if(balconi > 0) valore += (balconi * PREZZI.BALCONE);
+    if(bagni > 1) valore += ((bagni - 1) * 5000);
+    
+    if(stato === 'NUOVA') valore *= 1.15;
+    if(stato === 'DA_RISTRUTTURARE') valore *= 0.75;
+
+    return Math.round(valore / 100) * 100;
 }
 
+async function salvaImmobile(user) {
+    const payload = {
+        indirizzo: document.getElementById('indirizzo').value,
+        citta: document.getElementById('citta').value,
+        provincia: document.getElementById('provincia').value,
+        cap: document.getElementById('cap').value,
+        metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+        camere: parseInt(document.getElementById('camere').value),
+        bagni: parseInt(document.getElementById('bagni').value),
+        tipo: document.getElementById('tipo').value,
+        stato: document.getElementById('stato').value,
+        descrizione: document.getElementById('descrizione').value,
+        prezzo: 0,
+        idUtente: user.idUtente,
+        idVenditore: user.idUtente // Legacy
+    };
+    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Errore salvataggio immobile");
+    return await res.json();
+}
+
+async function salvaValutazione(idImmobile, idUtente, valore) {
+    const payload = {
+        idImmobile: idImmobile,
+        idUtente: idUtente,
+        valoreStimato: valore,
+        valoreCalcolatoZona: 1800.0,
+        stato: 'COMPLETATA',
+        note: 'Valutazione Web',
+        dataRichiesta: new Date().toISOString()
+    };
+    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Errore salvataggio valutazione");
+    return await res.json();
+}
+
+async function inviaValutazioneOspite() {
+    const payload = {
+        nome: document.getElementById('nome').value,
+        cognome: document.getElementById('cognome').value,
+        email: document.getElementById('email').value,
+        telefono: document.getElementById('telefono').value,
+        password: document.getElementById('password').value,
+        isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
+        // Dati immobile
+        indirizzo: document.getElementById('indirizzo').value,
+        citta: document.getElementById('citta').value,
+        provincia: document.getElementById('provincia').value,
+        cap: document.getElementById('cap').value,
+        metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+        camere: parseInt(document.getElementById('camere').value),
+        bagni: parseInt(document.getElementById('bagni').value),
+        tipo: document.getElementById('tipo').value,
+        stato: document.getElementById('stato').value
+    };
+
+    const res = await fetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni/automatica`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        const txt = await res.text();
+        if(txt.includes("ConstraintViolation")) throw new Error("Email già registrata. Fai il login.");
+        throw new Error("Errore server.");
+    }
+    return await res.json();
+}
+
+// --- 8. MOSTRA RISULTATO ---
 function mostraRisultato(data) {
-    const loadingEl = document.getElementById('loading');
-    const resultEl = document.getElementById('result');
-    
-    if (loadingEl) loadingEl.classList.add('hidden');
-    
-    if (resultEl) {
-        resultEl.classList.remove('hidden');
-        document.getElementById('result-valore').textContent = `€${data.valoreStimato.toLocaleString('it-IT')}`;
-        document.getElementById('result-base').textContent = `€${data.valoreBaseZona.toLocaleString('it-IT')}`;
-        document.getElementById('result-messaggio').textContent = data.messaggio;
-        resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('progress-container').style.display = 'none'; // Nasconde barra
 
-function mostraRisultatoLogged(data) {
-    const loadingEl = document.getElementById('loading');
     const resultEl = document.getElementById('result');
+    resultEl.classList.remove('hidden');
     
-    if (loadingEl) loadingEl.classList.add('hidden');
+    document.getElementById('result-valore').textContent = `€ ${data.valoreStimato.toLocaleString('it-IT')}`;
+    document.getElementById('result-base').textContent = `€ ${data.valoreBaseZona ? data.valoreBaseZona.toLocaleString('it-IT') : '-'}`;
+    document.getElementById('result-messaggio').textContent = data.messaggio || "Valutazione completata!";
     
-    if (resultEl) {
-        resultEl.classList.remove('hidden');
-        document.getElementById('result-valore').textContent = `€${data.valoreStimato.toLocaleString('it-IT')}`;
-        document.getElementById('result-base').textContent = `€${data.valoreBaseZona.toLocaleString('it-IT')}`;
-        document.getElementById('result-messaggio').textContent = data.messaggio;
-        
-        // Modifica il bottone per tornare alla dashboard invece di reset
-        const resetBtn = resultEl.querySelector('button');
-        if (resetBtn) {
-            resetBtn.textContent = 'Torna alla Dashboard';
-            resetBtn.onclick = () => window.location.href = 'user.html';
-        }
-        
-        resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function showError(message) {
-    const errorEl = document.getElementById('error-message');
-    if (errorEl) {
-        errorEl.textContent = message;
-        errorEl.classList.remove('hidden');
-        errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => errorEl.classList.add('hidden'), 5000);
-    } else {
-        alert(message);
-    }
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function resetForm() {
-    const form = document.getElementById('valutazione-form');
-    if (form) form.reset();
-    
-    // Reset stile card
-    document.querySelectorAll('.selection-card, .feature-card').forEach(card => {
-        card.classList.remove('border-my-orange', 'bg-orange-50');
-        card.classList.add('border-gray-100', 'bg-white');
-        const icon = card.querySelector('svg');
-        const text = card.querySelector('span');
-        if(icon) { icon.classList.remove('text-my-orange'); icon.classList.add('text-gray-400'); }
-        if(text) { text.classList.remove('text-my-orange'); text.classList.add('text-gray-600'); }
-    });
-    
-    // Torna allo step iniziale corretto
-    if (isLoggedMode) {
-        goToStep(2);
-    } else {
-        document.getElementById('progress-container').style.display = 'none';
-        document.getElementById('step-0').classList.remove('hidden');
-        document.getElementById('step-0').classList.add('active');
-        currentStep = 0;
-    }
-    
-    document.getElementById('form-container').classList.remove('hidden');
-    document.getElementById('result').classList.add('hidden');
-    document.getElementById('submit-btn').disabled = false;
+    window.location.reload();
 }
