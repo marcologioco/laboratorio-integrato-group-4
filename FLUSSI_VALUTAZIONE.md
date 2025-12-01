@@ -420,8 +420,20 @@ VALUES (8, 1, 'COMPLETATA', 380650, 288000, NOW(), NOW());
 - **Formato**: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
 
 ### Endpoint Protetti
-- ✅ `/api/valutazioni/logged` - Richiede autenticazione
+- ✅ `/api/valutazioni/logged` - Richiede autenticazione (qualsiasi utente loggato)
 - ❌ `/api/valutazioni/automatica` - Pubblico (per nuovi utenti)
+
+### Configurazione SecurityConfig.java
+Per permettere agli utenti autenticati di creare valutazioni, la regola per `/api/valutazioni/logged` deve essere posizionata **PRIMA** della regola generale per admin:
+
+```java
+// ✅ CORRETTO - Ordine delle regole in SecurityConfig
+.requestMatchers(HttpMethod.POST, "/api/valutazioni/automatica").permitAll()  // Pubblico
+.requestMatchers(HttpMethod.POST, "/api/valutazioni/logged").authenticated()  // Utenti loggati
+.requestMatchers("/api/valutazioni/**").hasRole("ADMIN")  // Tutti gli altri endpoint solo admin
+```
+
+⚠️ **IMPORTANTE**: L'ordine è fondamentale! Spring Security valuta le regole dall'alto verso il basso. Se metti la regola generale prima, `/logged` verrebbe bloccato.
 
 ### Verifica Token
 Il backend verifica automaticamente il token JWT nell'header `Authorization` prima di processare la richiesta. Se il token non è valido o mancante, restituisce `401 Unauthorized`.
