@@ -10,6 +10,10 @@ import com.immobiliaris.immobiliaris_be.model.Zona;
 @Repository
 public interface ZonaRepo extends JpaRepository<Zona,String>{
 
+    // Trova zona per CAP
+    // SELECT * FROM zona WHERE cap = ?
+    Zona findByCap(String cap);
+
     // Trova zona per nome
     // SELECT * FROM zona WHERE nome_zona = ?
     Zona findByNomeZona(String nomeZona);

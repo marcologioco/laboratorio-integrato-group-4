@@ -8,12 +8,7 @@ INSERT INTO ruolo (nome) VALUES
 -- =============================
 -- UTENTI
 -- =============================
-INSERT INTO utente (nome, cognome, email, password, telefono, id_ruolo) VALUES
-('Admin', 'Default', 'admin@example.com', 'admin123', '0000000000', 2),
-('Luca', 'Rossi', 'luca.rossi@example.com', 'pwd123', '3456789012', 1),
-('Giulia', 'Verdi', 'giulia.verdi@example.com', 'pwd789', '3491122334', 1),
-('Paolo', 'Ferrari', 'paolo.ferrari@example.com', 'pwd101', '3332233445', 1),
-('Sara', 'Conti', 'sara.conti@example.com', 'pwd202', '3489988776', 1);
+-- Gli utenti vengono creati automaticamente dal DataLoader con password hashate
 
 -- =============================
 -- VENDITORI
