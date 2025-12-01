@@ -117,7 +117,9 @@ function setupCardListeners() {
             showDetailView(type);
         });
     });
-}function setupSidebarNavigation() {
+}
+
+function setupSidebarNavigation() {
     sidebarLinks.forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
@@ -140,7 +142,9 @@ function setActiveSidebarLink(activeLink) {
     });
     activeLink.classList.remove('text-my-black', 'hover:bg-gray-100', 'hover:font-semibold');
     activeLink.classList.add('bg-my-green-dark', 'text-white', 'font-semibold', 'shadow-md');
-}function hideAllViews() {
+}
+
+function hideAllViews() {
   if (overview) overview.classList.add('hidden');
   if (detailView) detailView.classList.add('hidden');
   if (contractsView) contractsView.classList.add('hidden');
@@ -203,6 +207,39 @@ function showContractForm() {
   }
 }
 
+function openContractForView(contratto) {
+  showContractForm();
+
+  const selImm = document.getElementById('select-immobile');
+  const selVend = document.getElementById('select-venditore');
+
+  // Attendi popolamento select
+  setTimeout(() => {
+    if (selImm) {
+      selImm.value = contratto.idImmobile;
+      updateContractFromImmobile();
+    }
+    if (selVend) {
+      selVend.value = contratto.idVenditore;
+      updateContractFromVenditore();
+    }
+
+    if (document.getElementById('data-inizio')) {
+      document.getElementById('data-inizio').value = contratto.dataInizio;
+    }
+    if (document.getElementById('data-fine')) {
+      document.getElementById('data-fine').value = contratto.dataFine;
+    }
+    if (document.getElementById('prezzo-minimo')) {
+      document.getElementById('prezzo-minimo').value = contratto.prezzoFinaleMinimo;
+    }
+
+    updateContractFields();
+  }, 100);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function setupContractsListeners() {
   const btnView = document.getElementById('btn-view-contracts');
   const btnCreate = document.getElementById('btn-create-contract');
@@ -263,12 +300,22 @@ function renderContractsList() {
           <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
              👁️
           </button>
+          <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-contratto-btn" data-id="${contratto.idContratto}">
+             ✏️
+          </button>
           <button class="p-2 text-gray-400 hover:text-red-600 transition delete-contratto-btn" data-id="${contratto.idContratto}">
              🗑️
           </button>
        </div>
     `;
     contractsList.appendChild(cardEl);
+    
+    const viewBtn = cardEl.querySelector('.view-contract-btn');
+    if (viewBtn) {
+      viewBtn.addEventListener('click', () => {
+        openContractForView(contratto);
+      });
+    }
     
     const deleteBtn = cardEl.querySelector('.delete-contratto-btn');
     if (deleteBtn) {
@@ -277,6 +324,13 @@ function renderContractsList() {
           await deleteContratto(contratto.idContratto);
           cardEl.remove();
         }
+      });
+    }
+
+    const editBtn = cardEl.querySelector('.edit-contratto-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditContractModal(contratto);
       });
     }
   });
@@ -656,8 +710,9 @@ function renderImmobili(immobili) {
              <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
         </div>
         
-        <div class="mt-4 pt-4 border-t border-gray-100">
-          <button class="delete-immobile-btn w-full text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+          <button class="edit-immobile-btn w-1/2 text-xs text-blue-600 hover:text-blue-800 font-bold" data-id="${immobile.idImmobile}">✏️ Modifica immobile</button>
+          <button class="delete-immobile-btn w-1/2 text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
         </div>
       </div>
     `;
@@ -671,6 +726,14 @@ function renderImmobili(immobili) {
           await deleteImmobile(immobile.idImmobile);
           cardEl.remove();
         }
+      });
+    }
+
+    // attach edit listener
+    const editBtn = cardEl.querySelector('.edit-immobile-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditImmobileModal(immobile);
       });
     }
   });
@@ -719,6 +782,9 @@ function renderValutazioni(valutazioni) {
                  <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
                     ${val.stato}
                  </span>
+                 <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-valutazione-btn" data-id="${val.idValutazione}">
+                    ✏️
+                 </button>
                  <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
                     🗑️
                  </button>
@@ -734,6 +800,14 @@ function renderValutazioni(valutazioni) {
               await deleteValutazione(val.idValutazione);
               cardEl.remove();
             }
+          });
+        }
+
+        // attach edit listener
+        const editBtn = cardEl.querySelector('.edit-valutazione-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            openEditValutazioneModal(val);
           });
         }
     });
