@@ -393,7 +393,7 @@ URL: http://localhost:8080/swagger
 #### POST `/api/auth/login`
 
 **Descrizione:** Effettua il login e restituisce un JWT token  
-**Accesso:** 🌐 Pubblico  
+**Accesso:**  Pubblico  
 **Body:**
 
 ```json
@@ -417,7 +417,7 @@ URL: http://localhost:8080/swagger
 #### GET `/api/auth/me`
 
 **Descrizione:** Ottiene i dati dell'utente autenticato  
-**Accesso:** 🔒 Autenticato  
+**Accesso:**  Autenticato  
 **Headers:** `Authorization: Bearer {token}`  
 **Response 200:**
 
@@ -435,7 +435,7 @@ URL: http://localhost:8080/swagger
 #### GET `/api/auth/validate`
 
 **Descrizione:** Valida un JWT token  
-**Accesso:** 🔒 Autenticato  
+**Accesso:**  Autenticato  
 **Headers:** `Authorization: Bearer {token}`  
 **Response 200:**
 
@@ -483,7 +483,7 @@ URL: http://localhost:8080/swagger
 #### GET `/api/immobili`
 
 **Descrizione:** Lista immobili con filtri opzionali  
-**Accesso:** 🌐 Pubblico  
+**Accesso:**  Pubblico  
 **Query Parameters:**
 
 - `tipo` (APPARTAMENTO, VILLA)
@@ -538,7 +538,7 @@ URL: http://localhost:8080/swagger
 #### POST `/api/valutazioni/automatica`
 
 **Descrizione:** Richiede una valutazione automatica (calcolo immediato)  
-**Accesso:** 🌐 Pubblico  
+**Accesso:**  Pubblico  
 **Body:**
 
 ```json
@@ -1098,61 +1098,6 @@ Tutti i layout sono progettati mobile-first con classi responsive:
 
 ## Configurazione
 
-### application.properties
-
-```properties
-# ===========================
-# DATABASE H2
-# ===========================
-spring.datasource.url=jdbc:h2:mem:ImmobiliarisDB;DB_CLOSE_DELAY=-1
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-# ===========================
-# JPA / HIBERNATE
-# ===========================
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.defer-datasource-initialization=true
-
-# ===========================
-# H2 CONSOLE
-# ===========================
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2
-
-# ===========================
-# SQL INITIALIZATION
-# ===========================
-spring.sql.init.mode=always
-spring.sql.init.data-locations=classpath:data-test.sql
-
-# ===========================
-# SERVER
-# ===========================
-server.port=8080
-
-# ===========================
-# SWAGGER / OPENAPI
-# ===========================
-springdoc.api-docs.path=/api-docs
-springdoc.swagger-ui.path=/swagger
-springdoc.swagger-ui.enabled=true
-springdoc.swagger-ui.tagsSorter=alpha
-springdoc.swagger-ui.operationsSorter=alpha
-
-# ===========================
-# JWT
-# ===========================
-jwt.secret=ImmobiliarisSecretKeyForJWT2024VerySecureAndLongEnoughForHS256Algorithm
-jwt.expiration=86400000
-```
-
----
-
 ## Dati di Test
 
 ### Utenti Predefiniti (DataLoader)
@@ -1230,9 +1175,3 @@ cd immobiliaris-be
 - **Repository GitHub**: <https://github.com/marcologioco/laboratorio-integrato-group-4>
 - **Swagger UI**: <http://localhost:8080/swagger>
 - **H2 Console**: <http://localhost:8080/h2>
-
----
-
-**Fine Documentazione Tecnica**  
-Team InnovaRe - Immobiliaris  
-Novembre 2025
