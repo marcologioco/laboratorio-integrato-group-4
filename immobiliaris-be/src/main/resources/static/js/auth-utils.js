@@ -80,7 +80,7 @@ function protectPage(requireAdmin = false) {
 
   if (requireAdmin && !isAdmin()) {
     alert('Accesso negato: solo amministratori');
-    window.location.href = 'account.html';
+    window.location.href = 'user.html';
     return false;
   }
 
@@ -99,7 +99,7 @@ function redirectByRole() {
   if (user.idRuolo === 2) {
     window.location.href = 'admin.html';
   } else {
-    window.location.href = 'account.html';
+    window.location.href = 'user.html';
   }
 }
 

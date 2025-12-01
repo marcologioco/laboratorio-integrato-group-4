@@ -36,11 +36,11 @@ public class DataLoader implements CommandLineRunner {
         admin.setCognome("Default");
         admin.setEmail("admin@example.com");
         admin.setPassword("admin123"); // Verrà hashata automaticamente
-        admin.setTelefono("0000000000");
+        admin.setTelefono("3331234567"); // Numero cellulare valido
         admin.setIdRuolo(2); // Admin
         utenteService.saveUtente(admin);
 
-        // Utente 1 - Luca Rossi
+        // Utente 1 - Luca Rossi (proprietario e venditore)
         Utente luca = new Utente();
         luca.setNome("Luca");
         luca.setCognome("Rossi");
@@ -50,7 +50,17 @@ public class DataLoader implements CommandLineRunner {
         luca.setIdRuolo(1); // Utente normale
         utenteService.saveUtente(luca);
 
-        // Utente 2 - Giulia Verdi
+        // Utente 2 - Marta Bianchi (proprietaria e venditrice)
+        Utente marta = new Utente();
+        marta.setNome("Marta");
+        marta.setCognome("Bianchi");
+        marta.setEmail("marta.bianchi@example.com");
+        marta.setPassword("pwd456");
+        marta.setTelefono("3478901234");
+        marta.setIdRuolo(1);
+        utenteService.saveUtente(marta);
+
+        // Utente 3 - Giulia Verdi (proprietaria e venditrice)
         Utente giulia = new Utente();
         giulia.setNome("Giulia");
         giulia.setCognome("Verdi");
@@ -60,7 +70,7 @@ public class DataLoader implements CommandLineRunner {
         giulia.setIdRuolo(1);
         utenteService.saveUtente(giulia);
 
-        // Utente 3 - Paolo Ferrari
+        // Utente 4 - Paolo Ferrari (utente che ha richiesto valutazione)
         Utente paolo = new Utente();
         paolo.setNome("Paolo");
         paolo.setCognome("Ferrari");
@@ -70,7 +80,7 @@ public class DataLoader implements CommandLineRunner {
         paolo.setIdRuolo(1);
         utenteService.saveUtente(paolo);
 
-        // Utente 4 - Sara Conti
+        // Utente 5 - Sara Conti (utente che ha richiesto valutazione)
         Utente sara = new Utente();
         sara.setNome("Sara");
         sara.setCognome("Conti");

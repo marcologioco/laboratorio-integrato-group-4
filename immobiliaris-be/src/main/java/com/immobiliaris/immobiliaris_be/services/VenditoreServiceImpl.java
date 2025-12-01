@@ -2,6 +2,7 @@ package com.immobiliaris.immobiliaris_be.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,10 @@ public class VenditoreServiceImpl implements VenditoreService{
     
     @Autowired
     private VenditoreRepo venditoreRepo;
+    
+    // Pattern per validazione
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^3\\d{9}$");
 
     @Override
     public List<Venditore> findAllVenditori(){
@@ -72,6 +77,22 @@ public class VenditoreServiceImpl implements VenditoreService{
 
     @Override
     public Venditore saveVenditore(Venditore venditore) {
+        // Valida email se presente
+        if (venditore.getEmail() != null && !venditore.getEmail().isBlank()) {
+            if (!EMAIL_PATTERN.matcher(venditore.getEmail()).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+        }
+        
+        // Valida telefono se presente
+        if (venditore.getTelefono() != null && !venditore.getTelefono().isBlank()) {
+            String cleanPhone = venditore.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            venditore.setTelefono(cleanPhone);
+        }
+        
         return venditoreRepo.save(venditore);
     }
 
@@ -83,8 +104,24 @@ public class VenditoreServiceImpl implements VenditoreService{
         venditore.setIdUtente(venditoreDetails.getIdUtente());
         venditore.setNome(venditoreDetails.getNome());
         venditore.setCognome(venditoreDetails.getCognome());
-        venditore.setEmail(venditoreDetails.getEmail());
-        venditore.setTelefono(venditoreDetails.getTelefono());
+        
+        // Valida email se modificata
+        if (venditoreDetails.getEmail() != null && !venditoreDetails.getEmail().isBlank()) {
+            if (!EMAIL_PATTERN.matcher(venditoreDetails.getEmail()).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+            venditore.setEmail(venditoreDetails.getEmail());
+        }
+        
+        // Valida telefono se modificato
+        if (venditoreDetails.getTelefono() != null && !venditoreDetails.getTelefono().isBlank()) {
+            String cleanPhone = venditoreDetails.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            venditore.setTelefono(cleanPhone);
+        }
+        
         venditore.setIndirizzo(venditoreDetails.getIndirizzo());
         venditore.setCitta(venditoreDetails.getCitta());
         venditore.setProvincia(venditoreDetails.getProvincia());
@@ -113,10 +150,18 @@ public class VenditoreServiceImpl implements VenditoreService{
             existingVenditore.setCognome(venditore.getCognome().trim());
         }
         if (venditore.getEmail() != null && !venditore.getEmail().isBlank()) {
-            existingVenditore.setEmail(venditore.getEmail().trim());
+            String email = venditore.getEmail().trim();
+            if (!EMAIL_PATTERN.matcher(email).matches()) {
+                throw new IllegalArgumentException("Email non valida");
+            }
+            existingVenditore.setEmail(email);
         }
         if (venditore.getTelefono() != null && !venditore.getTelefono().isBlank()) {
-            existingVenditore.setTelefono(venditore.getTelefono().trim());
+            String cleanPhone = venditore.getTelefono().replaceAll("\\D", "");
+            if (!PHONE_PATTERN.matcher(cleanPhone).matches()) {
+                throw new IllegalArgumentException("Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)");
+            }
+            existingVenditore.setTelefono(cleanPhone);
         }
         if (venditore.getIndirizzo() != null && !venditore.getIndirizzo().isBlank()) {
             existingVenditore.setIndirizzo(venditore.getIndirizzo().trim());

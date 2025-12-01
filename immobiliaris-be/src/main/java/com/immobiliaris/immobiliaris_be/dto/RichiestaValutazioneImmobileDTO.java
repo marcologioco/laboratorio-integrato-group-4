@@ -1,34 +1,14 @@
 package com.immobiliaris.immobiliaris_be.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
 /**
- * DTO per la richiesta di valutazione automatica da parte di un nuovo utente
- * Include sia i dati dell'utente che i dati dell'immobile
+ * DTO per la richiesta di valutazione da parte di un utente già autenticato
+ * Include solo i dati dell'immobile (i dati utente sono già nel sistema)
  */
-public class RichiestaValutazioneDTO {
-    
-    // ===== DATI UTENTE =====
-    @NotBlank(message = "Nome obbligatorio")
-    private String nome;
-    
-    @NotBlank(message = "Cognome obbligatorio")
-    private String cognome;
-    
-    @Email(message = "Email non valida")
-    @NotBlank(message = "Email obbligatoria")
-    private String email;
-    
-    @NotBlank(message = "Telefono obbligatorio")
-    @Pattern(regexp = "^3\\d{9}$", message = "Numero cellulare non valido. Formato richiesto: 3xxxxxxxxx (10 cifre)")
-    private String telefono;
-    
-    @NotBlank(message = "Password obbligatoria")
-    private String password;
+public class RichiestaValutazioneImmobileDTO {
     
     // ===== DATI IMMOBILE =====
     @NotBlank(message = "Indirizzo obbligatorio")
@@ -63,56 +43,14 @@ public class RichiestaValutazioneDTO {
     
     private Boolean garage; // Opzionale
     
-    private String stato; // ABITABILE, DA_RISTRUTTURARE, NUOVA
+    private String stato; // ABITABILE, DA_RISTRUTTURARE, NUOVA, RISTRUTTURATA
     
-    private String tipo; // APPARTAMENTO, VILLA, ATTICO, etc.
+    private String tipo; // APPARTAMENTO, VILLA, UFFICIO, etc.
     
     private String descrizione; // Opzionale
-    
-    private Boolean isProprietario; // Indica se l'utente è il proprietario dell'immobile
 
     // ===== GETTERS E SETTERS =====
     
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCognome() {
-        return cognome;
-    }
-
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getIndirizzo() {
         return indirizzo;
     }
@@ -223,13 +161,5 @@ public class RichiestaValutazioneDTO {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
-    }
-
-    public Boolean getIsProprietario() {
-        return isProprietario;
-    }
-
-    public void setIsProprietario(Boolean isProprietario) {
-        this.isProprietario = isProprietario;
     }
 }

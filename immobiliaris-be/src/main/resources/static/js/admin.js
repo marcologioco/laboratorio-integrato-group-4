@@ -1,5 +1,5 @@
 /**
- * Admin Dashboard - Gestione area amministrativa con chiamate API
+ * Admin Dashboard - Gestione area amministrativa
  */
 
 const overview = document.getElementById('overview');
@@ -24,37 +24,36 @@ let currentData = {
 
 // Inizializzazione pagina admin
 document.addEventListener('DOMContentLoaded', async () => {
-  // Proteggi la pagina: solo admin
-  if (!protectPage(true)) {
+  if (typeof protectPage === 'function' && !protectPage(true)) {
     return;
   }
 
-  // Carica dati admin
   await loadAdminData();
 
-  // Gestione logout
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      logout();
+      if (typeof logout === 'function') logout();
     });
   }
 
-  // Setup listeners
   setupCardListeners();
   setupSidebarNavigation();
   setupContractsListeners();
+
+  // Listener chiudi overview
+  if (closeBtn) closeBtn.addEventListener('click', showCards);
+  
+  // Evidenzia Dashboard all'avvio
+  const dashboardLink = Array.from(sidebarLinks).find(link => link.textContent.toLowerCase().includes('dashboard'));
+  if (dashboardLink) setActiveSidebarLink(dashboardLink);
 });
 
-// Carica i dati dell'amministratore
 async function loadAdminData() {
   try {
     const user = getUser();
-    if (!user) {
-      logout();
-      return;
-    }
+    if (!user) return;
 
     const adminNameEl = document.getElementById('admin-name');
     const adminEmailEl = document.getElementById('admin-email');
@@ -68,178 +67,129 @@ async function loadAdminData() {
   }
 }
 
-// Carica tutti i dati dal backend
 async function loadAllData() {
   try {
-    const utentiResponse = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/utenti`);
-    if (utentiResponse.ok) {
-      currentData.utenti = await utentiResponse.json();
-      console.log('Utenti caricati:', currentData.utenti);
+    // Parallel fetch per performance
+    const [utentiRes, immobiliRes, valutazioniRes, venditoriRes, contrattiRes] = await Promise.all([
+      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/utenti`),
+      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili`),
+      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni`),
+      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/venditori`),
+      authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/contratti`)
+    ]);
+
+    if (utentiRes.ok) {
+      currentData.utenti = await utentiRes.json();
       updateCount('utenti', currentData.utenti.length);
     }
-
-    const immobiliResponse = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili`);
-    if (immobiliResponse.ok) {
-      currentData.immobili = await immobiliResponse.json();
-      console.log('Immobili caricati:', currentData.immobili);
+    if (immobiliRes.ok) {
+      currentData.immobili = await immobiliRes.json();
       updateCount('immobili', currentData.immobili.length);
     }
-
-    const valutazioniResponse = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni`);
-    if (valutazioniResponse.ok) {
-      currentData.valutazioni = await valutazioniResponse.json();
-      console.log('Valutazioni caricate:', currentData.valutazioni);
+    if (valutazioniRes.ok) {
+      currentData.valutazioni = await valutazioniRes.json();
       updateCount('valutazioni', currentData.valutazioni.length);
     }
-
-    const venditoriResponse = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/venditori`);
-    if (venditoriResponse.ok) {
-      currentData.venditori = await venditoriResponse.json();
-      console.log('Venditori caricati:', currentData.venditori);
+    if (venditoriRes.ok) {
+      currentData.venditori = await venditoriRes.json();
       updateCount('venditori', currentData.venditori.length);
     }
-
-    const contrattiResponse = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/contratti`);
-    if (contrattiResponse.ok) {
-      currentData.contratti = await contrattiResponse.json();
-      console.log('Contratti caricati:', currentData.contratti);
+    if (contrattiRes.ok) {
+      currentData.contratti = await contrattiRes.json();
     }
   } catch (error) {
     console.error('Errore caricamento dati:', error);
   }
 }
 
-// Aggiorna i contatori nelle card
 function updateCount(type, count) {
   const countEl = document.getElementById(`count-${type}`);
-  if (countEl) {
-    countEl.textContent = count;
-  }
+  if (countEl) countEl.textContent = count;
 }
 
+// --- NAVIGAZIONE ---
+
 function setupCardListeners() {
-  if (!overview) return;
-  overview.querySelectorAll('.card-admin').forEach(card => {
-    card.addEventListener('click', () => showDetailView(card.dataset.type));
-  });
+    if (!overview) return;
+    overview.querySelectorAll('.card-admin').forEach(card => {
+        card.addEventListener('click', () => {
+            const type = card.dataset.type;
+            showDetailView(type);
+        });
+    });
 }
 
 function setupSidebarNavigation() {
-  sidebarLinks.forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const text = link.textContent.toLowerCase();
-      if (text.includes('dashboard')) showCards();
-      else if (text.includes('utenti')) showDetailView('utenti');
-      else if (text.includes('valutazioni')) showDetailView('valutazioni');
-      else if (text.includes('immobili')) showDetailView('immobili');
-      else if (text.includes('contratti')) showContractsView();
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            setActiveSidebarLink(link);
+            const text = link.textContent.toLowerCase();
+            if (text.includes('dashboard')) showCards();
+            else if (text.includes('utenti')) showDetailView('utenti');
+            else if (text.includes('venditori')) showDetailView('utenti'); // O separato se preferisci
+            else if (text.includes('valutazioni')) showDetailView('valutazioni');
+            else if (text.includes('immobili')) showDetailView('immobili');
+            else if (text.includes('contratti')) showContractsView();
+        });
     });
-  });
 }
 
-// Setup listeners per la sezione contratti
-function setupContractsListeners() {
-  const btnViewContracts = document.getElementById('btn-view-contracts');
-  const btnCreateContract = document.getElementById('btn-create-contract');
-  const btnBackContracts = document.getElementById('btn-back-contracts');
-  const btnBackFromForm = document.getElementById('btn-back-from-form');
-  const btnSaveContract = document.getElementById('btn-save-contract');
-  const btnSendContract = document.getElementById('btn-send-contract');
-  const btnPreviewContract = document.getElementById('btn-preview-contract');
-
-  if (btnViewContracts) {
-    btnViewContracts.addEventListener('click', showContractsList);
-  }
-
-  if (btnCreateContract) {
-    btnCreateContract.addEventListener('click', showContractForm);
-  }
-
-  if (btnBackContracts) {
-    btnBackContracts.addEventListener('click', showContractsView);
-  }
-
-  if (btnBackFromForm) {
-    btnBackFromForm.addEventListener('click', showContractsView);
-  }
-
-  if (btnSaveContract) {
-    btnSaveContract.addEventListener('click', saveContract);
-  }
-
-  if (btnSendContract) {
-    btnSendContract.addEventListener('click', saveAndSendContract);
-  }
-
-  if (btnPreviewContract) {
-    btnPreviewContract.addEventListener('click', previewContract);
-  }
-
-  // Listeners per selezione immobile/venditore
-  const selectImmobile = document.getElementById('select-immobile');
-  const selectVenditore = document.getElementById('select-venditore');
-
-  if (selectImmobile) {
-    selectImmobile.addEventListener('change', updateContractFromImmobile);
-  }
-
-  if (selectVenditore) {
-    selectVenditore.addEventListener('change', updateContractFromVenditore);
-  }
+function setActiveSidebarLink(activeLink) {
+    sidebarLinks.forEach(link => {
+        link.classList.remove('bg-my-green-dark', 'text-white', 'font-semibold', 'shadow-md');
+        link.classList.add('text-my-black', 'hover:bg-gray-100', 'hover:font-semibold');
+    });
+    activeLink.classList.remove('text-my-black', 'hover:bg-gray-100', 'hover:font-semibold');
+    activeLink.classList.add('bg-my-green-dark', 'text-white', 'font-semibold', 'shadow-md');
 }
 
-// Mostra le card principali (overview)
-function showCards(type = null) {
-  if (!overview) return;
-  
+function hideAllViews() {
+  if (overview) overview.classList.add('hidden');
+  if (detailView) detailView.classList.add('hidden');
+  if (contractsView) contractsView.classList.add('hidden');
+  if (contractsListView) contractsListView.classList.add('hidden');
+  if (contractFormView) contractFormView.classList.add('hidden');
+}
+
+function showCards() {
   hideAllViews();
-  overview.classList.remove('hidden');
-  if (closeBtn) closeBtn.classList.add('hidden');
-
-  overview.querySelectorAll('.card-admin').forEach(card => {
-    if (!type || card.dataset.type === type) {
-      card.classList.remove('hidden');
-    } else {
-      card.classList.add('hidden');
-    }
-  });
+  if (overview) overview.classList.remove('hidden');
+  const dashboardLink = Array.from(sidebarLinks).find(link => link.textContent.toLowerCase().includes('dashboard'));
+  if (dashboardLink) setActiveSidebarLink(dashboardLink);
 }
 
-// Mostra vista dettaglio per un tipo di dato
 function showDetailView(type) {
-  if (!detailView || !detailCards || !detailTitle) return;
-  
   hideAllViews();
+  if (!detailView || !detailCards || !detailTitle) return;
+
   detailTitle.textContent = type.charAt(0).toUpperCase() + type.slice(1);
   detailCards.innerHTML = '';
+  detailCards.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
 
-  switch(type) {
-    case 'utenti':
-      renderUtenti(currentData.utenti);
-      break;
-    case 'venditori':
-      renderVenditori(currentData.venditori);
-      break;
-    case 'immobili':
-      renderImmobili(currentData.immobili);
-      break;
-    case 'valutazioni':
-      renderValutazioni(currentData.valutazioni);
-      break;
+  switch (type) {
+    case 'utenti': renderUtenti(currentData.utenti); break;
+    case 'venditori': renderVenditori(currentData.venditori); break;
+    case 'immobili': renderImmobili(currentData.immobili); break;
+    case 'valutazioni': renderValutazioni(currentData.valutazioni); break;
   }
 
   detailView.classList.remove('hidden');
-  if (closeBtn) closeBtn.classList.remove('hidden');
+  
+  const activeLink = Array.from(sidebarLinks).find(link => {
+    const text = link.textContent.toLowerCase();
+    return text.includes(type);
+  });
+  if (activeLink) setActiveSidebarLink(activeLink);
 }
 
-// Mostra vista principale contratti
 function showContractsView() {
   hideAllViews();
   if (contractsView) contractsView.classList.remove('hidden');
+  const contractsLink = Array.from(sidebarLinks).find(link => link.textContent.toLowerCase().includes('contratti'));
+  if (contractsLink) setActiveSidebarLink(contractsLink);
 }
 
-// Mostra lista contratti esistenti
 function showContractsList() {
   hideAllViews();
   if (contractsListView) {
@@ -248,7 +198,6 @@ function showContractsList() {
   }
 }
 
-// Mostra form creazione contratto
 function showContractForm() {
   hideAllViews();
   if (contractFormView) {
@@ -258,13 +207,60 @@ function showContractForm() {
   }
 }
 
-// Nascondi tutte le viste
-function hideAllViews() {
-  if (overview) overview.classList.add('hidden');
-  if (detailView) detailView.classList.add('hidden');
-  if (contractsView) contractsView.classList.add('hidden');
-  if (contractsListView) contractsListView.classList.add('hidden');
-  if (contractFormView) contractFormView.classList.add('hidden');
+function openContractForView(contratto) {
+  showContractForm();
+
+  const selImm = document.getElementById('select-immobile');
+  const selVend = document.getElementById('select-venditore');
+
+  // Attendi popolamento select
+  setTimeout(() => {
+    if (selImm) {
+      selImm.value = contratto.idImmobile;
+      updateContractFromImmobile();
+    }
+    if (selVend) {
+      selVend.value = contratto.idVenditore;
+      updateContractFromVenditore();
+    }
+
+    if (document.getElementById('data-inizio')) {
+      document.getElementById('data-inizio').value = contratto.dataInizio;
+    }
+    if (document.getElementById('data-fine')) {
+      document.getElementById('data-fine').value = contratto.dataFine;
+    }
+    if (document.getElementById('prezzo-minimo')) {
+      document.getElementById('prezzo-minimo').value = contratto.prezzoFinaleMinimo;
+    }
+
+    updateContractFields();
+  }, 100);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setupContractsListeners() {
+  const btnView = document.getElementById('btn-view-contracts');
+  const btnCreate = document.getElementById('btn-create-contract');
+  const btnBack = document.getElementById('btn-back-contracts');
+  const btnBackForm = document.getElementById('btn-back-from-form');
+  const btnSave = document.getElementById('btn-save-contract');
+  const btnSend = document.getElementById('btn-send-contract');
+  const btnPreview = document.getElementById('btn-preview-contract');
+
+  if (btnView) btnView.addEventListener('click', showContractsList);
+  if (btnCreate) btnCreate.addEventListener('click', showContractForm);
+  if (btnBack) btnBack.addEventListener('click', showContractsView);
+  if (btnBackForm) btnBackForm.addEventListener('click', showContractsView);
+  if (btnSave) btnSave.addEventListener('click', saveContract);
+  if (btnSend) btnSend.addEventListener('click', saveAndSendContract);
+  if (btnPreview) btnPreview.addEventListener('click', previewContract);
+
+  const selImm = document.getElementById('select-immobile');
+  const selVend = document.getElementById('select-venditore');
+  if (selImm) selImm.addEventListener('change', updateContractFromImmobile);
+  if (selVend) selVend.addEventListener('change', updateContractFromVenditore);
 }
 
 // Renderizza lista contratti
@@ -304,12 +300,22 @@ function renderContractsList() {
           <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
              👁️
           </button>
+          <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-contratto-btn" data-id="${contratto.idContratto}">
+             ✏️
+          </button>
           <button class="p-2 text-gray-400 hover:text-red-600 transition delete-contratto-btn" data-id="${contratto.idContratto}">
              🗑️
           </button>
        </div>
     `;
     contractsList.appendChild(cardEl);
+    
+    const viewBtn = cardEl.querySelector('.view-contract-btn');
+    if (viewBtn) {
+      viewBtn.addEventListener('click', () => {
+        openContractForView(contratto);
+      });
+    }
     
     const deleteBtn = cardEl.querySelector('.delete-contratto-btn');
     if (deleteBtn) {
@@ -318,6 +324,13 @@ function renderContractsList() {
           await deleteContratto(contratto.idContratto);
           cardEl.remove();
         }
+      });
+    }
+
+    const editBtn = cardEl.querySelector('.edit-contratto-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditContractModal(contratto);
       });
     }
   });
@@ -645,24 +658,31 @@ function renderVenditori(venditori) {
   });
 }
 
+// Helper per immagini immobili
+function getImmobileImage(tipo) {
+  const t = tipo ? tipo.toUpperCase() : '';
+  if (t.includes('VILLA')) return 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=400&h=250&q=80';
+  if (t.includes('UFFICIO')) return 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&h=250&q=80';
+  return 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&h=250&q=80';
+}
+
 // Renderizza lista immobili
 function renderImmobili(immobili) {
   if (!detailCards) return;
-  detailCards.innerHTML = '';
-  detailCards.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
-  
+
   if (immobili.length === 0) {
     detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessun immobile trovato.</p>';
     return;
   }
-  
+
   immobili.forEach(immobile => {
     const cardEl = document.createElement('div');
-    cardEl.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all group';
-    
-    // Placeholder immagine colorato
-    const placeholderColor = '274239'; // Verde scuro
-    const imgUrl = `https://ui-avatars.com/api/?name=${immobile.tipo}&background=${placeholderColor}&color=fff&size=200&font-size=0.33`;
+    cardEl.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group h-fit';
+
+    const imgUrl = getImmobileImage(immobile.tipo);
+    let badgeColor = 'bg-blue-100 text-blue-700';
+    if (immobile.tipo === 'VILLA') badgeColor = 'bg-purple-100 text-purple-700';
+    if (immobile.tipo === 'APPARTAMENTO') badgeColor = 'bg-orange-100 text-orange-700';
 
     cardEl.innerHTML = `
       <div class="h-32 bg-gray-100 relative overflow-hidden">
@@ -690,8 +710,9 @@ function renderImmobili(immobili) {
              <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
         </div>
         
-        <div class="mt-4 pt-4 border-t border-gray-100">
-          <button class="delete-immobile-btn w-full text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
+        <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+          <button class="edit-immobile-btn w-1/2 text-xs text-blue-600 hover:text-blue-800 font-bold" data-id="${immobile.idImmobile}">✏️ Modifica immobile</button>
+          <button class="delete-immobile-btn w-1/2 text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
         </div>
       </div>
     `;
@@ -707,37 +728,51 @@ function renderImmobili(immobili) {
         }
       });
     }
+
+    // attach edit listener
+    const editBtn = cardEl.querySelector('.edit-immobile-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        openEditImmobileModal(immobile);
+      });
+    }
   });
 }
 
-// Renderizza lista valutazioni
-function renderValutazioni(valutazioni) {
-    if (!detailCards) return;
-    detailCards.innerHTML = '';
-    detailCards.className = 'grid grid-cols-1 gap-4';
-    
-    if (valutazioni.length === 0) {
-        detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessuna valutazione trovata.</p>';
-        return;
-    }
 
-    valutazioni.forEach(val => {
-        const data = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
-        const statusColor = val.stato === 'COMPLETATA' ? 'text-green-600 bg-green-50 border-green-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200';
-        
-        const cardEl = document.createElement('div');
-        cardEl.className = 'bg-white p-4 rounded-xl border border-gray-200 flex flex-col md:flex-row items-center justify-between hover:border-my-green-dark transition-colors';
-        
-        cardEl.innerHTML = `
-            <div class="flex items-center gap-4 w-full md:w-auto">
-                <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-gray-400 border border-gray-200">
-                    #${val.idValutazione}
+function renderValutazioni(valutazioni) {
+  if (!detailCards) return;
+  detailCards.innerHTML = '';
+  detailCards.className = 'grid grid-cols-1 gap-4';
+
+  if (valutazioni.length === 0) {
+    detailCards.innerHTML = '<p class="col-span-full text-center text-gray-500">Nessuna valutazione trovata.</p>';
+    return;
+  }
+
+  valutazioni.forEach(val => {
+    const data = new Date(val.dataRichiesta).toLocaleDateString('it-IT');
+    const statusColor = val.stato === 'COMPLETATA' ? 'text-green-600 bg-green-50 border-green-200' : 'text-yellow-600 bg-yellow-50 border-yellow-200';
+
+    // Trova immobile associato per mostrare l'indirizzo
+    const imm = currentData.immobili.find(i => i.idImmobile === val.idImmobile);
+    const indirizzo = imm ? `${imm.indirizzo}, ${imm.citta}` : `Immobile ID ${val.idImmobile}`;
+    const imgUrl = imm ? getImmobileImage(imm.tipo) : 'https://via.placeholder.com/100';
+
+    const cardEl = document.createElement('div');
+    cardEl.className = 'bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-my-green-dark transition-all';
+
+    cardEl.innerHTML = `
+            <div class="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <div class="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden border border-gray-200 flex-shrink-0">
+                        <img src="${imgUrl}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="font-bold text-gray-800 text-lg">${indirizzo}</p>
+                        <p class="text-xs text-gray-500">Valutazione #${val.idValutazione} • ${data}</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="font-bold text-gray-800">Valutazione Immobile ID ${val.idImmobile}</p>
-                    <p class="text-xs text-gray-500">Richiesta il: ${data}</p>
-                </div>
-            </div>
 
             <div class="flex items-center gap-6 mt-3 md:mt-0 w-full md:w-auto justify-between md:justify-end">
                  <div class="text-right">
@@ -747,6 +782,9 @@ function renderValutazioni(valutazioni) {
                  <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
                     ${val.stato}
                  </span>
+                 <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-valutazione-btn" data-id="${val.idValutazione}">
+                    ✏️
+                 </button>
                  <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
                     🗑️
                  </button>
@@ -762,6 +800,14 @@ function renderValutazioni(valutazioni) {
               await deleteValutazione(val.idValutazione);
               cardEl.remove();
             }
+          });
+        }
+
+        // attach edit listener
+        const editBtn = cardEl.querySelector('.edit-valutazione-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', () => {
+            openEditValutazioneModal(val);
           });
         }
     });
@@ -873,5 +919,351 @@ async function deleteContratto(idContratto) {
   } catch (error) {
     console.error('Errore eliminazione contratto:', error);
     alert('Errore durante l\'eliminazione del contratto');
+  }
+}
+
+// Apri modal per modificare immobile
+function openEditImmobileModal(immobile) {
+  // crea overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:42rem;max-height:400px;overflow-y:auto;';
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Immobile ID ${immobile.idImmobile}</h3>
+      <button id="edit-imm-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Indirizzo</label>
+        <input id="edit-imm-indirizzo" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.indirizzo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Città</label>
+        <input id="edit-imm-citta" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.citta || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Provincia</label>
+        <input id="edit-imm-provincia" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.provincia || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">CAP</label>
+        <input id="edit-imm-cap" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.cap || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Metri quadri</label>
+        <input id="edit-imm-mq" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.metriQuadri || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Camere</label>
+        <input id="edit-imm-camere" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.camere || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Bagni</label>
+        <input id="edit-imm-bagni" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.bagni || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Prezzo</label>
+        <input id="edit-imm-prezzo" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.prezzo || ''}">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Descrizione</label>
+        <textarea id="edit-imm-desc" class="w-full border border-gray-300 rounded px-2 py-2">${immobile.descrizione || ''}</textarea>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Tipo</label>
+        <input id="edit-imm-tipo" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.tipo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <input id="edit-imm-stato" class="w-full border border-gray-300 rounded px-2 py-2" value="${immobile.stato || ''}">
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-imm-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-imm-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-imm-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-imm-cancel').addEventListener('click', () => overlay.remove());
+  
+  modal.querySelector('#edit-imm-save').addEventListener('click', async () => {
+    const updated = {
+      indirizzo: document.getElementById('edit-imm-indirizzo').value.trim(),
+      citta: document.getElementById('edit-imm-citta').value.trim(),
+      provincia: document.getElementById('edit-imm-provincia').value.trim(),
+      cap: document.getElementById('edit-imm-cap').value.trim(),
+      metriQuadri: parseFloat(document.getElementById('edit-imm-mq').value) || null,
+      camere: parseInt(document.getElementById('edit-imm-camere').value) || null,
+      bagni: parseInt(document.getElementById('edit-imm-bagni').value) || null,
+      prezzo: parseFloat(document.getElementById('edit-imm-prezzo').value) || null,
+      descrizione: document.getElementById('edit-imm-desc').value.trim(),
+      tipo: document.getElementById('edit-imm-tipo').value.trim(),
+      stato: document.getElementById('edit-imm-stato').value.trim()
+    };
+
+    try {
+      const updatedImmobile = await updateImmobile(immobile.idImmobile, updated);
+      // Aggiorna currentData
+      currentData.immobili = currentData.immobili.map(i => i.idImmobile === updatedImmobile.idImmobile ? updatedImmobile : i);
+      // Rirenderizza la vista
+      renderImmobili(currentData.immobili);
+      overlay.remove();
+      alert('Immobile aggiornato con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento immobile:', e);
+      alert('Errore durante l\'aggiornamento dell\'immobile');
+    }
+  });
+}
+
+// Aggiorna immobile (PATCH)
+async function updateImmobile(idImmobile, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/immobili/${idImmobile}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update immobile');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Apri modal per modificare una valutazione
+function openEditValutazioneModal(val) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-lg max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:36rem;max-height:480px;overflow-y:auto;';
+
+  // stato options (adatta se necessario)
+  const stati = ['RICHIESTA','IN_CORSO','COMPLETATA','ANNULLATA'];
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Valutazione ID ${val.idValutazione}</h3>
+      <button id="edit-val-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Valore Stimato (€)</label>
+        <input id="edit-val-valore" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${val.valoreStimato || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <select id="edit-val-stato" class="w-full border border-gray-300 rounded px-2 py-2">
+          ${stati.map(s => `<option value="${s}" ${val.stato === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Note</label>
+        <textarea id="edit-val-note" class="w-full border border-gray-300 rounded px-2 py-2">${val.note || val.noteValutazione || ''}</textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-val-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-val-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-val-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-val-cancel').addEventListener('click', () => overlay.remove());
+
+  modal.querySelector('#edit-val-save').addEventListener('click', async () => {
+    const updated = {
+      valoreStimato: parseFloat(document.getElementById('edit-val-valore').value) || null,
+      stato: document.getElementById('edit-val-stato').value.trim(),
+      note: document.getElementById('edit-val-note').value.trim()
+    };
+
+    try {
+      const updatedVal = await updateValutazione(val.idValutazione, updated);
+      // Aggiorna currentData
+      currentData.valutazioni = currentData.valutazioni.map(v => v.idValutazione === updatedVal.idValutazione ? updatedVal : v);
+      // Rirenderizza la vista
+      renderValutazioni(currentData.valutazioni);
+      overlay.remove();
+      alert('Valutazione aggiornata con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento valutazione:', e);
+      alert('Errore durante l\'aggiornamento della valutazione');
+    }
+  });
+}
+
+// Aggiorna valutazione (PATCH)
+async function updateValutazione(idValutazione, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/valutazioni/${idValutazione}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update valutazione');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Apri modal per modificare un contratto
+function openEditContractModal(contratto) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+
+  const modal = document.createElement('div');
+  modal.className = 'bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-96 overflow-y-auto';
+  modal.style.cssText = 'position:relative;background:white;border-radius:8px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:24px;width:100%;max-width:42rem;max-height:500px;overflow-y:auto;';
+
+  const stati = ['ATTIVO', 'COMPLETATO', 'ANNULLATO'];
+
+  modal.innerHTML = `
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Modifica Contratto ID ${contratto.idContratto}</h3>
+      <button id="edit-contr-close" style="font-size:24px;cursor:pointer;border:none;background:none;color:#666;">×</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Tipo</label>
+        <input id="edit-contr-tipo" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.tipo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Stato</label>
+        <select id="edit-contr-stato" class="w-full border border-gray-300 rounded px-2 py-2">
+          ${stati.map(s => `<option value="${s}" ${contratto.stato === s ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Data Inizio</label>
+        <input id="edit-contr-datainizio" type="date" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.dataInizio || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Data Fine</label>
+        <input id="edit-contr-datafine" type="date" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.dataFine || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Prezzo Finale Minimo</label>
+        <input id="edit-contr-prezzo" type="number" class="w-full border border-gray-300 rounded px-2 py-2" value="${contratto.prezzoFinaleMinimo || ''}">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Esclusiva</label>
+        <input id="edit-contr-esclusiva" type="checkbox" class="w-4 h-4 border border-gray-300 rounded" ${contratto.esclusiva ? 'checked' : ''}>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-xs text-gray-600 font-semibold mb-1">Note</label>
+        <textarea id="edit-contr-note" class="w-full border border-gray-300 rounded px-2 py-2">${contratto.note || ''}</textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button id="edit-contr-cancel" style="padding:10px 16px;background:#e5e7eb;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Annulla</button>
+      <button id="edit-contr-save" style="padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:500;">Salva</button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // listeners
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  modal.querySelector('#edit-contr-close').addEventListener('click', () => overlay.remove());
+  modal.querySelector('#edit-contr-cancel').addEventListener('click', () => overlay.remove());
+
+  modal.querySelector('#edit-contr-save').addEventListener('click', async () => {
+    const updated = {
+      tipo: document.getElementById('edit-contr-tipo').value.trim(),
+      stato: document.getElementById('edit-contr-stato').value.trim(),
+      dataInizio: document.getElementById('edit-contr-datainizio').value.trim(),
+      dataFine: document.getElementById('edit-contr-datafine').value.trim(),
+      prezzoFinaleMinimo: parseFloat(document.getElementById('edit-contr-prezzo').value) || null,
+      esclusiva: document.getElementById('edit-contr-esclusiva').checked,
+      note: document.getElementById('edit-contr-note').value.trim()
+    };
+
+    try {
+      const updatedContratto = await updateContract(contratto.idContratto, updated);
+      // Aggiorna currentData
+      currentData.contratti = currentData.contratti.map(c => c.idContratto === updatedContratto.idContratto ? updatedContratto : c);
+      // Rirenderizza la lista
+      renderContractsList();
+      overlay.remove();
+      alert('Contratto aggiornato con successo');
+    } catch (e) {
+      console.error('Errore aggiornamento contratto:', e);
+      alert('Errore durante l\'aggiornamento del contratto');
+    }
+  });
+}
+
+// Aggiorna contratto (PATCH)
+async function updateContract(idContratto, data) {
+  try {
+    const response = await authenticatedFetch(
+      `${AUTH_CONFIG.API_BASE_URL}/contratti/${idContratto}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if (!response.ok) {
+      const txt = await response.text();
+      throw new Error(txt || 'Errore update contratto');
+    }
+
+    const updated = await response.json();
+    return updated;
+  } catch (error) {
+    throw error;
   }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.immobiliaris.immobiliaris_be.dto.LoginRequest;
@@ -12,6 +13,8 @@ import com.immobiliaris.immobiliaris_be.dto.LoginResponse;
 import com.immobiliaris.immobiliaris_be.model.Utente;
 import com.immobiliaris.immobiliaris_be.services.AuthService;
 import com.immobiliaris.immobiliaris_be.services.UtenteService;
+
+import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
+@Validated
 @Tag(name = "Autenticazione", description = "API per login e gestione autenticazione")
 public class AuthController {
 
@@ -49,7 +53,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     @Operation(summary = "Login utente", description = "Autentica un utente con email e password")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             LoginResponse response = authService.login(loginRequest);
             return ResponseEntity.ok(response);

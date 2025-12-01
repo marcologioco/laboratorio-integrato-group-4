@@ -1,393 +1,369 @@
 /**
- * Form Valutazione Immobile - Multi-step
+ * JS VALUTAZIONE - Versione Definitiva (Compatibile con Step 0)
  */
 
-let currentStep = 1;
-const totalSteps = 3;
+let currentStep = 0; // Partiamo da Step 0 (Scelta login)
+const totalSteps = 5;
 
-// --- INIZIALIZZAZIONE ---
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Valutazione.js caricato correttamente');
+// Parametri di calcolo
+const PREZZI = {
+    MQ_BASE: 1800,
+    GARAGE: 15000,
+    GIARDINO: 10000,
+    TERRAZZO: 5000,
+    BALCONE: 3000
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    setupRegistrationChoice(); // Gestisce i click su "Sì/No" nello step 0
+    setupNavigation();
+    setupCards();
+    setupSubmit();
     
-    // Inizializza tutte le funzioni
-    setupFormNavigation();
-    setupFormSubmit();
-    setupCustomCards(); // Questa ora viene chiamata correttamente
+    // Controllo Login all'avvio
+    await checkLoginState();
 });
 
-// --- NAVIGAZIONE FORM ---
-function setupFormNavigation() {
-    // Tutti i pulsanti Avanti
-    const nextButtons = document.querySelectorAll('.btn-next');
-    nextButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (validateCurrentStep()) {
-                goToStep(currentStep + 1);
+// --- 1. GESTIONE LOGICA LOGIN ---
+async function checkLoginState() {
+    if (typeof getUser !== 'function') return;
+    const user = getUser();
+
+    // Nascondi tutti gli step inizialmente per evitare flash
+    document.querySelectorAll('.form-step').forEach(s => {
+        s.classList.remove('active');
+        s.classList.add('hidden');
+    });
+
+    if (user) {
+        console.log("Utente loggato:", user.email);
+        
+        // SE LOGGATO: Saltiamo Step 0 e Step 1
+        // Precompiliamo i campi nascosti per sicurezza
+        fillHiddenFields(user);
+        
+        // Andiamo diretti allo Step 2 (Immobile)
+        goToStep(2);
+        
+        // Mostra un piccolo avviso "Bentornato" sopra il form (opzionale)
+        showWelcomeBanner(user);
+
+    } else {
+        // SE OSPITE: Mostriamo Step 0
+        goToStep(0);
+    }
+}
+
+function fillHiddenFields(user) {
+    if(document.getElementById('nome')) document.getElementById('nome').value = user.nome || 'Utente';
+    if(document.getElementById('cognome')) document.getElementById('cognome').value = user.cognome || 'Loggato';
+    if(document.getElementById('email')) document.getElementById('email').value = user.email;
+    if(document.getElementById('telefono')) document.getElementById('telefono').value = user.telefono || '0000000000';
+    if(document.getElementById('password')) document.getElementById('password').value = "LoggedUserPass";
+    
+    // Proprietario: SI di default
+    const propSi = document.querySelector('input[name="isProprietario"][value="true"]');
+    if(propSi) propSi.checked = true;
+}
+
+function showWelcomeBanner(user) {
+    const container = document.getElementById('form-container');
+    const banner = document.createElement('div');
+    banner.className = 'bg-green-50 text-green-800 px-4 py-3 rounded-lg mb-4 text-sm flex items-center justify-between';
+    banner.innerHTML = `
+        <span>👋 Ciao <strong>${user.nome}</strong>, sei loggato.</span>
+        <a href="#" onclick="logout()" class="underline hover:text-red-600 ml-4">Esci</a>
+    `;
+    container.insertBefore(banner, container.firstChild);
+}
+
+// --- 2. GESTIONE SCELTA INIZIALE (Step 0) ---
+function setupRegistrationChoice() {
+    document.querySelectorAll('.registration-choice').forEach(card => {
+        card.addEventListener('click', function() {
+            const choice = this.getAttribute('data-choice');
+            
+            if (choice === 'yes') {
+                // Ha già un account -> Mandalo al login
+                window.location.href = 'login.html';
+            } else {
+                // Non ha un account -> Vai a Step 1 (Registrazione)
+                goToStep(1);
             }
         });
     });
-    
-    // Tutti i pulsanti Indietro
-    const prevButtons = document.querySelectorAll('.btn-prev');
-    prevButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+}
+
+// --- 3. NAVIGAZIONE ---
+function setupNavigation() {
+    document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            e.stopPropagation();
+            if(validateStep(currentStep)) goToStep(currentStep + 1);
+        });
+    });
+    
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
             goToStep(currentStep - 1);
         });
     });
 }
 
 function goToStep(step) {
-    if (step < 1 || step > totalSteps) return;
-    
-    // Nascondi tutti gli step
-    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-    
-    // Mostra lo step corrente (rimuove la classe hidden se presente e aggiunge active)
-    const stepEl = document.getElementById(`step-${step}`);
-    if (stepEl) {
-        stepEl.classList.remove('hidden'); // Assicura che non sia nascosto da Tailwind
-        stepEl.classList.add('active');
-    }
-    
-    // Gestione visualizzazione step precedenti/successivi (per sicurezza su Tailwind)
+    // Controlli limiti
+    if (step < 0 || step > totalSteps) return;
+
+    // Nascondi tutti
     document.querySelectorAll('.form-step').forEach(s => {
-        if (s.id !== `step-${step}`) {
-            s.classList.remove('active');
-            s.classList.add('hidden');
-        }
+        s.classList.remove('active');
+        s.classList.add('hidden');
     });
+    
+    // Mostra target
+    const target = document.getElementById(`step-${step}`);
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('active');
+    }
     
     currentStep = step;
-    updateProgressBar();
+    
+    // Aggiorna Barra Progresso (Visibile solo da step 1 in poi)
+    const progressContainer = document.getElementById('progress-container');
+    if (step > 0) {
+        progressContainer.style.display = 'block';
+        const bar = document.getElementById('progress-bar');
+        const ind = document.getElementById('step-indicator');
+        if(bar) bar.style.width = `${(step/totalSteps)*100}%`;
+        if(ind) ind.textContent = `Step ${step} di ${totalSteps}`;
+    } else {
+        progressContainer.style.display = 'none';
+    }
+    
+    // NO SCROLL (Come richiesto)
 }
 
-function updateProgressBar() {
-    const progress = (currentStep / totalSteps) * 100;
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) {
-        progressBar.style.width = `${progress}%`;
-    }
-    
-    const stepIndicator = document.getElementById('step-indicator');
-    if (stepIndicator) {
-        stepIndicator.textContent = `Step ${currentStep} di ${totalSteps}`;
-    }
-}
+// --- 4. VALIDAZIONE ---
+function validateStep(step) {
+    const stepEl = document.getElementById(`step-${step}`);
+    if (!stepEl) return true;
 
-// --- VALIDAZIONE ---
-function validateCurrentStep() {
-    const currentStepEl = document.getElementById(`step-${currentStep}`);
-    if (!currentStepEl) {
-        console.log('Step non trovato:', currentStep);
-        return true;
-    }
+    const inputs = stepEl.querySelectorAll('input[required], select[required]');
+    let valid = true;
     
-    let isValid = true;
-    
-    // Validazione speciale per step 1: verifica radio button isProprietario
-    if (currentStep === 1) {
-        const isProprietarioSelected = document.querySelector('input[name="isProprietario"]:checked');
-        if (!isProprietarioSelected) {
-            isValid = false;
-            showError('Indica se sei il proprietario dell\'immobile');
-        }
-    }
-    
-    // Validazione input required generici
-    const requiredInputs = currentStepEl.querySelectorAll('[required]');
-    
-    requiredInputs.forEach(input => {
-        // Skip radio buttons già validati sopra o select nascoste gestite dalle card
-        if (input.type === 'radio') return;
-        
-        // Per le select nascoste (Step 3), controlliamo se hanno un valore
-        if (input.tagName === 'SELECT' && input.classList.contains('hidden')) {
-             if (!input.value || input.value === "") {
-                 isValid = false;
-                 // Non possiamo colorare il bordo della select nascosta, mostriamo errore generico
-             }
-             return;
-        }
-
-        if (!input.value || input.value.trim() === '') {
-            isValid = false;
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            valid = false;
             input.classList.add('border-red-500');
-            
-            // Rimuovi il bordo rosso quando l'utente inizia a digitare
-            input.addEventListener('input', function() {
-                this.classList.remove('border-red-500');
-            }, { once: true });
+            input.addEventListener('input', () => input.classList.remove('border-red-500'), { once: true });
         }
     });
-    
-    if (!isValid) {
-        if (currentStep === 3) {
-             showError('Seleziona le caratteristiche obbligatorie (Tipo e Stato)');
-        } else if (currentStep !== 1) {
-             showError('Compila tutti i campi obbligatori');
-        }
-    }
-    
-    return isValid;
+
+    if(!valid) alert("Compila tutti i campi obbligatori!");
+    return valid;
 }
 
-// --- GESTIONE CARD PERSONALIZZATE (STEP 3) ---
-function setupCustomCards() {
-    
-    // Funzione helper per attivare graficamente una card
-    const activateCard = (card) => {
-        // 1. Sfondo e Bordo
-        card.classList.remove('border-gray-100', 'bg-white');
-        // Usa bg-orange-50 se esiste nel tuo tema, altrimenti bg-orange-100 di default tailwind
-        card.classList.add('border-my-orange', 'bg-orange-50'); 
-        
-        // 2. Icona (SVG)
-        const icon = card.querySelector('svg');
-        if (icon) {
-            icon.classList.remove('text-gray-400');
-            icon.classList.add('text-my-orange');
-        }
-        
-        // 3. Testo (Span)
-        const text = card.querySelector('span');
-        if (text) {
-            text.classList.remove('text-gray-600');
-            text.classList.add('text-my-orange');
-        }
-    };
-
-    // Funzione helper per disattivare graficamente una card
-    const deactivateCard = (card) => {
-        // 1. Ripristina Sfondo e Bordo
-        card.classList.remove('border-my-orange', 'bg-orange-50');
-        card.classList.add('border-gray-100', 'bg-white');
-        
-        // 2. Ripristina Icona
-        const icon = card.querySelector('svg');
-        if (icon) {
-            icon.classList.remove('text-my-orange');
-            icon.classList.add('text-gray-400');
-        }
-        
-        // 3. Ripristina Testo
-        const text = card.querySelector('span');
-        if (text) {
-            text.classList.remove('text-my-orange');
-            text.classList.add('text-gray-600');
-        }
-    };
-
-    // 1. LOGICA SELEZIONE SINGOLA (Tipo e Stato)
-    const selectionCards = document.querySelectorAll('.selection-card');
-    selectionCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target'); // es: 'tipo'
-            const value = this.getAttribute('data-value');     // es: 'APPARTAMENTO'
+// --- 5. CARDS & CHECKBOX ---
+function setupCards() {
+    // Selezione Singola
+    document.querySelectorAll('.selection-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const targetId = card.dataset.target;
+            const val = card.dataset.value;
+            document.getElementById(targetId).value = val;
             
-            // Aggiorna la select nascosta
-            const hiddenSelect = document.getElementById(targetId);
-            if (hiddenSelect) {
-                hiddenSelect.value = value;
-                console.log(`Aggiornato ${targetId}: ${value}`);
-            }
-
-            // Resetta tutte le card dello stesso gruppo (fratelli)
-            const siblings = document.querySelectorAll(`.selection-card[data-target="${targetId}"]`);
-            siblings.forEach(sibling => deactivateCard(sibling));
-
-            // Attiva la card cliccata
-            activateCard(this);
+            document.querySelectorAll(`.selection-card[data-target="${targetId}"]`).forEach(c => {
+                c.classList.remove('border-my-orange', 'bg-orange-50');
+            });
+            card.classList.add('border-my-orange', 'bg-orange-50');
         });
     });
 
-    // 2. LOGICA SELEZIONE MULTIPLA (Accessori: Terrazzo, ecc.)
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target'); // es: 'terrazzo'
+    // Selezione Multipla
+    document.querySelectorAll('.feature-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const targetId = card.dataset.target;
             const checkbox = document.getElementById(targetId);
-            
-            if (checkbox) {
-                // Inverti lo stato del checkbox
+            if(checkbox) {
                 checkbox.checked = !checkbox.checked;
-                console.log(`Aggiornato ${targetId}: ${checkbox.checked}`);
-                
-                // Aggiorna la grafica in base al nuovo stato
-                if (checkbox.checked) {
-                    activateCard(this);
-                } else {
-                    deactivateCard(this);
-                }
+                if(checkbox.checked) card.classList.add('border-my-orange', 'bg-orange-50');
+                else card.classList.remove('border-my-orange', 'bg-orange-50');
             }
         });
     });
 }
 
-// --- INVIO FORM ---
-function setupFormSubmit() {
+// --- 6. INVIO DATI ---
+function setupSubmit() {
     const form = document.getElementById('valutazione-form');
-    if (!form) return;
-    
+    if(!form) return;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        if (!validateCurrentStep()) {
-            return;
-        }
+        // 1. Calcolo Prezzo Frontend (immediato)
+        const stima = calcolaPrezzoFrontend();
         
-        await inviaValutazione();
+        const btn = document.getElementById('submit-btn');
+        const loading = document.getElementById('loading');
+        const formContainer = document.getElementById('form-container');
+        
+        btn.disabled = true;
+        formContainer.classList.add('hidden');
+        loading.classList.remove('hidden');
+        
+        try {
+            const user = typeof getUser === 'function' ? getUser() : null;
+            let resultData = null;
+
+            if (user) {
+                // --- UTENTE LOGGATO: Salva Immobile + Valutazione ---
+                const immobile = await salvaImmobile(user);
+                const valutazione = await salvaValutazione(immobile.idImmobile, user.idUtente, stima);
+                
+                resultData = {
+                    valoreStimato: valutazione.valoreStimato,
+                    valoreBaseZona: valutazione.valoreCalcolatoZona,
+                    messaggio: "Valutazione salvata nel tuo account!"
+                };
+
+            } else {
+                // --- OSPITE: Chiamata automatica ---
+                resultData = await inviaValutazioneOspite();
+            }
+            
+            // Mostra risultato
+            mostraRisultato(resultData);
+
+        } catch (error) {
+            console.error(error);
+            alert("Errore: " + error.message);
+            btn.disabled = false;
+            loading.classList.add('hidden');
+            formContainer.classList.remove('hidden');
+        }
     });
 }
 
-async function inviaValutazione() {
-    const submitBtn = document.getElementById('submit-btn');
-    const loadingEl = document.getElementById('loading');
-    const resultEl = document.getElementById('result');
-    const formContainer = document.getElementById('form-container');
-    
-    // UI Loading state
-    if (submitBtn) submitBtn.disabled = true;
-    if (loadingEl) loadingEl.classList.remove('hidden');
-    if (formContainer) formContainer.classList.add('hidden'); // Nascondiamo il form durante il caricamento
-    
-    try {
-        // Raccogli dati dal form
-        const formData = {
-            // Dati utente
-            nome: document.getElementById('nome').value,
-            cognome: document.getElementById('cognome').value,
-            email: document.getElementById('email').value,
-            telefono: document.getElementById('telefono').value,
-            password: document.getElementById('password').value,
-            
-            // Indica se l'utente è il proprietario
-            isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
-            
-            // Dati immobile
-            indirizzo: document.getElementById('indirizzo').value,
-            citta: document.getElementById('citta').value,
-            provincia: document.getElementById('provincia').value,
-            cap: document.getElementById('cap').value,
-            metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
-            camere: parseInt(document.getElementById('camere').value),
-            bagni: parseInt(document.getElementById('bagni').value),
-            
-            // Dati opzionali e Step 3
-            balconi: parseInt(document.getElementById('balconi').value) || 0,
-            terrazzo: document.getElementById('terrazzo').checked,
-            giardino: document.getElementById('giardino').checked,
-            garage: document.getElementById('garage').checked,
-            stato: document.getElementById('stato').value, // Prende valore dalla select nascosta
-            tipo: document.getElementById('tipo').value,   // Prende valore dalla select nascosta
-            descrizione: document.getElementById('descrizione').value
-        };
+// --- 7. FUNZIONI CALCOLO & API ---
 
-        console.log('Invio dati:', formData);
-        
-        // Simulazione ritardo rete (Rimuovi setTimeout in produzione) o chiamata reale
-        // const response = await fetch('http://localhost:8080/api/valutazioni/automatica', { ... });
-        
-        // Qui uso fetch reale come nel tuo codice originale:
-        const response = await fetch('http://localhost:8080/api/valutazioni/automatica', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
-        
-        if (!response.ok) {
-            throw new Error('Errore durante la valutazione');
-        }
-        
-        const data = await response.json();
-        mostraRisultato(data);
-        
-    } catch (error) {
-        console.error('Errore:', error);
-        showError('Si è verificato un errore durante la valutazione. Riprova più tardi.');
-        
-        // Ripristina UI in caso di errore
-        if (submitBtn) submitBtn.disabled = false;
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (formContainer) formContainer.classList.remove('hidden');
-    }
+function calcolaPrezzoFrontend() {
+    const mq = parseFloat(document.getElementById('metriQuadri').value) || 0;
+    const bagni = parseInt(document.getElementById('bagni').value) || 1;
+    const balconi = parseInt(document.getElementById('balconi').value) || 0;
+    const garage = document.getElementById('garage').checked;
+    const giardino = document.getElementById('giardino').checked;
+    const terrazzo = document.getElementById('terrazzo').checked;
+    const stato = document.getElementById('stato').value;
+
+    let valore = mq * PREZZI.MQ_BASE;
+    if(garage) valore += PREZZI.GARAGE;
+    if(giardino) valore += PREZZI.GIARDINO;
+    if(terrazzo) valore += PREZZI.TERRAZZO;
+    if(balconi > 0) valore += (balconi * PREZZI.BALCONE);
+    if(bagni > 1) valore += ((bagni - 1) * 5000);
+    
+    if(stato === 'NUOVA') valore *= 1.15;
+    if(stato === 'DA_RISTRUTTURARE') valore *= 0.75;
+
+    return Math.round(valore / 100) * 100;
 }
 
+async function salvaImmobile(user) {
+    const payload = {
+        indirizzo: document.getElementById('indirizzo').value,
+        citta: document.getElementById('citta').value,
+        provincia: document.getElementById('provincia').value,
+        cap: document.getElementById('cap').value,
+        metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+        camere: parseInt(document.getElementById('camere').value),
+        bagni: parseInt(document.getElementById('bagni').value),
+        tipo: document.getElementById('tipo').value,
+        stato: document.getElementById('stato').value,
+        descrizione: document.getElementById('descrizione').value,
+        prezzo: 0,
+        idUtente: user.idUtente,
+        idVenditore: user.idUtente // Legacy
+    };
+    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Errore salvataggio immobile");
+    return await res.json();
+}
+
+async function salvaValutazione(idImmobile, idUtente, valore) {
+    const payload = {
+        idImmobile: idImmobile,
+        idUtente: idUtente,
+        valoreStimato: valore,
+        valoreCalcolatoZona: 1800.0,
+        stato: 'COMPLETATA',
+        note: 'Valutazione Web',
+        dataRichiesta: new Date().toISOString()
+    };
+    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Errore salvataggio valutazione");
+    return await res.json();
+}
+
+async function inviaValutazioneOspite() {
+    const payload = {
+        nome: document.getElementById('nome').value,
+        cognome: document.getElementById('cognome').value,
+        email: document.getElementById('email').value,
+        telefono: document.getElementById('telefono').value,
+        password: document.getElementById('password').value,
+        isProprietario: document.querySelector('input[name="isProprietario"]:checked')?.value === 'true',
+        // Dati immobile
+        indirizzo: document.getElementById('indirizzo').value,
+        citta: document.getElementById('citta').value,
+        provincia: document.getElementById('provincia').value,
+        cap: document.getElementById('cap').value,
+        metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
+        camere: parseInt(document.getElementById('camere').value),
+        bagni: parseInt(document.getElementById('bagni').value),
+        tipo: document.getElementById('tipo').value,
+        stato: document.getElementById('stato').value
+    };
+
+    const res = await fetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni/automatica`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        const txt = await res.text();
+        if(txt.includes("ConstraintViolation")) throw new Error("Email già registrata. Fai il login.");
+        throw new Error("Errore server.");
+    }
+    return await res.json();
+}
+
+// --- 8. MOSTRA RISULTATO ---
 function mostraRisultato(data) {
-    const loadingEl = document.getElementById('loading');
-    const resultEl = document.getElementById('result');
-    const formContainer = document.getElementById('form-container');
-    
-    if (loadingEl) loadingEl.classList.add('hidden');
-    // formContainer rimane hidden (già fatto in inviaValutazione)
-    
-    if (resultEl) {
-        resultEl.classList.remove('hidden');
-        
-        // Popola i risultati
-        document.getElementById('result-valore').textContent = 
-            `€${data.valoreStimato.toLocaleString('it-IT')}`;
-        document.getElementById('result-base').textContent = 
-            `€${data.valoreBaseZona.toLocaleString('it-IT')}`;
-        document.getElementById('result-messaggio').textContent = data.messaggio;
-        
-        // Scroll al risultato
-        resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('progress-container').style.display = 'none'; // Nasconde barra
 
-// --- UTILITIES ---
-function showError(message) {
-    const errorEl = document.getElementById('error-message');
-    if (errorEl) {
-        errorEl.textContent = message;
-        errorEl.classList.remove('hidden');
-        
-        // Scroll verso l'errore se non è visibile
-        errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        setTimeout(() => {
-            errorEl.classList.add('hidden');
-        }, 5000);
-    } else {
-        alert(message);
-    }
+    const resultEl = document.getElementById('result');
+    resultEl.classList.remove('hidden');
+    
+    document.getElementById('result-valore').textContent = `€ ${data.valoreStimato.toLocaleString('it-IT')}`;
+    document.getElementById('result-base').textContent = `€ ${data.valoreBaseZona ? data.valoreBaseZona.toLocaleString('it-IT') : '-'}`;
+    document.getElementById('result-messaggio').textContent = data.messaggio || "Valutazione completata!";
+    
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function resetForm() {
-    const form = document.getElementById('valutazione-form');
-    if (form) form.reset();
-    
-    // Resetta lo stile delle card (rimuovi arancione)
-    document.querySelectorAll('.selection-card, .feature-card').forEach(card => {
-        card.classList.remove('border-my-orange', 'bg-orange-50');
-        card.classList.add('border-gray-100', 'bg-white');
-        
-        const icon = card.querySelector('svg');
-        if(icon) {
-            icon.classList.remove('text-my-orange');
-            icon.classList.add('text-gray-400');
-        }
-        
-        const text = card.querySelector('span');
-        if(text) {
-             text.classList.remove('text-my-orange');
-             text.classList.add('text-gray-600');
-        }
-    });
-    
-    goToStep(1);
-    
-    const formContainer = document.getElementById('form-container');
-    const resultEl = document.getElementById('result');
-    const submitBtn = document.getElementById('submit-btn');
-    
-    if (formContainer) formContainer.classList.remove('hidden');
-    if (resultEl) resultEl.classList.add('hidden');
-    if (submitBtn) submitBtn.disabled = false;
+    window.location.reload();
 }

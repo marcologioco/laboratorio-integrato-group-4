@@ -18,8 +18,6 @@ import com.immobiliaris.immobiliaris_be.model.Venditore;
 import com.immobiliaris.immobiliaris_be.services.ImmobileService;
 import com.immobiliaris.immobiliaris_be.services.UtenteService;
 import com.immobiliaris.immobiliaris_be.services.VenditoreService;
-import com.immobiliaris.immobiliaris_be.util.JwtUtil;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,9 +36,6 @@ public class ImmobileController {
     
     @Autowired
     private VenditoreService venditoreService;
-    
-    @Autowired
-    private JwtUtil jwtUtil;
 
     /**
      * GET tutti gli immobili

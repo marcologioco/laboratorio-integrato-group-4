@@ -6,14 +6,18 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.immobiliaris.immobiliaris_be.model.Utente;
 import com.immobiliaris.immobiliaris_be.services.UtenteService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/utenti")
 @CrossOrigin(origins = "*")
+@Validated
 public class UtenteController {
 
     @Autowired
@@ -56,7 +60,7 @@ public class UtenteController {
     // POST crea nuovo utente
     // POST http://localhost:8080/api/utenti
     @PostMapping
-    public ResponseEntity<Utente> createUtente(@RequestBody Utente utente) {
+    public ResponseEntity<Utente> createUtente(@Valid @RequestBody Utente utente) {
         Utente nuovoUtente = utenteService.saveUtente(utente);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuovoUtente);
     }
@@ -64,7 +68,7 @@ public class UtenteController {
     // PUT aggiorna utente completo
     // PUT http://localhost:8080/api/utenti/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<Utente> updateUtente(@PathVariable Integer id, @RequestBody Utente utente) {
+    public ResponseEntity<Utente> updateUtente(@PathVariable Integer id, @Valid @RequestBody Utente utente) {
         try {
             Utente utenteAggiornato = utenteService.updateUtente(id, utente);
             return ResponseEntity.ok(utenteAggiornato);
