@@ -182,8 +182,60 @@ function validateStep(step) {
         }
     });
 
-    if(!valid) alert("Compila tutti i campi obbligatori!");
+    if(!valid) {
+        alert("Compila tutti i campi obbligatori!");
+        return false;
+    }
+
+    // Validazione speciale per Step 2 (Indirizzo)
+    if (step === 2) {
+        const indirizzo = document.getElementById('indirizzo').value.trim();
+        const provincia = document.getElementById('provincia').value.trim();
+        
+        // Validazione formato indirizzo
+        if (!validateAddressFormat(indirizzo)) {
+            alert("L'indirizzo deve iniziare con Via, Viale, Corso, Piazza, ecc. seguito dal nome della via.\nEsempio: Via Garibaldi, Corso Francia, Piazza Castello");
+            document.getElementById('indirizzo').classList.add('border-red-500');
+            document.getElementById('indirizzo').focus();
+            return false;
+        }
+        
+        // Validazione provincia (2 caratteri maiuscoli)
+        if (!/^[A-Z]{2}$/.test(provincia)) {
+            alert("La provincia deve essere una sigla di 2 lettere maiuscole (es: TO, AL, AT, CN).");
+            document.getElementById('provincia').classList.add('border-red-500');
+            document.getElementById('provincia').focus();
+            return false;
+        }
+    }
+    
     return valid;
+}
+
+// Validazione formato indirizzo (deve iniziare con tipo di via + nome)
+function validateAddressFormat(indirizzo) {
+    if (!indirizzo || indirizzo.length < 5) return false;
+    
+    // Pattern: deve iniziare con un tipo di via seguito da almeno un nome
+    const tipiVia = [
+        'via', 'viale', 'corso', 'piazza', 'piazzale', 
+        'largo', 'vicolo', 'strada', 'vico', 'borgo',
+        'contrada', 'traversa', 'salita', 'discesa', 'rampa'
+    ];
+    
+    const indirizzoLower = indirizzo.toLowerCase().trim();
+    
+    // Controlla se inizia con uno dei tipi di via
+    const iniziaConTipoVia = tipiVia.some(tipo => {
+        const regex = new RegExp(`^${tipo}\\s+.+`, 'i');
+        return regex.test(indirizzoLower);
+    });
+    
+    if (!iniziaConTipoVia) return false;
+    
+    // Deve avere almeno un nome dopo il tipo (es: "Via Roma" è valido, "Via" no)
+    const parti = indirizzo.trim().split(/\s+/);
+    return parti.length >= 2;
 }
 
 // --- 5. CARDS & CHECKBOX ---
