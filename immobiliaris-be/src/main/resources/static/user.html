@@ -63,10 +63,10 @@
           <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
           Dashboard
         </a>
-        <a href="#valutazioni-container" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+        <!-- <a href="#valutazioni-container" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
           <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
           Le mie Valutazioni
-        </a>
+        </a> -->
       </nav>
 
       <div class="p-4 border-t border-gray-200">
@@ -98,8 +98,20 @@
       <div class="p-6 lg:p-12">
       
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-my-green-dark">Benvenuto</h1>
-        <p class="text-gray-600 border-b-2 pb-4">Ecco il riepilogo delle tue attività immobiliari.</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-my-green-dark">Benvenuto</h1>
+            <p class="text-gray-600">Ecco il riepilogo delle tue attività immobiliari.</p>
+          </div>
+          <a href="index.html?mode=logged" 
+             class="flex items-center gap-2 py-3 px-6 text-sm font-bold bg-my-orange text-white rounded-full shadow-lg hover:bg-my-green-dark hover:-translate-y-0.5 transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Richiedi Nuova Valutazione
+          </a>
+        </div>
+        <div class="border-b-2 pb-4 mt-4"></div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

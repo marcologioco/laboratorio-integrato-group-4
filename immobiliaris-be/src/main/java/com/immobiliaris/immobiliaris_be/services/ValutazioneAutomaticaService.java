@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.immobiliaris.immobiliaris_be.dto.RichiestaValutazioneDTO;
+import com.immobiliaris.immobiliaris_be.dto.RichiestaValutazioneImmobileDTO;
 import com.immobiliaris.immobiliaris_be.dto.RispostaValutazioneDTO;
 import com.immobiliaris.immobiliaris_be.enums.StatoImmobile;
 import com.immobiliaris.immobiliaris_be.enums.StatoValutazione;
@@ -86,6 +87,55 @@ public class ValutazioneAutomaticaService {
         // 6. PREPARA RISPOSTA
         String messaggio = String.format(
             "Valutazione completata! Il valore stimato del tuo immobile è di €%.2f. " +
+            "Riceverai una valutazione più dettagliata entro 72 ore.",
+            valoreStimato
+        );
+        
+        return new RispostaValutazioneDTO(
+            utente.getIdUtente(),
+            immobile.getIdImmobile(),
+            valutazione.getIdValutazione(),
+            valoreStimato,
+            valoreBaseZona,
+            messaggio
+        );
+    }
+    
+    /**
+     * Crea una valutazione per un utente già autenticato
+     * Riusa i dati utente esistenti e crea solo l'immobile e la valutazione
+     * 
+     * @param richiesta DTO con solo i dati dell'immobile
+     * @param emailUtente Email dell'utente autenticato
+     * @return Risposta con valutazione calcolata
+     */
+    @Transactional
+    public RispostaValutazioneDTO creaValutazionePerUtenteLoggato(
+            RichiestaValutazioneImmobileDTO richiesta, String emailUtente) {
+        
+        // 1. RECUPERA UTENTE ESISTENTE
+        Optional<Utente> utenteOptional = utenteService.findUtenteByEmail(emailUtente);
+        if (!utenteOptional.isPresent()) {
+            throw new RuntimeException("Utente non trovato");
+        }
+        Utente utente = utenteOptional.get();
+        
+        // 2. RECUPERA O CREA VENDITORE (l'utente loggato è automaticamente proprietario)
+        Integer idVenditore = recuperaOCreaVenditoreLogged(utente, richiesta);
+        
+        // 3. CREA IMMOBILE
+        Immobile immobile = creaImmobilePerLogged(richiesta, idVenditore);
+        
+        // 4. CALCOLA VALUTAZIONE
+        Double valoreStimato = calcolaValoreImmobilePerLogged(richiesta);
+        Double valoreBaseZona = calcolaValoreBaseZona(richiesta.getCap(), richiesta.getMetriQuadri());
+        
+        // 5. CREA VALUTAZIONE
+        Valutazione valutazione = creaValutazione(immobile, utente, valoreStimato, valoreBaseZona);
+        
+        // 6. PREPARA RISPOSTA
+        String messaggio = String.format(
+            "Nuova valutazione completata! Il valore stimato è di €%.2f. " +
             "Riceverai una valutazione più dettagliata entro 72 ore.",
             valoreStimato
         );
@@ -206,6 +256,75 @@ public class ValutazioneAutomaticaService {
     }
     
     /**
+     * Recupera o crea il venditore per un utente già loggato
+     */
+    private Integer recuperaOCreaVenditoreLogged(Utente utente, RichiestaValutazioneImmobileDTO richiesta) {
+        // Verifica se esiste già un venditore per questo utente
+        List<Venditore> venditori = venditoreService.findVenditoreByIdUtente(utente.getIdUtente());
+        
+        if (!venditori.isEmpty()) {
+            return venditori.get(0).getIdVenditore();
+        }
+        
+        // Crea nuovo venditore
+        Venditore venditore = new Venditore();
+        venditore.setIdUtente(utente.getIdUtente());
+        venditore.setNome(utente.getNome());
+        venditore.setCognome(utente.getCognome());
+        venditore.setEmail(utente.getEmail());
+        venditore.setTelefono(utente.getTelefono());
+        venditore.setCitta(richiesta.getCitta());
+        venditore.setProvincia(richiesta.getProvincia());
+        
+        Venditore venditoreSalvato = venditoreService.saveVenditore(venditore);
+        return venditoreSalvato.getIdVenditore();
+    }
+    
+    /**
+     * Crea un nuovo immobile per utente loggato
+     */
+    private Immobile creaImmobilePerLogged(RichiestaValutazioneImmobileDTO richiesta, Integer idVenditore) {
+        Immobile immobile = new Immobile();
+        
+        immobile.setIdVenditore(idVenditore);
+        
+        // Dati base
+        immobile.setIndirizzo(richiesta.getIndirizzo());
+        immobile.setCitta(richiesta.getCitta());
+        immobile.setProvincia(richiesta.getProvincia());
+        immobile.setCap(richiesta.getCap());
+        immobile.setMetriQuadri(richiesta.getMetriQuadri());
+        immobile.setCamere(richiesta.getCamere());
+        immobile.setBagni(richiesta.getBagni());
+        immobile.setDescrizione(richiesta.getDescrizione());
+        
+        // Tipo e stato
+        if (richiesta.getTipo() != null) {
+            try {
+                immobile.setTipo(TipoImmobile.valueOf(richiesta.getTipo().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                immobile.setTipo(TipoImmobile.APPARTAMENTO);
+            }
+        } else {
+            immobile.setTipo(TipoImmobile.APPARTAMENTO);
+        }
+        
+        if (richiesta.getStato() != null) {
+            try {
+                immobile.setStato(StatoImmobile.valueOf(richiesta.getStato().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                immobile.setStato(StatoImmobile.ABITABILE);
+            }
+        } else {
+            immobile.setStato(StatoImmobile.ABITABILE);
+        }
+        
+        immobile.setPrezzo(0.0);
+        
+        return immobileService.saveImmobile(immobile);
+    }
+    
+    /**
      * Crea la valutazione automatica
      */
     private Valutazione creaValutazione(Immobile immobile, Utente utente, 
@@ -299,6 +418,67 @@ public class ValutazioneAutomaticaService {
         Double valoreTotale = (valoreBase + aggiunte) * moltiplicatore;
         
         // Arrotonda a 100€
+        return Math.round(valoreTotale / 100.0) * 100.0;
+    }
+    
+    /**
+     * CALCOLO VALUTAZIONE AUTOMATICA per utente loggato
+     * (stesso algoritmo ma con DTO diverso)
+     */
+    public Double calcolaValoreImmobilePerLogged(RichiestaValutazioneImmobileDTO richiesta) {
+        
+        // 1. VALORE BASE DALLA ZONA
+        Double valoreBase = calcolaValoreBaseZona(richiesta.getCap(), richiesta.getMetriQuadri());
+        
+        if (valoreBase == null) {
+            valoreBase = richiesta.getMetriQuadri() * 2500.0;
+        }
+        
+        // 2. AGGIUNTE PER CARATTERISTICHE
+        double aggiunte = 0.0;
+        
+        if (richiesta.getBagni() != null && richiesta.getBagni() > 1) {
+            aggiunte += (richiesta.getBagni() - 1) * PREZZO_BAGNO_EXTRA;
+        }
+        
+        if (richiesta.getBalconi() != null && richiesta.getBalconi() > 0) {
+            aggiunte += richiesta.getBalconi() * PREZZO_BALCONE;
+        }
+        
+        if (Boolean.TRUE.equals(richiesta.getTerrazzo())) {
+            aggiunte += PREZZO_TERRAZZO;
+        }
+        
+        if (Boolean.TRUE.equals(richiesta.getGiardino())) {
+            aggiunte += PREZZO_GIARDINO;
+        }
+        
+        if (Boolean.TRUE.equals(richiesta.getGarage())) {
+            aggiunte += PREZZO_GARAGE;
+        }
+        
+        // 3. APPLICA MOLTIPLICATORE PER STATO
+        double moltiplicatore = MOLTIPLICATORE_ABITABILE;
+        
+        if (richiesta.getStato() != null) {
+            switch (richiesta.getStato().toUpperCase()) {
+                case "NUOVA":
+                    moltiplicatore = MOLTIPLICATORE_NUOVA;
+                    break;
+                case "RISTRUTTURATA":
+                    moltiplicatore = MOLTIPLICATORE_ABITABILE;
+                    break;
+                case "DA_RISTRUTTURARE":
+                    moltiplicatore = MOLTIPLICATORE_DA_RISTRUTTURARE;
+                    break;
+                default:
+                    moltiplicatore = MOLTIPLICATORE_ABITABILE;
+            }
+        }
+        
+        // 4. CALCOLO FINALE
+        Double valoreTotale = (valoreBase + aggiunte) * moltiplicatore;
+        
         return Math.round(valoreTotale / 100.0) * 100.0;
     }
     
