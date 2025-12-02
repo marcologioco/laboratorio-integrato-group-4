@@ -11,13 +11,19 @@
     <script src="js/admin.js" defer></script>
     <style>
         /* Effetti Card */
-        .card-admin { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-admin:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15); }
-        
+        .card-admin {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-admin:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+        }
+
         /* Foglio A4 per il contratto */
         .paper-sheet {
             background: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             padding: 3rem;
             min-height: 29.7cm;
             width: 21cm;
@@ -26,7 +32,7 @@
             line-height: 1.6;
             color: #1a1a1a;
         }
-        
+
         /* Campi contratto */
         .contract-field {
             border-bottom: 1px dashed #666;
@@ -36,10 +42,23 @@
         }
 
         @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-            .paper-sheet { box-shadow: none; margin: 0; width: 100%; }
-            aside { display: none; }
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .paper-sheet {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+
+            aside {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -52,7 +71,8 @@
         <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
             <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div class="flex items-center space-x-6">
-                    <a href="mailto:immobiliarishelp@gmail.com" class="flex items-center hover:text-white transition-colors">
+                    <a href="mailto:immobiliarishelp@gmail.com"
+                        class="flex items-center hover:text-white transition-colors">
                         <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -80,402 +100,509 @@
 
         <div class="flex flex-1 lg:flex-row">
 
-        <aside id="sidebar" class="bg-my-cream text-my-black w-full lg:w-72 flex-shrink-0 shadow-2xl z-20 flex flex-col self-stretch">
-            
-            <div class="p-8 flex flex-col items-center border-b border-gray-200">
-                <div class="w-20 h-20 bg-my-green-dark rounded-xl flex items-center justify-center text-3xl font-bold text-white shadow-lg mb-4">
-                    ADM
+            <aside id="sidebar"
+                class="bg-my-cream text-my-black w-full lg:w-72 flex-shrink-0 shadow-2xl z-20 flex flex-col self-stretch">
+
+                <div class="p-8 flex flex-col items-center border-b border-gray-200">
+                    <div
+                        class="w-20 h-20 bg-my-green-dark rounded-xl flex items-center justify-center text-3xl font-bold text-white shadow-lg mb-4">
+                        ADM
+                    </div>
+                    <h2 id="admin-name" class="text-lg font-bold text-center text-my-black">Admin</h2>
+                    <p id="admin-email" class="text-xs text-gray-500 mt-1 text-center"></p>
                 </div>
-                <h2 id="admin-name" class="text-lg font-bold text-center text-my-black">Admin</h2>
-                <p id="admin-email" class="text-xs text-gray-500 mt-1 text-center"></p>
-            </div>
 
-            <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="#" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                    Dashboard
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    Utenti & Venditori
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                    Immobili
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-                    Valutazioni
-                </a>
-                <a href="#" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Contratti
-                </a>
-            </nav>
+                <nav class="flex-1 px-4 py-6 space-y-2">
+                    <a href="#"
+                        class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="#"
+                        class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Utenti & Venditori
+                    </a>
+                    <a href="#"
+                        class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Immobili
+                    </a>
+                    <a href="#"
+                        class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Valutazioni
+                    </a>
+                    <a href="#"
+                        class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Contratti
+                    </a>
+                </nav>
 
-            <div class="p-4 border-t border-gray-200">
-                <a href="index.html" class="flex items-center justify-center w-full px-4 py-2 mb-2 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors rounded-lg">
-                    ← Torna al sito
-                </a>
-                <a id="logout-btn" href="#" class="flex items-center justify-center w-full px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600 transition-all text-sm font-semibold shadow-md">
-                    Logout
-                </a>
-            </div>
-        </aside>
-
-        <main class="flex-1">
-
-            <nav class="bg-white shadow-sm border-b border-gray-100">
-                <div class="px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between items-center h-20">
-                        <a href="index.html" class="flex items-center gap-2 group">
-                            <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-                            <span class="text-2xl font-bold tracking-tight text-my-green-dark">Immobiliaris</span>
-                        </a>
-                        <div class="flex items-center gap-2 px-4 py-2 bg-my-green-dark/5 rounded-lg">
-                            <span class="text-sm font-semibold text-my-green-dark">Area Admin</span>
-                        </div>
-                    </div>
+                <div class="p-4 border-t border-gray-200">
+                    <a href="index.html"
+                        class="flex items-center justify-center w-full px-4 py-2 mb-2 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors rounded-lg">
+                        ← Torna al sito
+                    </a>
+                    <a id="logout-btn" href="#"
+                        class="flex items-center justify-center w-full px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600 transition-all text-sm font-semibold shadow-md">
+                        Logout
+                    </a>
                 </div>
-            </nav>
+            </aside>
 
-            <div class="p-6 lg:p-10">
-            
-            <header class="flex justify-between items-center lg:hidden mb-6">
-                <h1 class="text-2xl font-bold text-my-green-dark">Immobiliaris Admin</h1>
-                <button id="mobile-menu-btn" class="p-2 bg-white rounded-lg shadow text-my-green-dark">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
-            </header>
+            <main class="flex-1">
 
-            <button id="close-overview" class="hidden mb-6 flex items-center text-gray-500 hover:text-my-green-dark transition-colors font-semibold">
-                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Torna alla Panoramica
-            </button>
-
-            <div id="overview">
-                <h2 class="text-2xl font-bold text-my-black mb-8">Panoramica Attività</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                    <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group" data-type="utenti">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <nav class="bg-white shadow-sm border-b border-gray-100">
+                    <div class="px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between items-center h-20">
+                            <a href="index.html" class="flex items-center gap-2 group">
+                                <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
+                                <span class="text-2xl font-bold tracking-tight text-my-green-dark">Immobiliaris</span>
+                            </a>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-my-green-dark/5 rounded-lg">
+                                <span class="text-sm font-semibold text-my-green-dark">Area Admin</span>
                             </div>
-                            <span class="text-3xl font-extrabold text-my-black" id="count-utenti">-</span>
                         </div>
-                        <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Utenti Totali</h3>
-                        <p class="text-xs text-gray-400 mt-1">Gestione account cliente</p>
                     </div>
+                </nav>
 
-                    <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group" data-type="venditori">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                            </div>
-                            <span class="text-3xl font-extrabold text-my-black" id="count-venditori">-</span>
-                        </div>
-                        <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Venditori</h3>
-                        <p class="text-xs text-gray-400 mt-1">Proprietari verificati</p>
-                    </div>
+                <div class="p-6 lg:p-10">
 
-                    <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group" data-type="immobili">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                            </div>
-                            <span class="text-3xl font-extrabold text-my-black" id="count-immobili">-</span>
-                        </div>
-                        <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Immobili</h3>
-                        <p class="text-xs text-gray-400 mt-1">In attesa o valutati</p>
-                    </div>
-
-                    <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group" data-type="valutazioni">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            </div>
-                            <span class="text-3xl font-extrabold text-my-black" id="count-valutazioni">-</span>
-                        </div>
-                        <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Valutazioni</h3>
-                        <p class="text-xs text-gray-400 mt-1">Report generati</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="detail-view" class="hidden animate-fade-in">
-                <h2 class="text-2xl font-bold text-my-black mb-6 border-b pb-4" id="detail-title">Titolo Sezione</h2>
-                <div id="detail-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    </div>
-            </div>
-
-            <div id="contracts-view" class="hidden">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-bold text-my-black">Gestione Contratti</h2>
-                    <div class="flex gap-3">
-                         <button id="btn-view-contracts" class="flex items-center px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition shadow-sm">
-                            <span class="mr-2">📋</span> Lista Contratti
+                    <header class="flex justify-between items-center lg:hidden mb-6">
+                        <h1 class="text-2xl font-bold text-my-green-dark">Immobiliaris Admin</h1>
+                        <button id="mobile-menu-btn" class="p-2 bg-white rounded-lg shadow text-my-green-dark">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
                         </button>
-                        <button id="btn-create-contract" class="flex items-center px-4 py-2 bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] transition shadow-lg shadow-green-900/20">
-                            <span class="mr-2">➕</span> Nuovo Contratto
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-12 rounded-2xl shadow-sm text-center border border-dashed border-gray-300">
-                    <div class="text-6xl mb-4">📄</div>
-                    <h3 class="text-xl font-bold text-gray-800">Area Contrattuale</h3>
-                    <p class="text-gray-500">Seleziona un'azione in alto per iniziare a gestire i contratti di vendita.</p>
-                </div>
-            </div>
+                    </header>
 
-            <div id="contracts-list-view" class="hidden">
-                <button id="btn-back-contracts" class="mb-6 text-gray-500 hover:text-my-green-dark flex items-center font-medium">
-                    ← Indietro
-                </button>
-                <h3 class="text-xl font-bold mb-6">Contratti Archiviati</h3>
-                <div id="contracts-list" class="grid grid-cols-1 gap-4">
-                    </div>
-            </div>
-
-            <div id="contract-form-view" class="hidden">
-                <div class="flex justify-between items-start no-print mb-6">
-                    <button id="btn-back-from-form" class="text-gray-500 hover:text-my-green-dark flex items-center font-medium">
-                        ← Annulla
+                    <button id="close-overview"
+                        class="hidden mb-6 flex items-center text-gray-500 hover:text-my-green-dark transition-colors font-semibold">
+                        <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Torna alla Panoramica
                     </button>
-                    <div class="flex gap-3">
-                        <button id="btn-preview-contract" class="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-semibold">
-                           👁️ Aggiorna Anteprima
-                        </button>
-                        <button id="btn-save-contract" class="px-4 py-2 bg-my-green-dark text-white rounded-lg hover:bg-[#111A19] shadow-lg font-semibold">
-                           💾 Salva Definitivo
-                        </button>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    
-                    <div class="xl:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit no-print">
-                        <h4 class="font-bold text-lg mb-6 text-my-green-dark border-b pb-2">1. Dati Essenziali</h4>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Immobile</label>
-                                <select id="select-immobile" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-my-orange focus:border-transparent bg-gray-50">
-                                    <option value="">-- Seleziona --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Venditore</label>
-                                <select id="select-venditore" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-my-orange focus:border-transparent bg-gray-50">
-                                    <option value="">-- Seleziona --</option>
-                                </select>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Data Inizio</label>
-                                    <input type="date" id="data-inizio" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    <div id="overview">
+                        <h2 class="text-2xl font-bold text-my-black mb-8">Panoramica Attività</h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                            <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group"
+                                data-type="utenti">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div
+                                        class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-my-black" id="count-utenti">-</span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Data Fine</label>
-                                    <input type="date" id="data-fine" class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                                </div>
+                                <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Utenti Totali
+                                </h3>
+                                <p class="text-xs text-gray-400 mt-1">Gestione account cliente</p>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Minimo (€)</label>
-                                    <input type="number" id="prezzo-minimo" class="w-full border border-gray-300 rounded-lg px-3 py-2 font-mono" placeholder="0">
+                            <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group"
+                                data-type="venditori">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div
+                                        class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-my-black" id="count-venditori">-</span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Comm. (%)</label>
-                                    <input type="number" id="commissione" class="w-full border border-gray-300 rounded-lg px-3 py-2 font-mono" value="3" step="0.1">
+                                <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Venditori</h3>
+                                <p class="text-xs text-gray-400 mt-1">Proprietari verificati</p>
+                            </div>
+
+                            <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group"
+                                data-type="immobili">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div
+                                        class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-my-black" id="count-immobili">-</span>
                                 </div>
+                                <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Immobili</h3>
+                                <p class="text-xs text-gray-400 mt-1">In attesa o valutati</p>
+                            </div>
+
+                            <div class="card-admin bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer group"
+                                data-type="valutazioni">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div
+                                        class="p-3 bg-my-green-dark/10 rounded-xl text-my-green-dark group-hover:bg-my-green-dark group-hover:text-white transition-colors">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-my-black" id="count-valutazioni">-</span>
+                                </div>
+                                <h3 class="text-gray-500 font-medium text-sm uppercase tracking-wider">Valutazioni</h3>
+                                <p class="text-xs text-gray-400 mt-1">Report generati</p>
                             </div>
                         </div>
-                        
-                        <div class="mt-6 pt-6 border-t border-gray-100">
-                            <button id="btn-send-contract" class="w-full py-3 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 font-semibold flex items-center justify-center">
-                                📧 Salva e Invia Email
+                    </div>
+
+                    <div id="detail-view" class="hidden animate-fade-in">
+                        <h2 class="text-2xl font-bold text-my-black mb-6 border-b pb-4" id="detail-title">Titolo Sezione
+                        </h2>
+                        <div id="detail-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        </div>
+                    </div>
+
+                    <div id="contracts-view" class="hidden">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-bold text-my-black">Gestione Contratti</h2>
+                            <div class="flex gap-3">
+                                <button id="btn-view-contracts"
+                                    class="flex items-center px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-my-green-light transition shadow-sm">
+                                    <img src="./assets/contratto.png" class="w-5 h-5 mr-2" alt="Lista">
+                                    Lista Contratti
+                                </button>
+                                <button id="btn-create-contract"
+                                    class="flex items-center px-4 py-2 bg-white border border-gray-200 text-black rounded-lg hover:bg-my-green-light transition shadow-lg shadow-sm">
+                                    <img src="./assets/piu.png" class="w-5 h-5 mr-2" alt="aggiungi">
+                                    Nuovo contratto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-12 rounded-2xl shadow-sm text-center border border-dashed border-gray-300">
+                            <div class="flex justify-center mb-4">
+                                <img src="./assets/contratto.png" class="w-16 h-16" alt="Documento">
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-800">Area Contrattuale</h3>
+                            <p class="text-gray-500">Seleziona un'azione in alto per iniziare a gestire i contratti di
+                                vendita.</p>
+                        </div>
+                    </div>
+
+                    <div id="contracts-list-view" class="hidden">
+                        <button id="btn-back-contracts"
+                            class="mb-6 text-gray-500 hover:text-my-green-dark flex items-center font-medium">
+                            ← Indietro
+                        </button>
+                        <h3 class="text-xl font-bold mb-6">Contratti Archiviati</h3>
+                        <div id="contracts-list" class="grid grid-cols-1 gap-4">
+                        </div>
+                    </div>
+
+                    <div id="contract-form-view" class="hidden">
+                        <div class="flex justify-between items-start no-print mb-6">
+                            <button id="btn-back-from-form"
+                                class="text-gray-500 hover:text-my-green-dark flex items-center font-medium">
+                                ← Annulla
                             </button>
+                            <div class="flex gap-3">
+                                <button id="btn-preview-contract"
+                                    class="flex items-center px-4 py-2 border bg-border border-gray-200 text-gray-700 rounded-lg hover:bg-my-green-light shadow-sm">
+                                    <img src="./assets/occhio.png" class="w-5 h-5 mr-2" alt="Anteprima">
+                                    Anteprima
+                                </button>
+
+                                <button id="btn-save-contract"
+                                    class="flex items-center px-4 py-2 border bg-border border-gray-200 text-gray-700 rounded-lg hover:bg-my-green-light shadow-sm">
+                                    <img src="./assets/salva.png" class="w-5 h-5 mr-2" alt="Salva">
+                                    Salva Definitivo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+                            <div
+                                class="xl:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit no-print">
+                                <h4 class="font-bold text-lg mb-6 text-my-green-dark border-b pb-2">1. Dati Essenziali
+                                </h4>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-gray-500 uppercase mb-1">Immobile</label>
+                                        <select id="select-immobile"
+                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-my-orange focus:border-transparent bg-gray-50">
+                                            <option value="">-- Seleziona --</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-bold text-gray-500 uppercase mb-1">Venditore</label>
+                                        <select id="select-venditore"
+                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-my-orange focus:border-transparent bg-gray-50">
+                                            <option value="">-- Seleziona --</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Data
+                                                Inizio</label>
+                                            <input type="date" id="data-inizio"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Data
+                                                Fine</label>
+                                            <input type="date" id="data-fine"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Minimo
+                                                (€)</label>
+                                            <input type="number" id="prezzo-minimo"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2 font-mono"
+                                                placeholder="0">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Comm.
+                                                (%)</label>
+                                            <input type="number" id="commissione"
+                                                class="w-full border border-gray-300 rounded-lg px-3 py-2 font-mono"
+                                                value="3" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 pt-6 border-t border-gray-100">
+                                    <button id="btn-send-contract"
+                                        class="w-full py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-my-orange hover:text-white font-semibold flex items-center justify-center gap-2 transition-colors">
+                                        <img src="./assets/email.png" class="w-5 h-5 opacity-80" alt="Email">
+                                        Salva e Invia Email
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="xl:col-span-2 bg-gray-200 p-4 rounded-xl overflow-auto flex justify-center no-print-bg">
+
+                                <div id="contract-template" class="paper-sheet">
+
+                                    <div class="text-center mb-8 border-b-2 border-black pb-4">
+                                        <h2 class="text-2xl font-bold tracking-wider">CONTRATTO DI INCARICO IN ESCLUSIVA
+                                        </h2>
+                                        <h3 class="text-lg italic">PER LA VENDITA DI IMMOBILE</h3>
+                                    </div>
+
+                                    <div class="mb-6 text-justify">
+                                        <p><strong>TRA</strong></p>
+                                        <p class="mt-2 pl-4 border-l-2 border-gray-300">
+                                            Il/La Sig./Sig.ra <span class="contract-field bg-yellow-50"
+                                                id="venditore-nome">____________________</span>,
+                                            C.F. <span class="contract-field"
+                                                id="venditore-cf">____________________</span>,
+                                            residente in <span class="contract-field"
+                                                id="venditore-citta">____________________</span>,
+                                            Via <span class="contract-field"
+                                                id="venditore-indirizzo">____________________</span>.
+                                            <br><em>(di seguito "Venditore")</em>
+                                        </p>
+                                        <p class="mt-4"><strong>E</strong></p>
+                                        <p class="mt-2 pl-4 border-l-2 border-gray-300">
+                                            <strong>IMMOBILIARIS S.r.l.</strong>, con sede in Torino, P.IVA 12345678901.
+                                            <br><em>(di seguito "Agenzia")</em>
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-4 text-justify">
+                                        <div>
+                                            <p class="font-bold">1. OGGETTO</p>
+                                            <p>Il Venditore conferisce incarico esclusivo per la vendita dell'immobile
+                                                sito in <span class="contract-field" id="immobile-citta">_______</span>,
+                                                Via <span class="contract-field"
+                                                    id="immobile-indirizzo">____________________</span>.</p>
+                                            <p class="text-sm mt-1">
+                                                Dettagli: <span class="contract-field" id="immobile-mq">___</span> mq,
+                                                <span class="contract-field" id="immobile-camere">___</span> vani,
+                                                cat. <span class="contract-field" id="immobile-tipo">___</span>.
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-bold">2. PREZZO E CONDIZIONI</p>
+                                            <p>Il prezzo di vendita richiesto è di <strong>€ <span
+                                                        class="contract-field text-lg"
+                                                        id="immobile-prezzo">0</span></strong>.</p>
+                                            <p>Il Venditore accetterà proposte non inferiori a € <span
+                                                    class="contract-field" id="contratto-prezzo-minimo">0</span>.</p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-bold">3. DURATA</p>
+                                            <p>Dal <span class="contract-field"
+                                                    id="contratto-data-inizio">__/__/____</span> al <span
+                                                    class="contract-field" id="contratto-data-fine">__/__/____</span>.
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <p class="font-bold">4. PROVVIGIONE</p>
+                                            <p>All'Agenzia spetta una provvigione del <strong><span
+                                                        class="contract-field"
+                                                        id="contratto-commissione">3</span>%</strong> + IVA sul prezzo
+                                                finale di vendita.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-16 grid grid-cols-2 gap-10">
+                                        <div class="text-center">
+                                            <p class="text-sm text-gray-500 mb-12">Luogo e Data: <span
+                                                    id="firma-data">__/__/____</span></p>
+                                            <div class="border-t border-black pt-2 font-bold">Il Venditore</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-sm text-gray-500 mb-12">Agente Incaricato</p>
+                                            <div class="border-t border-black pt-2 font-bold">Per Immobiliaris S.r.l.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="xl:col-span-2 bg-gray-200 p-4 rounded-xl overflow-auto flex justify-center no-print-bg">
-                        
-                        <div id="contract-template" class="paper-sheet">
-                            
-                            <div class="text-center mb-8 border-b-2 border-black pb-4">
-                                <h2 class="text-2xl font-bold tracking-wider">CONTRATTO DI INCARICO IN ESCLUSIVA</h2>
-                                <h3 class="text-lg italic">PER LA VENDITA DI IMMOBILE</h3>
-                            </div>
-
-                            <div class="mb-6 text-justify">
-                                <p><strong>TRA</strong></p>
-                                <p class="mt-2 pl-4 border-l-2 border-gray-300">
-                                    Il/La Sig./Sig.ra <span class="contract-field bg-yellow-50" id="venditore-nome">____________________</span>, 
-                                    C.F. <span class="contract-field" id="venditore-cf">____________________</span>,
-                                    residente in <span class="contract-field" id="venditore-citta">____________________</span>, 
-                                    Via <span class="contract-field" id="venditore-indirizzo">____________________</span>.
-                                    <br><em>(di seguito "Venditore")</em>
-                                </p>
-                                <p class="mt-4"><strong>E</strong></p>
-                                <p class="mt-2 pl-4 border-l-2 border-gray-300">
-                                    <strong>IMMOBILIARIS S.r.l.</strong>, con sede in Torino, P.IVA 12345678901.
-                                    <br><em>(di seguito "Agenzia")</em>
-                                </p>
-                            </div>
-
-                            <div class="space-y-4 text-justify">
-                                <div>
-                                    <p class="font-bold">1. OGGETTO</p>
-                                    <p>Il Venditore conferisce incarico esclusivo per la vendita dell'immobile sito in <span class="contract-field" id="immobile-citta">_______</span>, 
-                                    Via <span class="contract-field" id="immobile-indirizzo">____________________</span>.</p>
-                                    <p class="text-sm mt-1">
-                                        Dettagli: <span class="contract-field" id="immobile-mq">___</span> mq, 
-                                        <span class="contract-field" id="immobile-camere">___</span> vani, 
-                                        cat. <span class="contract-field" id="immobile-tipo">___</span>.
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <p class="font-bold">2. PREZZO E CONDIZIONI</p>
-                                    <p>Il prezzo di vendita richiesto è di <strong>€ <span class="contract-field text-lg" id="immobile-prezzo">0</span></strong>.</p>
-                                    <p>Il Venditore accetterà proposte non inferiori a € <span class="contract-field" id="contratto-prezzo-minimo">0</span>.</p>
-                                </div>
-
-                                <div>
-                                    <p class="font-bold">3. DURATA</p>
-                                    <p>Dal <span class="contract-field" id="contratto-data-inizio">__/__/____</span> al <span class="contract-field" id="contratto-data-fine">__/__/____</span>.</p>
-                                </div>
-
-                                <div>
-                                    <p class="font-bold">4. PROVVIGIONE</p>
-                                    <p>All'Agenzia spetta una provvigione del <strong><span class="contract-field" id="contratto-commissione">3</span>%</strong> + IVA sul prezzo finale di vendita.</p>
-                                </div>
-                            </div>
-
-                            <div class="mt-16 grid grid-cols-2 gap-10">
-                                <div class="text-center">
-                                    <p class="text-sm text-gray-500 mb-12">Luogo e Data: <span id="firma-data">__/__/____</span></p>
-                                    <div class="border-t border-black pt-2 font-bold">Il Venditore</div>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm text-gray-500 mb-12">Agente Incaricato</p>
-                                    <div class="border-t border-black pt-2 font-bold">Per Immobiliaris S.r.l.</div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
-            </div>
 
-            </div>
-
-        </main>
+            </main>
 
         </div>
 
         <footer class="bg-my-green-dark text-white border-t border-white/10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
 
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 mb-4">
-                        <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-                        <span class="text-2xl font-bold tracking-tight">Immobiliaris</span>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 mb-4">
+                            <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
+                            <span class="text-2xl font-bold tracking-tight">Immobiliaris</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed text-sm">
+                            Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni
+                            di
+                            qualità, garantendo trasparenza in ogni compravendita.
+                        </p>
                     </div>
-                    <p class="text-gray-400 leading-relaxed text-sm">
-                        Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni di
-                        qualità, garantendo trasparenza in ogni compravendita.
-                    </p>
+
+                    <div>
+                        <h5 class="text-lg font-bold text-white mb-6">Navigazione Veloce</h5>
+                        <ul class="space-y-3 text-sm">
+                            <li>
+                                <a href="index.html"
+                                    class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
+                                    <span class="mr-2">›</span> Home
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#servizi"
+                                    class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
+                                    <span class="mr-2">›</span> I Nostri Servizi
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#approfondimento"
+                                    class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
+                                    <span class="mr-2">›</span> Vantaggi
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.html#contatti"
+                                    class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
+                                    <span class="mr-2">›</span> Contattaci
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="md:text-right">
+                        <h5 class="text-lg font-bold text-white mb-6">Resta in Contatto</h5>
+                        <p class="text-gray-400 text-sm mb-2">Hai domande? Scrivici a:</p>
+                        <a href="mailto:immobiliarishelp@gmail.com"
+                            class="text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block">
+                            immobiliarishelp@gmail.com
+                        </a>
+
+                        <div class="flex justify-start md:justify-end gap-4 mt-4">
+                            <a href="#"
+                                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-my-orange transition-all duration-300 group">
+                                <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform"
+                                    fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            <a href="#"
+                                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-my-orange transition-all duration-300 group">
+                                <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform"
+                                    fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465C9.673 2.013 10.03 2 12.48 2h.165zm-9 2.192c-1.04 0-1.53.05-1.886.188-.47.183-.81.522-.993.992-.138.356-.188.846-.188 1.886v9.484c0 1.04.05 1.53.188 1.886.183.47.522.81.992.993.356.138.846.188 1.886.188h9.484c1.04 0 1.53-.05 1.886-.188.47-.183.81-.522.993-.992.138-.356.188-.846.188-1.886v-9.484c0-1.04-.05-1.53-.188-1.886-.183-.47-.522-.81-.992-.993-.356-.138-.846-.188-1.886-.188H5.484z"
+                                        clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                        d="M12.315 7.815a4.5 4.5 0 100 9 4.5 4.5 0 000-9zm0 2a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <h5 class="text-lg font-bold text-white mb-6">Navigazione Veloce</h5>
-                    <ul class="space-y-3 text-sm">
-                        <li>
-                            <a href="index.html"
-                                class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
-                                <span class="mr-2">›</span> Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html#servizi"
-                                class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
-                                <span class="mr-2">›</span> I Nostri Servizi
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html#approfondimento"
-                                class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
-                                <span class="mr-2">›</span> Vantaggi
-                            </a>
-                        </li>
-                        <li>
-                            <a href="index.html#contatti"
-                                class="text-gray-400 hover:text-my-orange transition-colors duration-200 flex items-center">
-                                <span class="mr-2">›</span> Contattaci
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="md:text-right">
-                    <h5 class="text-lg font-bold text-white mb-6">Resta in Contatto</h5>
-                    <p class="text-gray-400 text-sm mb-2">Hai domande? Scrivici a:</p>
-                    <a href="mailto:immobiliarishelp@gmail.com"
-                        class="text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block">
-                        immobiliarishelp@gmail.com
-                    </a>
-
-                    <div class="flex justify-start md:justify-end gap-4 mt-4">
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-my-orange transition-all duration-300 group">
-                            <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor"
-                                viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill-rule="evenodd"
-                                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                        <a href="#"
-                            class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-my-orange transition-all duration-300 group">
-                            <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="currentColor"
-                                viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill-rule="evenodd"
-                                    d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465C9.673 2.013 10.03 2 12.48 2h.165zm-9 2.192c-1.04 0-1.53.05-1.886.188-.47.183-.81.522-.993.992-.138.356-.188.846-.188 1.886v9.484c0 1.04.05 1.53.188 1.886.183.47.522.81.992.993.356.138.846.188 1.886.188h9.484c1.04 0 1.53-.05 1.886-.188.47-.183.81-.522.993-.992.138-.356.188-.846.188-1.886v-9.484c0-1.04-.05-1.53-.188-1.886-.183-.47-.522-.81-.992-.993-.356-.138-.846-.188-1.886-.188H5.484z"
-                                    clip-rule="evenodd" />
-                                <path fill-rule="evenodd"
-                                    d="M12.315 7.815a4.5 4.5 0 100 9 4.5 4.5 0 000-9zm0 2a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </a>
+                <div
+                    class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                    <p>&copy; 2024 Immobiliaris S.r.l. - P.IVA 12345678901 - Tutti i diritti riservati.</p>
+                    <div class="flex space-x-4 mt-4 md:mt-0">
+                        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
+                        <a href="#" class="hover:text-white transition-colors">Termini di Servizio</a>
                     </div>
                 </div>
             </div>
-
-            <div
-                class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-                <p>&copy; 2024 Immobiliaris S.r.l. - P.IVA 12345678901 - Tutti i diritti riservati.</p>
-                <div class="flex space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Cookie Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Termini di Servizio</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
     </div>
 
     <script>
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const sidebar = document.getElementById('sidebar');
-        if(mobileBtn && sidebar) {
+        if (mobileBtn && sidebar) {
             mobileBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('hidden');
                 sidebar.classList.toggle('fixed');
@@ -484,4 +611,5 @@
         }
     </script>
 </body>
+
 </html>

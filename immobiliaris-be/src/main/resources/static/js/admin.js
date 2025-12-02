@@ -281,9 +281,11 @@ function renderContractsList() {
     const cardEl = document.createElement('div');
     cardEl.className = 'bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-between';
     
-    cardEl.innerHTML = `
+   cardEl.innerHTML = `
        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 bg-blue-50 rounded text-blue-600 flex items-center justify-center text-xl">📄</div>
+          <div class="w-10 h-10  rounded text-blue-600 flex items-center justify-center text-xl">
+              <img src="./assets/contratto.png" class="w-6 h-6" alt="Doc">
+          </div>
           <div>
              <h4 class="font-bold text-gray-800">Contratto #${contratto.idContratto} - ${contratto.tipo || 'Vendita'}</h4>
              <p class="text-sm text-gray-500">
@@ -291,20 +293,25 @@ function renderContractsList() {
              </p>
           </div>
        </div>
-       <div class="flex items-center gap-4">
-          <div class="text-right hidden md:block">
+       
+       <div class="flex items-center gap-3">
+          <div class="text-right hidden md:block mr-2">
              <p class="text-xs text-gray-400">Scadenza</p>
-             <p class="text-sm font-semibold">${contratto.dataFine || 'N/A'}</p>
+             <p class="text-sm text-my-orange font-bold">${contratto.dataFine || 'N/A'}</p>
           </div>
-          <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full">${contratto.stato}</span>
-          <button class="p-2 text-gray-400 hover:text-blue-600 transition view-contract-btn" data-id="${contratto.idContratto}">
-             👁️
+          
+          <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-bold rounded-full border border-green-200">${contratto.stato}</span>
+          
+          <button class="p-2 text-gray-400 hover:text-my-green-light-600 hover:bg-blue-50 rounded-lg transition view-contract-btn" title="Visualizza" data-id="${contratto.idContratto}">
+             <img src="./assets/occhio.png" class="w-5 h-5 opacity-70 hover:opacity-100" alt="Vedi">
           </button>
-          <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-contratto-btn" data-id="${contratto.idContratto}">
-             ✏️
+          
+          <button class="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition edit-contratto-btn" title="Modifica" data-id="${contratto.idContratto}">
+             <img src="./assets/matita.png" class="w-5 h-5 opacity-70 hover:opacity-100" alt="Modifica">
           </button>
-          <button class="p-2 text-gray-400 hover:text-red-600 transition delete-contratto-btn" data-id="${contratto.idContratto}">
-             🗑️
+          
+          <button class="p-2 text-gray-400 hover:text-red-300 hover:bg-red-50 rounded-lg transition delete-contratto-btn" title="Elimina" data-id="${contratto.idContratto}">
+             <img src="./assets/elimina.png" class="w-5 h-5 opacity-70 hover:opacity-100" alt="Elimina">
           </button>
        </div>
     `;
@@ -590,10 +597,12 @@ function renderUtenti(utenti) {
       
       <div class="space-y-2 text-sm text-gray-600 mb-4">
         <div class="flex items-center gap-2">
-            <span class="text-gray-400">📧</span> ${utente.email}
+            <img src="./assets/email.png" class="w-4 h-4 opacity-50" alt="Email">
+            <span>${utente.email}</span>
         </div>
         <div class="flex items-center gap-2">
-            <span class="text-gray-400">📞</span> ${utente.telefono || '-'}
+            <img src="./assets/telefono.png" class="w-4 h-4 opacity-50" alt="Tel">
+            <span>${utente.telefono || '-'}</span>
         </div>
       </div>
 
@@ -622,7 +631,10 @@ function renderVenditori(venditori) {
     // Trova l'utente associato se esiste
     const utenteAssociato = currentData.utenti.find(u => u.idUtente === venditore.idUtente);
     const utenteBadge = utenteAssociato ? 
-      `<span class="inline-block ml-2 px-2 py-1 text-xs font-semibold bg-blue-500 text-white rounded">👤 Utente ID: ${utenteAssociato.idUtente}</span>` : 
+      `<span class="inline-flex items-center ml-2 px-2 py-1 text-xs font-semibold bg-blue-500 text-white rounded">
+          <img src="./assets/utente.png" class="w-3 h-3 mr-1 brightness-0 invert" alt="User"> 
+          Utente ID: ${utenteAssociato.idUtente}
+      </span>` :
       '<span class="inline-block ml-2 px-2 py-1 text-xs font-semibold bg-gray-400 text-white rounded">Nessun utente associato</span>';
     
     const cardEl = document.createElement('div');
@@ -710,10 +722,17 @@ function renderImmobili(immobili) {
              <span class="font-bold text-my-green-dark text-lg">${immobile.prezzo ? '€ ' + immobile.prezzo.toLocaleString() : '-'}</span>
         </div>
         
-        <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
-          <button class="edit-immobile-btn w-1/2 text-xs text-blue-600 hover:text-blue-800 font-bold" data-id="${immobile.idImmobile}">✏️ Modifica immobile</button>
-          <button class="delete-immobile-btn w-1/2 text-xs text-red-600 hover:text-red-800 font-bold" data-id="${immobile.idImmobile}">🗑️ Elimina immobile</button>
-        </div>
+       <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+        <button class="edit-immobile-btn w-1/2 text-xs text-my-green-light hover:text-my-orange font-bold flex items-center justify-center gap-1" data-id="${immobile.idImmobile}">
+             <img src="./assets/matita.png" class="w-4 h-4 opacity-70" alt="Modifica">
+             Modifica immobile
+        </button>
+        
+        <button class="delete-immobile-btn w-1/2 text-xs text-my-green-light hover:text-my-orange font-bold flex items-center justify-center gap-1" data-id="${immobile.idImmobile}">
+            <img src="./assets/elimina.png" class="w-4 h-4 opacity-70" alt="Elimina">
+            Elimina immobile
+        </button>
+      </div>
       </div>
     `;
     detailCards.appendChild(cardEl);
@@ -775,19 +794,21 @@ function renderValutazioni(valutazioni) {
                 </div>
 
             <div class="flex items-center gap-6 mt-3 md:mt-0 w-full md:w-auto justify-between md:justify-end">
-                 <div class="text-right">
+                <div class="text-right">
                     <p class="text-xs text-gray-400 uppercase font-bold">Valore</p>
                     <p class="font-bold text-my-orange text-lg">€ ${val.valoreStimato ? val.valoreStimato.toLocaleString() : '-'}</p>
-                 </div>
-                 <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase border ${statusColor}">
                     ${val.stato}
-                 </span>
-                 <button class="p-2 text-gray-400 hover:text-blue-600 transition edit-valutazione-btn" data-id="${val.idValutazione}">
-                    ✏️
-                 </button>
-                 <button class="p-2 text-gray-400 hover:text-red-600 transition delete-valutazione-btn" data-id="${val.idValutazione}">
-                    🗑️
-                 </button>
+                </span>
+                
+                <button class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition edit-valutazione-btn" title="Modifica" data-id="${val.idValutazione}">
+                    <img src="./assets/matita.png" class="w-5 h-5 opacity-70 hover:opacity-100" alt="Modifica">
+                </button>
+                
+                <button class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition delete-valutazione-btn" title="Elimina" data-id="${val.idValutazione}">
+                    <img src="./assets/elimina.png" class="w-5 h-5 opacity-70 hover:opacity-100" alt="Elimina">
+                </button>
             </div>
         `;
         detailCards.appendChild(cardEl);
