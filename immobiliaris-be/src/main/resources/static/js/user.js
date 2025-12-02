@@ -274,10 +274,10 @@ function renderImmobili(immobili, valutazioni) {
             <p class="text-xs font-bold text-gray-500 uppercase mb-2">Contatta Assistenza</p>
             
             <div class="flex gap-2">
-                <a href="${mailLink}" class="flex-1 flex items-center justify-center py-2 bg-my-green-dark text-white rounded hover:bg-[#111A19] transition-colors text-sm font-semibold shadow-sm">
+                <button class="send-mail-btn flex-1 flex items-center justify-center py-2 bg-my-green-dark text-white rounded hover:bg-[#111A19] transition-colors text-sm font-semibold shadow-sm" data-email="${mailAgenzia}" data-subject="${mailSubject}" data-body="${mailBody}">
                     <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     Scrivi Mail
-                </a>
+                </button>
                 
                 <button class="copy-email-btn px-3 py-2 bg-white border border-gray-300 text-gray-600 rounded hover:bg-gray-100 transition-colors text-sm font-semibold shadow-sm" title="Copia indirizzo email" data-email="${mailAgenzia}">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
@@ -315,7 +315,32 @@ function renderImmobili(immobili, valutazioni) {
       });
   });
 
-  // 2. Listener Copia Email
+  // 2. Listener Scrivi Mail (apri Gmail)
+  document.querySelectorAll('.send-mail-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+          const email = btn.dataset.email;
+          const subject = btn.dataset.subject;
+          const body = btn.dataset.body;
+          
+          // Apri Gmail con il destinatario precompilato
+          const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          window.open(gmailUrl, '_blank');
+      });
+  });
+
+  // 2b. Listener Contatti Email (header e footer) - apri Gmail
+  document.querySelectorAll('.open-gmail-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const email = btn.dataset.email;
+          
+          // Apri Gmail senza soggetto/corpo predefinito
+          const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+          window.open(gmailUrl, '_blank');
+      });
+  });
+
+  // 3. Listener Copia Email
   document.querySelectorAll('.copy-email-btn').forEach(btn => {
       btn.addEventListener('click', () => {
           const email = btn.dataset.email;

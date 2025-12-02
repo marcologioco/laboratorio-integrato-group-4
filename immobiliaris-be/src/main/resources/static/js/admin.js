@@ -1267,3 +1267,15 @@ async function updateContract(idContratto, data) {
     throw error;
   }
 }
+
+//Listener Contatti Email (header e footer) - apri Gmail
+document.querySelectorAll('.open-gmail-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = btn.dataset.email;
+        
+        // Apri Gmail senza soggetto/corpo predefinito
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+        window.open(gmailUrl, '_blank');
+    });
+});
