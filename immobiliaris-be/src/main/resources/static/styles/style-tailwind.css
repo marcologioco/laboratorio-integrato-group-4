@@ -762,6 +762,10 @@ video {
   margin-left: 0.5rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .mr-1 {
   margin-right: 0.25rem;
 }
@@ -812,10 +816,6 @@ video {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.ml-4 {
-  margin-left: 1rem;
 }
 
 .block {
@@ -1717,8 +1717,20 @@ video {
   text-align: justify;
 }
 
+.font-cinzel {
+  font-family: "Cinzel", serif;
+}
+
+.font-cinzel-dec {
+  font-family: "Cinzel Decorative", cursive;
+}
+
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.font-montserrat {
+  font-family: "Montserrat", sans-serif;
 }
 
 .font-sans {
