@@ -567,11 +567,11 @@ function renderUtenti(utenti) {
   utenti.forEach(utente => {
     const isVenditore = currentData.venditori.some(v => v.idUtente === utente.idUtente);
     const badgeRuolo = utente.idRuolo === 2 
-        ? '<span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded uppercase">Admin</span>' 
-        : '<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded uppercase">Utente</span>';
+        ? '<span class="px-2 py-0.5  text-my-green-light text-xs font-bold rounded uppercase border border-my-green-light/20">Admin</span>' 
+        : '<span class="px-2 py-0.5 text-[#274239] text-xs font-bold rounded uppercase border border-black/20">Utente</span>';
     
     const badgeVenditore = isVenditore 
-        ? '<span class="px-2 py-0.5 bg-my-orange/10 text-my-orange text-xs font-bold rounded uppercase border border-my-orange/20">Venditore</span>' 
+        ? '<span class="px-2 py-0.5 text-my-orange text-xs font-bold rounded uppercase border border-my-orange/20">Venditore</span>' 
         : '';
 
     const initials = (utente.nome[0] + utente.cognome[0]).toUpperCase();
