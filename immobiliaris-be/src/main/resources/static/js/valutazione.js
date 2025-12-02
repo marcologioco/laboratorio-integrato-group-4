@@ -190,6 +190,7 @@ function validateStep(step) {
     // Validazione speciale per Step 2 (Indirizzo)
     if (step === 2) {
         const indirizzo = document.getElementById('indirizzo').value.trim();
+        const citta = document.getElementById('citta').value.trim();
         const provincia = document.getElementById('provincia').value.trim();
         
         // Validazione formato indirizzo
@@ -197,6 +198,14 @@ function validateStep(step) {
             alert("L'indirizzo deve iniziare con Via, Viale, Corso, Piazza, ecc. seguito dal nome della via.\nEsempio: Via Garibaldi, Corso Francia, Piazza Castello");
             document.getElementById('indirizzo').classList.add('border-red-500');
             document.getElementById('indirizzo').focus();
+            return false;
+        }
+        
+        // Validazione città (solo le 4 consentite)
+        if (!validateCitta(citta)) {
+            alert("Città non valida. Puoi inserire solo: Torino, Cuneo, Asti, Alessandria");
+            document.getElementById('citta').classList.add('border-red-500');
+            document.getElementById('citta').focus();
             return false;
         }
         
@@ -210,6 +219,12 @@ function validateStep(step) {
     }
     
     return valid;
+}
+
+// Validazione città (solo le 4 consentite)
+function validateCitta(citta) {
+    const cittaValide = ['torino', 'cuneo', 'asti', 'alessandria'];
+    return cittaValide.includes(citta.toLowerCase().trim());
 }
 
 // Validazione formato indirizzo (deve iniziare con tipo di via + nome)
