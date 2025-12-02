@@ -2,7 +2,9 @@
 module.exports = {
   content: [
     "./src/**/*.js",
-    "./src/main/resources/static/**/*.{html,js}", 
+    "./src/main/resources/static/**/*.{html,js}",
+  
+    "./**/*.html" 
   ],
   safelist: [
     'text-my-green-dark',
@@ -18,6 +20,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'cinzel-dec': ['"Cinzel Decorative"', 'cursive'],
+        'cinzel': ['"Cinzel"', 'serif'],
+        'montserrat': ['"Montserrat"', 'sans-serif'],
+      },
+      
       colors: {
         'my-green-dark': '#274239',
         'my-green-light': '#809074',

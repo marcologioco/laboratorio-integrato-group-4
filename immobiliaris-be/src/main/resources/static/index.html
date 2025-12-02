@@ -7,6 +7,9 @@
     <title>Immobiliaris - Home</title>
 
     <!-- tuo CSS Tailwind -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="styles/style-tailwind.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -23,7 +26,7 @@
     </style>
 </head>
 
-<body class="font-sans text-my-black antialiased">
+<body class="font-montserrat text-my-black antialiased">
 
     <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -54,30 +57,30 @@
         </div>
     </div>
 
-    <nav class="bg-my-cream shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <nav class="bg-my-green-dark shadow-sm sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div class="flex justify-between items-center h-20"> <a href="#" class="flex items-center gap-2 group">
-                    <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-                    <span class="text-2xl font-bold tracking-tight text-my-green-dark">Immobiliaris</span>
+            
+            <div class="flex justify-between items-center h-28"> <a href="#" class="flex items-center gap-2 group">
+                    <img src="./assets/logooo.svg" alt="Immobiliaris Logo" class="h-28 w-28 object-contain" />
+                    
                 </a>
 
                 <div class="hidden lg:flex lg:ml-auto items-center">
                     <ul class="flex space-x-8 items-center">
                         <li>
-                            <a class="text-sm font-semibold text-my-black hover:text-my-orange transition duration-200"
+                            <a class="text-sm font-semibold text-white hover:text-my-orange transition duration-200"
                                 href="#">Home</a>
                         </li>
                         <li>
-                            <a class="text-sm font-semibold text-gray-600 hover:text-my-orange transition duration-200"
+                            <a class="text-sm font-semibold text-white hover:text-my-orange transition duration-200"
                                 href="#approfondimento">Approfondimento</a>
                         </li>
                         <li>
-                            <a class="text-sm font-semibold text-gray-600 hover:text-my-orange transition duration-200"
+                            <a class="text-sm font-semibold text-white hover:text-my-orange transition duration-200"
                                 href="#servizi">Servizi</a>
                         </li>
                         <li>
-                            <a class="text-sm font-semibold text-gray-600 hover:text-my-orange transition duration-200"
+                            <a class="text-sm font-semibold text-white hover:text-my-orange transition duration-200"
                                 href="#contatti">Contatti</a>
                         </li>
 
@@ -85,7 +88,7 @@
 
                         <li>
                             <a href="login.html"
-                                class="flex items-center gap-2 py-2.5 px-5 text-sm font-bold bg-my-green-dark text-white rounded-full shadow-lg hover:bg-my-orange hover:-translate-y-0.5 transition-all duration-300">
+                                class="flex items-center gap-2 py-2.5 px-5 text-sm font-bold bg-my-orange text-white rounded-full shadow-lg hover:bg-my-orange hover:-translate-y-0.5 transition-all duration-300">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -132,18 +135,17 @@
 
 
 
-    <section class="bg-white md:py-24">
+    <section class="bg-my-cream md:py-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-12">
 
                 <div>
-                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-my-black">
-                        Scopri
+                    <h1 class="font-cinzel-dec text-4xl md:text-5xl font-extrabold leading-tight text-my-black">
+                        Scopri 
                         <span class="text-my-orange">subito</span><br>
                         il valore della tua <span class="text-my-orange">casa</span>
                     </h1>
-                    <p class="mt-3 mb-6 text-lg text-gray-600">Inizia ora la valutazione gratuita in pochi click. Senza
-                        impegno.</p>
+                    <p class="mt-3 mb-6 text-lg text-gray-600">Inizia ora la valutazione gratuita in pochi click. <br>Senza impegno.</p>
                 </div>
 
                 <div>
@@ -608,8 +610,8 @@
     <section class="py-20 bg-my-cream">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-my-black mb-3">
-                    Successi Recenti
+                <h2 class="font-cinzel text-3xl md:text-4xl font-extrabold text-my-black mb-3">
+                    successi recenti
                 </h2>
                 <p class="text-gray-600">Ecco alcuni degli immobili che abbiamo valutato e venduto nell'ultimo mese.</p>
             </div>
@@ -794,9 +796,9 @@
         </div>
     </section>
 
-    <section id="servizi" class="bg-white py-16">
+    <section id="servizi" class="bg-my-cream py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold mb-2 text-my-black">Cosa ottieni affidandoti a noi</h2>
+            <h2 class="font-cinzel text-3xl font-bold mb-2 text-my-black">Cosa ottieni affidandoti a noi</h2>
             <p class="text-gray-600 mb-1">Lavoriamo nel settore immobiliare da più di 50 anni e abbiamo le soluzioni ai
                 tuoi problemi</p>
             <p class="text-gray-600 mb-8">Un servizio completo, rapido e costruito intorno alle tue esigenze.</p>
@@ -831,11 +833,11 @@
     </section>
 
 
-    <section class="py-16 text-my-black bg-my-cream relative overflow-hidden">
+    <section class="py-16 text-my-black bg-my-green-light/30 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
                 <div class="relative z-10">
-                    <h2 class="text-4xl font-extrabold leading-tight">
+                    <h2 class="font-cinzel text-4xl font-extrabold leading-tight">
                         Scegli<br>
                         la
                         <span class="text-4xl md:text-5xl font-bold text-my-orange">sicurezza
@@ -867,20 +869,19 @@
 
     </section>
 
-    <section id="approfondimento" class="py-20 bg-white relative overflow-hidden pb-32">
+    <section id="approfondimento" class="py-20 bg-my-green-light/30 relative overflow-hidden pb-32">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-12 md:gap-16">
 
-                <div>
-                    <div
-                        class="inline-flex items-center px-3 py-1 rounded-full bg-my-green-light/30 text-my-green-dark text-xs font-bold uppercase tracking-wide mb-4">
-                        Processo Certificato
-                    </div>
-
-                    <h3 class="text-3xl md:text-4xl font-bold mb-6 text-my-black leading-tight">
-                        Come funziona il nostro processo di valutazione
-                    </h3>
+            <div>
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-my-green-light/30 text-my-green-dark text-xs font-bold uppercase tracking-wide mb-4">
+                    Processo Certificato
+                </div>
+                
+                <h3 class="font-cinzel text-3xl md:text-4xl font-bold mb-6 text-my-black leading-tight">
+                    Come funziona il nostro processo di valutazione
+                </h3>
 
                     <p class="mb-6 text-lg text-gray-600 leading-relaxed">
                         La nostra piattaforma analizza in tempo reale <strong>centinaia di dati immobiliari</strong>:
@@ -942,7 +943,7 @@
     <section class="py-20 bg-my-cream">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <h3 class="text-3xl md:text-4xl font-bold mb-3 text-my-black">L’opinione di chi ha già usato il nostro
+                <h3 class="font-cinzel md:text-4xl font-bold mb-3 text-my-black">L’opinione di chi ha già usato il nostro
                     servizio</h3>
                 <p class="text-gray-600 text-lg max-w-2xl mx-auto">
                     Ogni giorno aiutiamo proprietari come te ad avere una valutazione impeccabile e a vendere senza
@@ -1046,7 +1047,7 @@
                         </div>
                         <h6 class="font-bold text-lg text-my-black m-0">Sabrina Venturazza</h6>
                         <p class="mt-3 text-gray-600 italic leading-relaxed">
-                            "Tempi rapidissimi, persone competenti e soprattutto un processo di vendita semplice ed
+                            "Tempi rapidissimi, persone competenti e soprattutto un processo di vendita semplice <br>ed
                             intuitivo."
                         </p>
                     </div>
@@ -1058,11 +1059,11 @@
 
 
 
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-my-cream">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="max-w-4xl mx-auto mb-12 text-left">
-                <h3 class="text-3xl md:text-4xl font-bold mb-4 text-my-black">Le domande più frequenti</h3>
+                <h3 class="font-cinzel  md:text-4xl font-bold mb-4 text-my-black">Le domande più frequenti</h3>
                 <p class="text-gray-600 text-lg">
                     Abbiamo raccolto le risposte ai dubbi più comuni per offrirti la massima trasparenza.
                 </p>
@@ -1171,8 +1172,8 @@
 
                 <div class="space-y-4">
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="./assets/logo-bianco.svg" alt="Logo Immobiliaris" class="h-8 w-8">
-                        <span class="text-2xl font-bold tracking-tight">Immobiliaris</span>
+                        <img src="./assets/logooo.svg" alt="Logo Immobiliaris" class="h-20 w-20">
+                        
                     </div>
                     <p class="text-gray-400 leading-relaxed text-sm">
                         Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni di
@@ -1268,7 +1269,7 @@
     <script>
 
 
-        // Script per gestire il menu mobile
+       
         document.addEventListener('DOMContentLoaded', function () {
             const btn = document.getElementById('mobile-menu-btn');
             const menu = document.getElementById('mobile-menu');
