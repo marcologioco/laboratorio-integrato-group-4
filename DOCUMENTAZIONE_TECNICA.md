@@ -14,6 +14,17 @@
 4. [API REST - Swagger](#api-rest---swagger)
 5. [Autenticazione e Sicurezza](#autenticazione-e-sicurezza)
 6. [Configurazione](#configurazione)
+7. [Frontend — Panoramica & obiettivi](#panoramica--obiettivi)  
+8. [Frontend — Struttura dei file (percorsi chiave)](#struttura-dei-file-percorsi-chiave)  
+9. [Architettura client-side](#architettura-client-side)  
+10. [File per file (comportamento dettagliato)](#file-per-file-comportamento-dettagliato)  
+11. [API consumate dal frontend (sommario)](#api-utilizzate-dal-frontend-sommario)  
+12. [Autenticazione lato client](#flusso-di-autenticazione-client)  
+13. [UX, accessibilità e validazione](#ux-accessibilita-e-validazione)  
+14. [Workflow sviluppo (Tailwind & build)](#workflow-di-sviluppo-come-aggiornare-gli-stili-e-usare-il-watch-locale)  
+15. [Styling e Design (Tailwind)](#styling-e-design-dettagli-tecnici)  
+16. [Testing, performance e sicurezza frontend](#testing-e-qualità-raccomandazioni)
+
 
 ---
 
@@ -573,10 +584,7 @@ URL: http://localhost:8080/swagger
 | GET    | `/api/valutazioni/immobile/{id}`    | Valutazioni di un immobile           |
 | GET    | `/api/valutazioni/utente/{id}`      | Valutazioni gestite da utente        |
 | GET    | `/api/valutazioni/stato/{stato}`    | Filtra per stato                     |
-| POST   | `/api/valutazioni`                  | Crea nuova valutazione               |
-| PUT    | `/api/valutazioni/{id}`             | Aggiorna valutazione                 |
-| DELETE | `/api/valutazioni/{id}`             | Elimina valutazione (Admin)          |
-
+**Questi endpoint vengono utilizzati nei flussi con utente autenticato — usa sempre `authenticatedFetch` per gli endpoint protetti (aggiunge automaticamente l'header Authorization).**
 ---
 
 ### 6. **Contratti** (`/api/contratti`)
@@ -697,307 +705,205 @@ public class SecurityConfig {
 
 ---
 
-## Frontend
+## Frontend 
 
-### Stack Tecnologico Frontend
+### Panoramica & obiettivi
 
-- **HTML5** - Struttura semantica delle pagine
-- **CSS3 + Tailwind CSS** - Styling responsivo e moderno
-- **JavaScript Vanilla** - Logica client-side senza framework
-- **Swiper.js** - Carousel per showcase immobili
-- **JWT** - Gestione autenticazione lato client
+Questo progetto utilizza una UI semplice e leggera basata su HTML statico + JavaScript vanilla con Tailwind CSS per styling. Le pagine e gli script sono serviti dal backend Spring Boot (cartella resources/static) così che il sistema rimanga facilmente distribuibile e indipendente da toolchain frontend complesse.
 
-### Struttura delle Pagine
+Obiettivi della documentazione frontend:
+- Descrivere l'architettura client-side e la struttura dei file
+- Documentare comportamento, API consumate e flussi di autenticazione
+- Fornire linee guida per sviluppo, test e personalizzazione UI/CSS
 
-#### Pagine Pubbliche
+### Struttura dei file (percorsi chiave)
 
-```
-static/
-├── index.html          - Homepage con form valutazione
-├── login.html          - Pagina di autenticazione
-└── assets/             - Immagini e risorse statiche
-```
+static/ (contenuto in immobiliaris-be - vedi src/main/resources/static)
+- index.html — Homepage / form valutazione
+- login.html — Pagina di login
+- user.html — Area riservata utente
+- admin.html — Area riservata amministratore
+- assets/ — immagini, icone e risorse statiche
+- styles/
+  - input.css — Entry point Tailwind (utilizzato durante lo sviluppo con build/watch)
+  - style-tailwind.css — Bundle Tailwind compilato (usato in produzione)
+  - home-styles.css — CSS aggiuntivo personalizzato (override e componenti specifici)
+- js/
+  - auth-utils.js — helper centrale per l'autenticazione (JWT, localStorage, authenticatedFetch)
+  - login.js — gestione del form di login e flusso di autenticazione
+  - valutazione.js — form multi-step per la valutazione (calcolo locale + chiamate API)
+  - user.js — comportamento dashboard utente (rendering liste e utility UI)
+  - admin.js — logica frontend dashboard amministratore e helper per CRUD
+  - validation-utils.js — validator lato client e helper per messaggi UI
+  - faq.js — logica accordion (FAQ)
+  - swiper-config.js — inizializzazione Swiper.js
 
-#### Pagine Protette (Autenticazione Richiesta)
+File referenziati nel repository: `src/main/resources/static/js/*` e `src/main/resources/static/styles/*` (vedi il codice per i dettagli).
 
-```
-static/
-├── account.html        - Dashboard utente standard
-└── admin.html          - Dashboard amministratore
-```
+### Architettura client-side
 
-### File JavaScript
+- Unset di moduli JavaScript leggeri caricati nelle pagine che ne hanno bisogno (no bundler in production). Scripts sono organizzati per responsabilità (auth, forms, dashBoard).
+- auth-utils.js è il punto centrale per autenticazione e tutte le pagine protette usano le sue funzioni (`protectPage`, `authenticatedFetch`, `logout`, `getToken`, `getUser`).
+- Ogni pagina inizializza solo gli script che necessita per evitare overhead.
 
-#### 1. auth-utils.js
+### File per file (comportamento dettagliato)
 
-**Scopo:** Gestione centralizzata dell'autenticazione JWT
+- auth-utils.js
+  - Salva token + user in localStorage (chiavi: immobiliaris_token / immobiliaris_user).
+  - Funzioni principali: saveAuthData, getToken, getUser, isAuthenticated, isAdmin (idRuolo==2), logout, authenticatedFetch (aggiunge automaticamente l'header Authorization: Bearer {token} e gestisce redirect su 401/403), protectPage e redirectByRole.
 
-**Funzioni principali:**
+- login.js
+  - Gestisce l'invio del form di login, con validazione di base e UX (disabilitazione del bottone durante l'autenticazione); chiama `/api/auth/login`, salva token e dati utente e reindirizza (admin -> admin.html, utente -> user.html).
 
-```javascript
-// Configurazione API
-AUTH_CONFIG = {
-  API_BASE_URL: 'http://localhost:8080/api',
-  TOKEN_KEY: 'immobiliaris_token',
-  USER_KEY: 'immobiliaris_user'
-}
+- valutazione.js
+  - Multi-step form (0: mode deciding; 1: registration; 2: immobile; 3: features; 4: review/submit) con un estimatore locale (PREZZI constants).per utenti registrati mantiene immobile + valutazione usando endpoints eutenticati mentre per utenti nuovi chiama /api/valutazioni/automatica.
+  - Utilizza selezioni tramite card nel DOM (selection-card / feature-card) e integra la validazione lato client tramite `validation-utils`.
 
-// Salvataggio dati autenticazione
-saveAuthData(token, user)
+- user.js
+  - Protegge la pagina, carica i dati utente e chiama il backend per recuperare le valutazioni dell'utente (GET /api/valutazioni/utente/{id}), renderizza la UI dedicata e gestisce piccole utility UX (copia email, scroll fluido).
 
-// Recupero token/utente
-getToken()
-getUser()
+- admin.js
+  - Dashboard amministratore: carica i dati in parallelo (utenti, immobili, valutazioni, venditori, contratti) usando `authenticatedFetch`; renderizza le liste e fornisce handler lato client per create/edit/delete (contratti, immobili, valutazioni, venditori, utenti). Mostra inoltre il formato del payload per la creazione dei contratti (POST /api/contratti).
 
-// Verifica stato autenticazione
-isAuthenticated()
-isAdmin()
+- validation-utils.js
+  - Validator condivisi: isValidEmail, isValidCellulare + helper UI (showFieldError, clearFieldError) e funzioni di setup per collegare automaticamente gli eventi blur/input su campi email e telefono.
 
-// Logout
-logout()
+- faq.js & swiper-config.js
+  - Script per comportamenti UI minori: accordion con comportamento esclusivo di apertura + schema colori personalizzabile; inizializzazione di Swiper con breakpoints responsivi.
 
-// Fetch autenticato
-authenticatedFetch(url, options)
+### API utilizzate dal frontend (sommario)
 
-// Protezione pagine
-protectPage(requireAdmin)
+- POST /api/auth/login — restituisce { token, tipo, email, ruolo, user } (il frontend si aspetta data.token e data.user)
+- GET /api/auth/me — restituisce i dati dell'utente per le pagine della dashboard
+- POST /api/valutazioni/automatica — endpoint pubblico per la valutazione automatica da parte degli ospiti
+- POST /api/valutazioni, POST /api/immobili, GET /api/valutazioni/utente/{id} — utilizzati nei flussi con utente autenticato
+- GET /api/zone, /immobili, /venditori, /contratti, /utenti — area admin
 
-// Redirect basato su ruolo
-redirectByRole()
-```
+Usa sempre `authenticatedFetch` per gli endpoint protetti: aggiunge automaticamente l'header `Authorization`.
 
-**Utilizzo:**
+### Flusso di autenticazione (client)
 
-- Automaticamente aggiunge header `Authorization: Bearer {token}` alle richieste
-- Gestisce redirect automatico su 401/403
-- Salva dati utente in localStorage
+1. L'utente invia le credenziali a POST /api/auth/login (login.js)
+2. In caso di successo salvare token e dati utente con `saveAuthData(token, user)` in localStorage
+3. Utilizzare `redirectByRole` per reindirizzare a `user.html` o `admin.html` in base al ruolo
+4. Le pagine protette chiamano `protectPage(requireAdmin)` all'avvio per verificare token e ruolo
+5. `authenticatedFetch` aggiunge il token all'header e forza il logout/redirect su 401/403
 
-#### 2. login.js
+### UX, accessibilità e validazione
 
-**Scopo:** Gestione form di login
+- Usare HTML semantico nei form (label + input) e attributi ARIA quando possibile.
+- Tutti i campi devono avere attributi `required` e `validation-utils.js` fornisce messaggi di errore inline invece di affidarsi solo agli alert.
+- Accessibilità da tastiera: garantire che i controlli personalizzati (selection-card) abbiano `role`, `tabindex` e siano attivabili da tastiera.
+- Usare colori con contrasto adeguato per il brand e assicurare che gli elementi interattivi abbiano stili di focus visibili.
 
-**Flusso:**
+### Workflow di sviluppo (come aggiornare gli stili e usare il watch locale)
 
-1. Verifica se utente già autenticato
-2. Raccolta credenziali (email, password)
-3. POST a `/api/auth/login`
-4. Salvataggio token e dati utente
-5. Redirect basato su ruolo (admin.html o account.html)
+1. Watch di sviluppo Tailwind (consigliato per iterazioni rapide):
 
-**Codice esempio:**
-
-```javascript
-const response = await fetch(`${AUTH_CONFIG.API_BASE_URL}/auth/login`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, password })
-});
-
-const data = await response.json();
-saveAuthData(data.token, data.user);
-redirectByRole();
-```
-
-#### 3. valutazione.js
-
-**Scopo:** Form multi-step per richiesta valutazione automatica
-
-**Caratteristiche:**
-
-- Form a 3 step con progress bar
-- Validazione campi per ogni step
-- Custom cards per selezione tipo/stato immobile
-- Invio dati a `/api/valutazioni/automatica`
-- Visualizzazione risultato valutazione
-
-**Step del form:**
-
-1. **Step 1:** Dati personali (nome, cognome, email, telefono, password)
-2. **Step 2:** Dati immobile (indirizzo, città, CAP, mq, camere, bagni)
-3. **Step 3:** Caratteristiche (tipo, stato, accessori opzionali)
-
-**Selezione tramite card:**
-
-```javascript
-// Card cliccabile aggiorna select nascosta
-<div class="selection-card" data-target="tipo" data-value="APPARTAMENTO">
-  <!-- Visuale della card -->
-</div>
-<select id="tipo" class="hidden" required></select>
+```powershell
+cd immobiliaris-be
+npm run tailwind:watch
 ```
 
-**Calcolo automatico:**
-Il backend calcola il valore stimato usando la formula:
+Questo comando compila `src/main/resources/static/styles/input.css` → `src/main/resources/static/styles/style-tailwind.css` e lo mantiene aggiornato durante le modifiche.
 
-```
-Valore Stimato = metri_quadri × prezzo_medio_zona + fattori correttivi
-```
+2. Le pagine statiche sono servite da Spring Boot; esegui il backend per visualizzare le risorse frontend su http://localhost:8080.
 
-#### 4. user.js
+3. Produzione: il file compilato `style-tailwind.css` è incluso in `resources` e viene utilizzato dalle pagine statiche.
 
-**Scopo:** Dashboard area personale utente
+### Testing e qualità (raccomandazioni)
 
-**Funzionalità:**
+- Test unitari per la logica complessa (es. funzioni di calcolo in valutazione.js) — estrarre funzioni pure e testarle con Jest (se si aggiunge un ambiente Node) o con un semplice harness QUnit.
+- Test end-to-end: usare Playwright / Cypress per coprire i flussi critici (login, form valutazione, CRUD admin).
+- Test di accessibilità: integrare controlli automatici (es. axe-core) durante lo sviluppo.
 
-- Visualizzazione dati utente (nome, email)
-- Lista valutazioni richieste dall'utente
-- Dettaglio immobili valutati
-- Stato valutazioni (IN_CORSO, COMPLETATA, ANNULLATA)
+### Performance e ottimizzazione
 
-**API utilizzate:**
+- Tenere ridotto l'uso di script di terze parti (es. solo Swiper). Usare lazy-loading per le immagini e valutare `srcset` per asset responsive.
+- In produzione, minimizzare JS/CSS e abilitare caching headers (gestito a livello di server/proxy).
 
-- GET `/api/auth/me` - Dati utente corrente
-- GET `/api/valutazioni/utente/{id}` - Valutazioni dell'utente
-- GET `/api/immobili/{id}` - Dettagli immobili
+### Note di sicurezza
 
-**Visualizzazione:**
+- Evitare di memorizzare dati sensibili in `localStorage` — l'app memorizza solo il JWT e metadati non sensibili. Per scenari ad alta sicurezza considerare cookie sicuri HttpOnly.
+- `authenticatedFetch` centralizza la gestione del token e i redirect su 401/403 — mantiene sincronizzato il comportamento client-server.
 
-- Card valutazioni con stato e valore stimato
-- Card immobili con dettagli (mq, camere, bagni)
-- Badge colorati per stati (verde=completata, giallo=in corso)
+### Convenzioni di codifica e componenti
 
-#### 5. admin.js
+- Mantenere uno script per responsabilità e preferire selettori DOM espliciti con scoping all'interno dell'inizializzazione specifica della pagina, per evitare collisioni globali.
+- Usare una nomenclatura coerente: funzioni in camelCase, classi CSS basate sulle utility di Tailwind e classi personalizzate con prefisso `my-` (es. `bg-my-green-dark`).
 
-**Scopo:** Dashboard amministratore completa
+---
 
-**Funzionalità principali:**
+### Styling e Design (dettagli tecnici)
 
-1. **Overview Dashboard**
-   - Contatori totali: utenti, immobili, valutazioni, venditori
-   - Card cliccabili per dettaglio sezioni
+#### Strumenti
 
-2. **Gestione Utenti**
-   - Lista completa utenti con ruoli
-   - Badge distintivi (Admin/Utente/Venditore)
-   - Eliminazione utenti (con conferma)
+- Tailwind CSS v3 è utilizzato nel progetto con uno step di build locale. Il repository contiene lo script `npm run tailwind:watch` che compila `input.css` → `style-tailwind.css` durante lo sviluppo.
+- Il bundle CSS compilato si trova in `src/main/resources/static/styles/style-tailwind.css` ed è servito come risorsa statica.
 
-3. **Gestione Venditori**
-   - Visualizzazione venditori registrati e non
-   - Collegamento con account utente se presente
-   - CRUD completo venditori
+#### Configurazione di Tailwind
 
-4. **Gestione Immobili**
-   - Lista immobili con filtri
-   - Card con dettagli (foto, mq, prezzo)
-   - Eliminazione immobili
+Configurazione principale in `tailwind.config.js` — dettagli importanti:
+- I percorsi di content includono `./src/main/resources/static/**/*.{html,js}`, quindi Tailwind analizza sia HTML che JS per le classi utilizzate.
+- La proprietà `safelist` contiene le utility class usate frequentemente a runtime via JavaScript (es. `bg-my-green-dark`, `text-my-orange`) per evitare che il purging rimuova queste classi.
+- theme.extend.colors include brand tokens:
+  - my-green-dark: #274239
+  - my-green-light: #809074
+  - my-black-dark: #111A19
+  - my-orange: #BA6830
+  - my-cream: #F9F2E8
 
-5. **Gestione Valutazioni**
-   - Visualizzazione tutte le valutazioni
-   - Filtro per stato
-   - Modifica stato valutazione
+Per cambiare il branding, aggiorna questi token in `tailwind.config.js` e riesegui la watch/build.
 
-6. **Gestione Contratti**
-   - Visualizzazione contratti attivi/completati
-   - Form creazione nuovo contratto
-   - Template contratto personalizzabile
-   - Anteprima contratto prima dell'invio
-   - Eliminazione contratti
+#### Custom CSS files
 
-**API utilizzate:**
+ - `style-tailwind.css` — output compilato di Tailwind + reset base
+ - `home-styles.css` — override personalizzati e componenti specifici (stili Swiper, bottoni, micro-style). Aggiungi nuovi stili componenti qui solo quando non è possibile esprimerli con le utility di Tailwind.
 
-```javascript
-// Caricamento dati
-GET /api/utenti
-GET /api/immobili
-GET /api/valutazioni
-GET /api/venditori
-GET /api/contratti
+Linee guida:
+- Preferire le utility di Tailwind per i nuovi componenti. Usare `home-styles.css` solo per comportamenti visuali altamente personalizzati (es. frecce Swiper o pseudo-element complessi).
+- Mantieni `.home-styles.css` mirato e documentato — assegna nomi chiari alle classi (es. `.benefit-img`, `.faq-item`).
 
-// Operazioni CRUD
-DELETE /api/utenti/{id}
-DELETE /api/immobili/{id}
-DELETE /api/valutazioni/{id}
-DELETE /api/venditori/{id}
-DELETE /api/contratti/{id}
-POST /api/contratti
+#### Classi personalizzate comuni e loro scopo
+- `bg-my-green-dark`, `text-my-orange`, `bg-my-cream` — branding
+- `hover:shadow-2xl`, `transition-all` — micro-interazioni e piccoli feedback visivi
+
+#### Accessibilità e design responsive
+ - Assicurarsi che le interazioni importanti mantengano stili di focus visibili — usare le utility di Tailwind (`focus:ring`, `focus:outline-none`, ecc.).
+ - Usare l'approccio mobile-first con le utility responsive (sm, md, lg, xl) — il progetto già segue questo pattern.
+
+#### Build, produzione e uso avanzato di Tailwind
+
+ - Build di produzione / minificazione (esempio):
+
+```powershell
+npx tailwindcss -i ./src/main/resources/static/styles/input.css -o ./src/main/resources/static/styles/style-tailwind.css --minify
 ```
 
-**Creazione contratto:**
+ - Quando si aggiungono classi dinamiche via JS (generate a runtime o toggleate), aggiungerle alla `safelist` in `tailwind.config.js` per evitare che il purge le rimuova.
 
-```javascript
-const contractData = {
-  idImmobile: parseInt(selectImmobile.value),
-  idVenditore: parseInt(selectVenditore.value),
-  tipo: 'vendita',
-  esclusiva: true,
-  dataInizio: '2024-01-01',
-  dataFine: '2024-06-01',
-  prezzoFinaleMinimo: 150000,
-  stato: 'ATTIVO',
-  note: 'Contratto generato da admin dashboard'
-};
+ - PostCSS / Autoprefixer: il progetto include `postcss` e `autoprefixer` nelle dipendenze di sviluppo (`package.json`) per abilitare funzionalità CSS moderne e vendor prefixes cross-browser.
 
-await authenticatedFetch('/api/contratti', {
-  method: 'POST',
-  body: JSON.stringify(contractData)
-});
-```
 
-#### 6. faq.js
+Esempio: creare lo stile di un bottone in `input.css`:
 
-**Scopo:** Gestione accordion FAQ
-
-**Funzionalità:**
-
-- Espansione/chiusura domande
-- Animazioni smooth
-- Toggle icone +/-
-
-#### 7. swiper-config.js
-
-**Scopo:** Configurazione carousel Swiper
-
-**Configurazione:**
-
-```javascript
-new Swiper('.mySwiper', {
-  slidesPerView: 1,
-  spaceBetween: 30,
-  loop: true,
-  pagination: { clickable: true },
-  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-  autoplay: { delay: 5000 },
-  breakpoints: {
-    640: { slidesPerView: 2 },
-    1024: { slidesPerView: 3 }
+```css
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg bg-my-green-dark text-white font-semibold hover:bg-my-green-light;
   }
-});
-```
-
-### Styling e Design
-
-#### Tailwind CSS
-
-**File principale:** `styles/style-tailwind.css`
-
-**Colori personalizzati (tailwind.config.js):**
-
-```javascript
-colors: {
-  'my-green-dark': '#274239',
-  'my-green-light': '#4A7C59',
-  'my-orange': '#C85C2E',
-  'my-cream': '#F5F5F0',
-  'my-black': '#1A1A1A'
 }
 ```
 
-**Classi utility personalizzate:**
+#### Nomenclature e convenzioni organizzative
 
-- `.bg-my-green-dark` - Sfondo verde scuro brand
-- `.text-my-orange` - Testo arancione brand
-- `.hover:shadow-2xl` - Ombra al passaggio mouse
-- `.transition-all` - Transizioni smooth
+- Usare il prefisso `my-` per classi specifiche per evitare conflitti con Tailwind utilities.
+- Mantieni il CSS personalizzato il più piccolo e mirato possibile; preferisci le utility di Tailwind per spacing e layout al posto di regole custom quando possibile.
+- Documentare eventuali nuovi design token in `tailwind.config.js` e nella documentazione in modo che designer e sviluppatori possano trovarli facilmente.
 
-#### CSS Custom
+---
 
-**File:** `styles/home-styles.css`
-
-Contiene:
-
-- Animazioni personalizzate
-- Stili per componenti specifici
-- Override Tailwind quando necessario
+Questa estensione della documentazione frontend fornisce una guida completa e pratica per i futuri sviluppatori: permette di comprendere, estendere e mantenere l'interfaccia utente e i CSS al livello della documentazione backend.
 
 ### Flussi Utente Principali
 
@@ -1005,7 +911,7 @@ Contiene:
 
 ```
 1. Utente compila form su index.html (3 step)
-2. Submit a POST /api/valutazioni/automatica
+2. Invia una richiesta POST a /api/valutazioni/automatica
 3. Backend calcola valore stimato
 4. Visualizzazione risultato immediato
 5. (Opzionale) Registrazione per salvare valutazione
