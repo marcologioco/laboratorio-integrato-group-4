@@ -155,25 +155,52 @@ public class ImmobileController {
 
     /**
      * POST crea nuovo immobile
-     * SOLO ADMIN può creare immobili
+     * Gli utenti autenticati possono creare i propri immobili
+     * Gli ADMIN possono creare immobili per qualsiasi utente
      * 
      * POST http://localhost:8080/api/immobili
      */
     @PostMapping
     @Operation(
         summary = "Crea nuovo immobile",
-        description = "SOLO ADMIN può creare immobili. Utenti normali ricevono 403 Forbidden.",
+        description = "Gli utenti autenticati possono creare i propri immobili. Gli ADMIN possono creare immobili per qualsiasi utente.",
         security = @SecurityRequirement(name = "bearer-jwt")
     )
     public ResponseEntity<?> createImmobile(@RequestBody Immobile immobile) {
-        // Verifica che sia ADMIN
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        // Controllo autenticazione
+        if (authentication == null || !authentication.isAuthenticated() 
+            || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Devi essere autenticato per creare un immobile");
+        }
+        
         String email = (String) authentication.getPrincipal();
         Utente utente = utenteService.findUtenteByEmail(email).orElse(null);
         
-        if (utente == null || utente.getIdRuolo() != 2) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Solo gli amministratori possono creare immobili");
+        if (utente == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Utente non trovato");
+        }
+        
+        // Se l'utente NON è ADMIN, forza l'immobile ad essere associato al suo venditore
+        if (utente.getIdRuolo() != 2) {
+            // Verifica/crea il record venditore se non esiste
+            List<Venditore> venditori = venditoreService.findVenditoreByIdUtente(utente.getIdUtente());
+            if (venditori.isEmpty()) {
+                // Crea un nuovo venditore associato all'utente
+                Venditore nuovoVenditore = new Venditore();
+                nuovoVenditore.setIdUtente(utente.getIdUtente());
+                nuovoVenditore.setNome(utente.getNome());
+                nuovoVenditore.setCognome(utente.getCognome());
+                nuovoVenditore.setEmail(utente.getEmail());
+                nuovoVenditore.setTelefono(utente.getTelefono());
+                Venditore venditoreSalvato = venditoreService.saveVenditore(nuovoVenditore);
+                immobile.setIdVenditore(venditoreSalvato.getIdVenditore());
+            } else {
+                immobile.setIdVenditore(venditori.get(0).getIdVenditore());
+            }
         }
         
         Immobile nuovoImmobile = immobileService.saveImmobile(immobile);

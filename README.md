@@ -10,6 +10,7 @@ Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/labo
 
 - Lamguanouah Badr (Web Developer) -> <https://github.com/pandabluh>
 - Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/marcologioco>
+- Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/MarcoLGM05> (secondo profilo)
 - Vecchi Alessandro (Web Developer) -> <https://github.com/itstyuda>
 - Ferrero Tommaso Francesco (Software Developer) - REFERENTE SWD -> <https://github.com/Tommaferre>
 - Nechainikov Yaroslav (Software Developer) -> <https://github.com/YaroslavNechainikov>
