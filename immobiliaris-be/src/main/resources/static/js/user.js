@@ -328,6 +328,18 @@ function renderImmobili(immobili, valutazioni) {
       });
   });
 
+  // 2b. Listener Contatti Email (header e footer) - apri Gmail
+  document.querySelectorAll('.open-gmail-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const email = btn.dataset.email;
+          
+          // Apri Gmail senza soggetto/corpo predefinito
+          const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+          window.open(gmailUrl, '_blank');
+      });
+  });
+
   // 3. Listener Copia Email
   document.querySelectorAll('.copy-email-btn').forEach(btn => {
       btn.addEventListener('click', () => {
