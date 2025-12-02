@@ -142,7 +142,28 @@ function goToStep(step) {
         progressContainer.style.display = 'none';
     }
     
+    // Gestisci visibilità pulsante "Indietro"
+    updateBackButtonVisibility();
+    
     // NO SCROLL (Come richiesto)
+}
+
+function updateBackButtonVisibility() {
+    const user = typeof getUser === 'function' ? getUser() : null;
+    const backButtons = document.querySelectorAll('.btn-prev');
+    
+    backButtons.forEach(btn => {
+        // Se l'utente è loggato e siamo allo step 2 (primo step visibile per utenti loggati)
+        // nascondi il pulsante indietro per impedire di tornare agli step 0 e 1
+        if (user && currentStep === 2) {
+            btn.style.display = 'none';
+        } else if (currentStep <= 1) {
+            // Negli step 0 e 1 non c'è mai il pulsante indietro
+            btn.style.display = 'none';
+        } else {
+            btn.style.display = 'inline-flex';
+        }
+    });
 }
 
 // --- 4. VALIDAZIONE ---
@@ -219,15 +240,8 @@ function setupSubmit() {
             let resultData = null;
 
             if (user) {
-                // --- UTENTE LOGGATO: Salva Immobile + Valutazione ---
-                const immobile = await salvaImmobile(user);
-                const valutazione = await salvaValutazione(immobile.idImmobile, user.idUtente, stima);
-                
-                resultData = {
-                    valoreStimato: valutazione.valoreStimato,
-                    valoreBaseZona: valutazione.valoreCalcolatoZona,
-                    messaggio: "Valutazione salvata nel tuo account!"
-                };
+                // --- UTENTE LOGGATO: Usa endpoint dedicato ---
+                resultData = await inviaValutazioneUtente();
 
             } else {
                 // --- OSPITE: Chiamata automatica ---
@@ -271,8 +285,9 @@ function calcolaPrezzoFrontend() {
     return Math.round(valore / 100) * 100;
 }
 
-async function salvaImmobile(user) {
+async function inviaValutazioneUtente() {
     const payload = {
+        // Dati immobile
         indirizzo: document.getElementById('indirizzo').value,
         citta: document.getElementById('citta').value,
         provincia: document.getElementById('provincia').value,
@@ -280,38 +295,26 @@ async function salvaImmobile(user) {
         metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
         camere: parseInt(document.getElementById('camere').value),
         bagni: parseInt(document.getElementById('bagni').value),
+        balconi: parseInt(document.getElementById('balconi').value) || 0,
         tipo: document.getElementById('tipo').value,
         stato: document.getElementById('stato').value,
         descrizione: document.getElementById('descrizione').value,
-        prezzo: 0,
-        idUtente: user.idUtente,
-        idVenditore: user.idUtente // Legacy
+        // Caratteristiche opzionali
+        garage: document.getElementById('garage').checked,
+        giardino: document.getElementById('giardino').checked,
+        terrazzo: document.getElementById('terrazzo').checked
     };
-    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/immobili`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error("Errore salvataggio immobile");
-    return await res.json();
-}
 
-async function salvaValutazione(idImmobile, idUtente, valore) {
-    const payload = {
-        idImmobile: idImmobile,
-        idUtente: idUtente,
-        valoreStimato: valore,
-        valoreCalcolatoZona: 1800.0,
-        stato: 'COMPLETATA',
-        note: 'Valutazione Web',
-        dataRichiesta: new Date().toISOString()
-    };
-    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni`, {
+    const res = await authenticatedFetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni/logged`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error("Errore salvataggio valutazione");
+
+    if (!res.ok) {
+        const txt = await res.text();
+        throw new Error("Errore durante la valutazione: " + txt);
+    }
     return await res.json();
 }
 
@@ -331,8 +334,14 @@ async function inviaValutazioneOspite() {
         metriQuadri: parseFloat(document.getElementById('metriQuadri').value),
         camere: parseInt(document.getElementById('camere').value),
         bagni: parseInt(document.getElementById('bagni').value),
+        balconi: parseInt(document.getElementById('balconi').value) || 0,
         tipo: document.getElementById('tipo').value,
-        stato: document.getElementById('stato').value
+        stato: document.getElementById('stato').value,
+        descrizione: document.getElementById('descrizione').value,
+        // Caratteristiche opzionali
+        garage: document.getElementById('garage').checked,
+        giardino: document.getElementById('giardino').checked,
+        terrazzo: document.getElementById('terrazzo').checked
     };
 
     const res = await fetch(`${AUTH_CONFIG.API_BASE_URL}/valutazioni/automatica`, {
