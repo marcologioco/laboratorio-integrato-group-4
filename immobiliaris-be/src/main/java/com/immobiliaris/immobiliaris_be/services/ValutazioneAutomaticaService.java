@@ -358,128 +358,98 @@ public class ValutazioneAutomaticaService {
      * 3. Moltiplicatore per stato immobile
      */
     public Double calcolaValoreImmobile(RichiestaValutazioneDTO richiesta) {
-        
-        // 1. VALORE BASE DALLA ZONA
-        Double valoreBase = calcolaValoreBaseZona(richiesta.getCap(), richiesta.getMetriQuadri());
-        
-        if (valoreBase == null) {
-            // CAP non trovato, usa un valore medio di default
-            valoreBase = richiesta.getMetriQuadri() * 2500.0; // €2.500/m² come fallback
-        }
-        
-        // 2. AGGIUNTE PER CARATTERISTICHE
-        double aggiunte = 0.0;
-        
-        // Bagni extra (oltre il primo)
-        if (richiesta.getBagni() != null && richiesta.getBagni() > 1) {
-            aggiunte += (richiesta.getBagni() - 1) * PREZZO_BAGNO_EXTRA;
-        }
-        
-        // Balconi
-        if (richiesta.getBalconi() != null && richiesta.getBalconi() > 0) {
-            aggiunte += richiesta.getBalconi() * PREZZO_BALCONE;
-        }
-        
-        // Terrazzo
-        if (Boolean.TRUE.equals(richiesta.getTerrazzo())) {
-            aggiunte += PREZZO_TERRAZZO;
-        }
-        
-        // Giardino
-        if (Boolean.TRUE.equals(richiesta.getGiardino())) {
-            aggiunte += PREZZO_GIARDINO;
-        }
-        
-        // Garage
-        if (Boolean.TRUE.equals(richiesta.getGarage())) {
-            aggiunte += PREZZO_GARAGE;
-        }
-        
-        // 3. APPLICA MOLTIPLICATORE PER STATO
-        double moltiplicatore = MOLTIPLICATORE_ABITABILE; // Default
-        
-        if (richiesta.getStato() != null) {
-            switch (richiesta.getStato().toUpperCase()) {
-                case "NUOVA":
-                    moltiplicatore = MOLTIPLICATORE_NUOVA;
-                    break;
-                case "RISTRUTTURATA":
-                    moltiplicatore = MOLTIPLICATORE_ABITABILE; // Stessa valutazione di abitabile
-                    break;
-                case "DA_RISTRUTTURARE":
-                    moltiplicatore = MOLTIPLICATORE_DA_RISTRUTTURARE;
-                    break;
-                default:
-                    moltiplicatore = MOLTIPLICATORE_ABITABILE;
-            }
-        }
-        
-        // 4. CALCOLO FINALE
-        Double valoreTotale = (valoreBase + aggiunte) * moltiplicatore;
-        
-        // Arrotonda a 100€
-        return Math.round(valoreTotale / 100.0) * 100.0;
+        return calcolaValoreImmobileGenerico(
+            richiesta.getCap(),
+            richiesta.getMetriQuadri(),
+            richiesta.getBagni(),
+            richiesta.getBalconi(),
+            richiesta.getTerrazzo(),
+            richiesta.getGiardino(),
+            richiesta.getGarage(),
+            richiesta.getStato()
+        );
     }
     
     /**
      * CALCOLO VALUTAZIONE AUTOMATICA per utente loggato
-     * (stesso algoritmo ma con DTO diverso)
      */
     public Double calcolaValoreImmobilePerLogged(RichiestaValutazioneImmobileDTO richiesta) {
+        return calcolaValoreImmobileGenerico(
+            richiesta.getCap(),
+            richiesta.getMetriQuadri(),
+            richiesta.getBagni(),
+            richiesta.getBalconi(),
+            richiesta.getTerrazzo(),
+            richiesta.getGiardino(),
+            richiesta.getGarage(),
+            richiesta.getStato()
+        );
+    }
+    
+    /**
+     * Logica di calcolo condivisa per entrambi i metodi
+     */
+    private Double calcolaValoreImmobileGenerico(String cap, Double metriQuadri, Integer bagni,
+                                                   Integer balconi, Boolean terrazzo, Boolean giardino,
+                                                   Boolean garage, String stato) {
         
         // 1. VALORE BASE DALLA ZONA
-        Double valoreBase = calcolaValoreBaseZona(richiesta.getCap(), richiesta.getMetriQuadri());
-        
+        Double valoreBase = calcolaValoreBaseZona(cap, metriQuadri);
         if (valoreBase == null) {
-            valoreBase = richiesta.getMetriQuadri() * 2500.0;
+            valoreBase = metriQuadri * 2500.0; // Fallback se CAP non trovato
         }
         
         // 2. AGGIUNTE PER CARATTERISTICHE
         double aggiunte = 0.0;
         
-        if (richiesta.getBagni() != null && richiesta.getBagni() > 1) {
-            aggiunte += (richiesta.getBagni() - 1) * PREZZO_BAGNO_EXTRA;
+        if (bagni != null && bagni > 1) {
+            aggiunte += (bagni - 1) * PREZZO_BAGNO_EXTRA;
         }
         
-        if (richiesta.getBalconi() != null && richiesta.getBalconi() > 0) {
-            aggiunte += richiesta.getBalconi() * PREZZO_BALCONE;
+        if (balconi != null && balconi > 0) {
+            aggiunte += balconi * PREZZO_BALCONE;
         }
         
-        if (Boolean.TRUE.equals(richiesta.getTerrazzo())) {
+        if (Boolean.TRUE.equals(terrazzo)) {
             aggiunte += PREZZO_TERRAZZO;
         }
         
-        if (Boolean.TRUE.equals(richiesta.getGiardino())) {
+        if (Boolean.TRUE.equals(giardino)) {
             aggiunte += PREZZO_GIARDINO;
         }
         
-        if (Boolean.TRUE.equals(richiesta.getGarage())) {
+        if (Boolean.TRUE.equals(garage)) {
             aggiunte += PREZZO_GARAGE;
         }
         
         // 3. APPLICA MOLTIPLICATORE PER STATO
-        double moltiplicatore = MOLTIPLICATORE_ABITABILE;
-        
-        if (richiesta.getStato() != null) {
-            switch (richiesta.getStato().toUpperCase()) {
-                case "NUOVA":
-                    moltiplicatore = MOLTIPLICATORE_NUOVA;
-                    break;
-                case "RISTRUTTURATA":
-                    moltiplicatore = MOLTIPLICATORE_ABITABILE;
-                    break;
-                case "DA_RISTRUTTURARE":
-                    moltiplicatore = MOLTIPLICATORE_DA_RISTRUTTURARE;
-                    break;
-                default:
-                    moltiplicatore = MOLTIPLICATORE_ABITABILE;
-            }
-        }
+        double moltiplicatore = getMoltiplicatoreStato(stato);
         
         // 4. CALCOLO FINALE
         Double valoreTotale = (valoreBase + aggiunte) * moltiplicatore;
         
         return Math.round(valoreTotale / 100.0) * 100.0;
+    }
+    
+    /**
+     * Restituisce il moltiplicatore in base allo stato dell'immobile
+     */
+    private double getMoltiplicatoreStato(String stato) {
+        if (stato == null) {
+            return MOLTIPLICATORE_ABITABILE;
+        }
+        
+        switch (stato.toUpperCase()) {
+            case "NUOVA":
+                return MOLTIPLICATORE_NUOVA;
+            case "RISTRUTTURATA":
+            case "ABITABILE":
+                return MOLTIPLICATORE_ABITABILE;
+            case "DA_RISTRUTTURARE":
+                return MOLTIPLICATORE_DA_RISTRUTTURARE;
+            default:
+                return MOLTIPLICATORE_ABITABILE;
+        }
     }
     
     /**

@@ -541,7 +541,6 @@ async function saveContract() {
     }
 
     const savedContract = await response.json();
-    console.log('Contratto salvato:', savedContract);
     
     // Ricarica i contratti
     await loadAllData();
@@ -1029,7 +1028,6 @@ async function deleteUtente(idUtente) {
       throw new Error('Errore eliminazione utente');
     }
 
-    console.log('Utente eliminato con successo');
     currentData.utenti = currentData.utenti.filter(u => u.idUtente !== idUtente);
   } catch (error) {
     console.error('Errore eliminazione utente:', error);
@@ -1054,7 +1052,6 @@ async function deleteVenditore(idVenditore) {
       throw new Error('Errore eliminazione venditore');
     }
 
-    console.log('Venditore eliminato con successo');
     currentData.venditori = currentData.venditori.filter(v => v.idVenditore !== idVenditore);
     // aggiorna contatore
     updateCount('venditori', currentData.venditori.length);
@@ -1076,7 +1073,6 @@ async function deleteImmobile(idImmobile) {
       throw new Error('Errore eliminazione immobile');
     }
 
-    console.log('Immobile eliminato con successo');
     currentData.immobili = currentData.immobili.filter(i => i.idImmobile !== idImmobile);
     updateCount('immobili', currentData.immobili.length);
   } catch (error) {
@@ -1097,7 +1093,6 @@ async function deleteValutazione(idValutazione) {
       throw new Error('Errore eliminazione valutazione');
     }
 
-    console.log('Valutazione eliminata con successo');
     currentData.valutazioni = currentData.valutazioni.filter(v => v.idValutazione !== idValutazione);
     updateCount('valutazioni', currentData.valutazioni.length);
   } catch (error) {
@@ -1118,7 +1113,6 @@ async function deleteContratto(idContratto) {
       throw new Error('Errore eliminazione contratto');
     }
 
-    console.log('Contratto eliminato con successo');
     currentData.contratti = currentData.contratti.filter(c => c.idContratto !== idContratto);
   } catch (error) {
     console.error('Errore eliminazione contratto:', error);

@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Database persistence ###
+data/*.db
+data/*.trace.db
+
 ### STS ###
 .apt_generated
 .classpath

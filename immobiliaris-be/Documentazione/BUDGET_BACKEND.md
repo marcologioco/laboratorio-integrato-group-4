@@ -1,10 +1,5 @@
 # Budget Backend - Immobiliaris
 
-**Progetto:** Immobiliaris - Portale Immobiliare  
-**Data Preventivo:** Novembre 2025  
-**Versione:** 1.0  
-**Team:** InnovaRe - Group 4
-
 ---
 
 ## Indice

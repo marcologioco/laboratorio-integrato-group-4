@@ -1,5 +1,7 @@
 # Manuale Utente - Immobiliaris
 
+---
+
 ## Indice
 
 1. [Introduzione](#introduzione)
@@ -18,6 +20,20 @@ Immobiliaris è un portale immobiliare che permette di:
 - Ottenere valutazioni automatiche di immobili
 - Gestire le proprie richieste di valutazione
 - Amministrare l'intero sistema (solo per amministratori)
+
+### Avvio Rapido del Sistema
+
+**Windows:**
+1. Vai nella cartella `immobiliaris-be\avviamento\`
+2. Fai **doppio click** su `start.bat`
+3. Attendi l'avvio (circa 30-60 secondi)
+4. Il sistema sarà accessibile su: `http://localhost:8080`
+
+**Altri sistemi:**
+```bash
+cd immobiliaris-be
+mvn spring-boot:run
+```
 
 Il sistema è accessibile tramite browser web all'indirizzo: `http://localhost:8080`
 
@@ -48,11 +64,15 @@ Per testare il sistema sono disponibili i seguenti account:
 
 - Email: `admin@example.com`
 - Password: `admin123`
+- Nome: Admin Default
 
-**Utente Standard:**
+**Utenti Standard:**
 
-- Email: `luca.rossi@example.com`
-- Password: `pwd123`
+- Email: `luca.rossi@example.com` / Password: `pwd123` (Luca Rossi)
+- Email: `marta.bianchi@example.com` / Password: `pwd456` (Marta Bianchi)
+- Email: `giulia.verdi@example.com` / Password: `pwd789` (Giulia Verdi)
+- Email: `paolo.ferrari@example.com` / Password: `pwd101` (Paolo Ferrari)
+- Email: `sara.conti@example.com` / Password: `pwd202` (Sara Conti)
 
 ---
 

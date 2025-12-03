@@ -36,8 +36,6 @@ async function checkLoginState() {
     });
 
     if (user) {
-        console.log("Utente loggato:", user.email);
-        
         // SE LOGGATO: Saltiamo Step 0 e Step 1
         // Precompiliamo i campi nascosti per sicurezza
         fillHiddenFields(user);
