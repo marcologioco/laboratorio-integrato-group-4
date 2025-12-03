@@ -1,9 +1,5 @@
 # Documentazione Tecnica - Backend & Database
 
-**Progetto: Immobiliaris**  
-**Versione: 1.0.0**  
-**Data: Novembre 2025**
-
 ---
 
 ## Indice
@@ -24,7 +20,6 @@
 14. [Workflow sviluppo (Tailwind & build)](#workflow-di-sviluppo-come-aggiornare-gli-stili-e-usare-il-watch-locale)  
 15. [Styling e Design (Tailwind)](#styling-e-design-dettagli-tecnici)  
 16. [Testing, performance e sicurezza frontend](#testing-e-qualità-raccomandazioni)
-
 
 ---
 
@@ -585,6 +580,7 @@ URL: http://localhost:8080/swagger
 | GET    | `/api/valutazioni/utente/{id}`      | Valutazioni gestite da utente        |
 | GET    | `/api/valutazioni/stato/{stato}`    | Filtra per stato                     |
 **Questi endpoint vengono utilizzati nei flussi con utente autenticato — usa sempre `authenticatedFetch` per gli endpoint protetti (aggiunge automaticamente l'header Authorization).**
+
 ---
 
 ### 6. **Contratti** (`/api/contratti`)
@@ -705,13 +701,14 @@ public class SecurityConfig {
 
 ---
 
-## Frontend 
+## Frontend
 
 ### Panoramica & obiettivi
 
 Questo progetto utilizza una UI semplice e leggera basata su HTML statico + JavaScript vanilla con Tailwind CSS per styling. Le pagine e gli script sono serviti dal backend Spring Boot (cartella resources/static) così che il sistema rimanga facilmente distribuibile e indipendente da toolchain frontend complesse.
 
 Obiettivi della documentazione frontend:
+
 - Descrivere l'architettura client-side e la struttura dei file
 - Documentare comportamento, API consumate e flussi di autenticazione
 - Fornire linee guida per sviluppo, test e personalizzazione UI/CSS
@@ -719,6 +716,7 @@ Obiettivi della documentazione frontend:
 ### Struttura dei file (percorsi chiave)
 
 static/ (contenuto in immobiliaris-be - vedi src/main/resources/static)
+
 - index.html — Homepage / form valutazione
 - login.html — Pagina di login
 - user.html — Area riservata utente
@@ -807,7 +805,7 @@ npm run tailwind:watch
 
 Questo comando compila `src/main/resources/static/styles/input.css` → `src/main/resources/static/styles/style-tailwind.css` e lo mantiene aggiornato durante le modifiche.
 
-2. Le pagine statiche sono servite da Spring Boot; esegui il backend per visualizzare le risorse frontend su http://localhost:8080.
+2. Le pagine statiche sono servite da Spring Boot; esegui il backend per visualizzare le risorse frontend su <http://localhost:8080>.
 
 3. Produzione: il file compilato `style-tailwind.css` è incluso in `resources` e viene utilizzato dalle pagine statiche.
 
@@ -844,6 +842,7 @@ Questo comando compila `src/main/resources/static/styles/input.css` → `src/mai
 #### Configurazione di Tailwind
 
 Configurazione principale in `tailwind.config.js` — dettagli importanti:
+
 - I percorsi di content includono `./src/main/resources/static/**/*.{html,js}`, quindi Tailwind analizza sia HTML che JS per le classi utilizzate.
 - La proprietà `safelist` contiene le utility class usate frequentemente a runtime via JavaScript (es. `bg-my-green-dark`, `text-my-orange`) per evitare che il purging rimuova queste classi.
 - theme.extend.colors include brand tokens:
@@ -857,33 +856,35 @@ Per cambiare il branding, aggiorna questi token in `tailwind.config.js` e rieseg
 
 #### Custom CSS files
 
- - `style-tailwind.css` — output compilato di Tailwind + reset base
- - `home-styles.css` — override personalizzati e componenti specifici (stili Swiper, bottoni, micro-style). Aggiungi nuovi stili componenti qui solo quando non è possibile esprimerli con le utility di Tailwind.
+- `style-tailwind.css` — output compilato di Tailwind + reset base
+- `home-styles.css` — override personalizzati e componenti specifici (stili Swiper, bottoni, micro-style). Aggiungi nuovi stili componenti qui solo quando non è possibile esprimerli con le utility di Tailwind.
 
 Linee guida:
+
 - Preferire le utility di Tailwind per i nuovi componenti. Usare `home-styles.css` solo per comportamenti visuali altamente personalizzati (es. frecce Swiper o pseudo-element complessi).
 - Mantieni `.home-styles.css` mirato e documentato — assegna nomi chiari alle classi (es. `.benefit-img`, `.faq-item`).
 
 #### Classi personalizzate comuni e loro scopo
+
 - `bg-my-green-dark`, `text-my-orange`, `bg-my-cream` — branding
 - `hover:shadow-2xl`, `transition-all` — micro-interazioni e piccoli feedback visivi
 
 #### Accessibilità e design responsive
- - Assicurarsi che le interazioni importanti mantengano stili di focus visibili — usare le utility di Tailwind (`focus:ring`, `focus:outline-none`, ecc.).
- - Usare l'approccio mobile-first con le utility responsive (sm, md, lg, xl) — il progetto già segue questo pattern.
+
+- Assicurarsi che le interazioni importanti mantengano stili di focus visibili — usare le utility di Tailwind (`focus:ring`, `focus:outline-none`, ecc.).
+- Usare l'approccio mobile-first con le utility responsive (sm, md, lg, xl) — il progetto già segue questo pattern.
 
 #### Build, produzione e uso avanzato di Tailwind
 
- - Build di produzione / minificazione (esempio):
+- Build di produzione / minificazione (esempio):
 
 ```powershell
 npx tailwindcss -i ./src/main/resources/static/styles/input.css -o ./src/main/resources/static/styles/style-tailwind.css --minify
 ```
 
- - Quando si aggiungono classi dinamiche via JS (generate a runtime o toggleate), aggiungerle alla `safelist` in `tailwind.config.js` per evitare che il purge le rimuova.
+- Quando si aggiungono classi dinamiche via JS (generate a runtime o toggleate), aggiungerle alla `safelist` in `tailwind.config.js` per evitare che il purge le rimuova.
 
- - PostCSS / Autoprefixer: il progetto include `postcss` e `autoprefixer` nelle dipendenze di sviluppo (`package.json`) per abilitare funzionalità CSS moderne e vendor prefixes cross-browser.
-
+- PostCSS / Autoprefixer: il progetto include `postcss` e `autoprefixer` nelle dipendenze di sviluppo (`package.json`) per abilitare funzionalità CSS moderne e vendor prefixes cross-browser.
 
 Esempio: creare lo stile di un bottone in `input.css`:
 
@@ -1010,16 +1011,17 @@ Tutti i layout sono progettati mobile-first con classi responsive:
 
 | Email                  | Password  | Ruolo   | Nome      |
 |------------------------|-----------|---------|-----------|
-| <admin@immobiliaris.com> | admin123  | admin   | Admin     |
-| <user@immobiliaris.com>  | user123   | utente  | Utente    |
-| <mario@immobiliaris.com> | mario123  | utente  | Mario     |
-| <giulia@immobiliaris.com>| giulia123 | utente  | Giulia    |
-| <luca@immobiliaris.com>  | luca123   | utente  | Luca      |
+| <admin@example.com> | admin123  | admin   | Admin     |
+| <user@example.com>  | user123   | utente  | Utente    |
+| <mario@example.com> | mario123  | utente  | Mario     |
+| <giulia@example.com>| giulia123 | utente  | Giulia    |
+| <luca@example.com>  | luca123   | utente  | Luca      |
 
 ### Dati Statistici
 
+- **Utenti**: 6 utenti (1 admin + 5 utenti standard)
 - **Zone**: 36 zone (32 a Torino + 4 altre città)
-- **Venditori**: 6 venditori (3 registrati, 3 non registrati)
+- **Venditori**: 6 venditori (3 collegati a utenti, 3 non registrati)
 - **Immobili**: 6 immobili di esempio
 - **Valutazioni**: 6 valutazioni (stati misti)
 - **Contratti**: 6 contratti (stati misti)

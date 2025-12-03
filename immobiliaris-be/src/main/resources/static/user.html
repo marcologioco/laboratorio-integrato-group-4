@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="alternate icon" href="assets/logo.svg">
   <title>Area Personale - Immobiliaris</title>
-  
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <link href="styles/style-tailwind.css" rel="stylesheet">
-  
+
   <script src="js/validation-utils.js"></script>
   <script src="js/auth-utils.js"></script>
-  
+
   <script src="js/user.js" defer></script>
 </head>
+
 <body class="bg-gray-50 font-sans text-my-black">
 
   <div class="flex flex-col min-h-screen">
 
     <!-- Barra contatti estesa su tutta la larghezza -->
     <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
-      <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <div class="flex items-center space-x-6">
-          <button class="open-gmail-btn flex items-center hover:text-white transition-colors" data-email="immobiliarishelp@gmail.com">
+          <button class="open-gmail-btn flex items-center hover:text-white transition-colors"
+            data-email="immobiliarishelp@gmail.com">
             <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span class="hidden sm:inline">immobiliarishelp@gmail.com</span>
+            <span class="hidden lg:inline">immobiliarishelp@gmail.com</span>
           </button>
           <a href="tel:+39011123456" class="flex items-center hover:text-white transition-colors">
             <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,125 +57,141 @@
 
     <div class="flex flex-1 flex-col lg:flex-row">
 
-    <aside class="bg-my-cream text-my-black w-full lg:w-72 flex-shrink-0 shadow-2xl z-20 flex flex-col self-stretch">
-      
-      <div class="p-8 flex flex-col items-center border-b border-gray-200">
-        <div class="w-24 h-24 rounded-full bg-my-green-dark flex items-center justify-center shadow-lg mb-4 border-4 border-my-orange text-white">
-          <span id="user-initials" class="text-3xl font-bold">...</span>
-        </div>
-        <h2 id="user-name" class="text-xl font-bold text-center text-my-black">Caricamento...</h2>
-        <p id="user-email" class="text-xs text-gray-500 mt-1 text-center opacity-80">...</p>
-      </div>
+      <aside class="bg-my-cream text-my-black w-full lg:w-72 flex-shrink-0 shadow-2xl z-20 flex flex-col self-stretch">
 
-      <nav class="flex-1 px-4 py-6 space-y-2">
-        <a href="#" class="flex items-center px-4 py-3 bg-my-green-dark text-white font-semibold rounded-lg transition-colors shadow-md">
-          <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-          Dashboard
-        </a>
-        <!-- <a href="#valutazioni-container" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
+        <div class="p-8 flex flex-col items-center border-b border-gray-200">
+          <div
+            class="w-24 h-24 rounded-full bg-my-green-dark flex items-center justify-center shadow-lg mb-4 border-4 border-my-orange text-white">
+            <span id="user-initials" class="text-3xl font-bold">...</span>
+          </div>
+          <h2 id="user-name" class="text-xl font-bold text-center text-my-black">Caricamento...</h2>
+          <p id="user-email" class="text-xs text-gray-500 mt-1 text-center opacity-80">...</p>
+        </div>
+
+        <nav class="flex-1 px-4 py-6 space-y-2">
+          <a href="#"
+            class="flex items-center px-4 py-3 bg-my-green-dark text-white font-semibold rounded-lg transition-colors shadow-md">
+            <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </a>
+          <!-- <a href="#valutazioni-container" class="flex items-center px-4 py-3 text-my-black hover:bg-gray-100 hover:font-semibold rounded-lg transition-colors">
           <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
           Le mie Valutazioni
         </a> -->
-      </nav>
+        </nav>
 
-      <div class="p-4 border-t border-gray-200">
-        <a href="index.html" class="flex items-center justify-center w-full px-4 py-2 mb-2 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors rounded-lg">
-          ← Torna al sito
-        </a>
-        <a id="logout-btn" href="#" class="flex items-center justify-center w-full px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600 transition-all text-sm font-semibold shadow-md">
-          Logout
-        </a>
-      </div>
-    </aside>
-
-    <main class="flex-1">
-
-      <nav class="bg-white shadow-sm border-b border-gray-100">
-        <div class="px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between items-center h-20">
-            <a href="index.html" class="flex items-center gap-2 group">
-              <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-              <span class="text-2xl font-bold tracking-tight text-my-green-dark">Immobiliaris</span>
-            </a>
-            <div class="flex items-center gap-2 px-4 py-2 bg-my-green-dark/5 rounded-lg">
-              <span class="text-sm font-semibold text-my-green-dark">Area Personale</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div class="p-6 lg:p-12">
-      
-      <div class="mb-8">
-        <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-3xl font-bold text-my-green-dark">Benvenuto</h1>
-            <p class="text-gray-600">Ecco il riepilogo delle tue attività immobiliari.</p>
-          </div>
-          <a href="index.html?mode=logged" 
-             class="flex items-center gap-2 py-3 px-6 text-sm font-bold bg-my-orange text-white rounded-full shadow-lg hover:bg-my-green-dark hover:-translate-y-0.5 transition-all duration-300">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Richiedi Nuova Valutazione
+        <div class="p-4 border-t border-gray-200">
+          <a href="index.html"
+            class="flex items-center justify-center w-full px-4 py-2 mb-2 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors rounded-lg">
+            ← Torna al sito
+          </a>
+          <a id="logout-btn" href="#"
+            class="flex items-center justify-center w-full px-4 py-2 bg-white text-black border-2 border-black rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600 transition-all text-sm font-semibold shadow-md">
+            Logout
           </a>
         </div>
-        <div class="border-b-2 pb-4 mt-4"></div>
-      </div>
+      </aside>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-         <div class="bg-gray-50 p-6 rounded-xl shadow-lg border border-gray-100 flex items-center">
-            <div class="p-3 rounded-full bg-my-green-dark/10 text-my-green-dark mr-4">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+      <main class="flex-1">
+
+        <nav class="bg-white shadow-sm border-b border-gray-100">
+          <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+              <a href="index.html" class="flex items-center gap-2 group">
+                <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
+                <span class="font-cinzel-dec text-my-green-dark font-bold">Immobiliaris</span>
+              </a>
+              <div class="flex items-center gap-2 px-4 py-2 bg-my-green-dark/5 rounded-lg">
+                <span class="text-sm font-semibold text-my-green-dark">Area Personale</span>
+              </div>
             </div>
-            <div>
+          </div>
+        </nav>
+
+        <div class="p-6 lg:p-12">
+
+          <div class="mb-8">
+            <div class="flex justify-between items-center">
+              <div>
+                <h1 class="text-3xl font-bold text-my-green-dark">Benvenuto</h1>
+                <p class="text-gray-600">Ecco il riepilogo delle tue attività immobiliari.</p>
+              </div>
+              <a href="index.html?mode=logged"
+                class="flex items-center gap-2 py-3 px-6 text-sm font-bold bg-my-orange text-white rounded-full shadow-lg hover:bg-my-green-dark hover:-translate-y-0.5 transition-all duration-300">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Richiedi Nuova Valutazione
+              </a>
+            </div>
+            <div class="border-b-2 pb-4 mt-4"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-gray-50 p-6 rounded-xl shadow-lg border border-gray-100 flex items-center">
+              <div class="p-3 rounded-full bg-my-green-dark/10 text-my-green-dark mr-4">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div>
                 <p class="text-sm text-gray-600">Valutazioni Totali</p>
                 <p class="text-xl font-bold text-my-black" id="total-val-count">-</p>
+              </div>
             </div>
-         </div>
-         </div>
+          </div>
 
-      <div class="mb-10">
-        <div class="w-full">
-          <h2 class="text-2xl font-bold text-my-black flex items-center">
-              <svg class="w-5 h-5 mr-2 text-my-green-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-              Ultime Valutazioni
-          </h2>
-          <p class="text-gray-600 border-b-2 pb-4 mb-4">Qui puoi vedere lo stato delle tue valutazioni recenti.</p>
-        </div>
-        <div id="valutazioni-container" class="space-y-4">
-            <p class="text-gray-500">Caricamento valutazioni...</p>
-        </div>
-      </div>
+          <div class="mb-10">
+            <div class="w-full">
+              <h2 class="text-2xl font-bold text-my-black flex items-center">
+                <svg class="w-5 h-5 mr-2 text-my-green-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Ultime Valutazioni
+              </h2>
+              <p class="text-gray-600 border-b-2 pb-4 mb-4">Qui puoi vedere lo stato delle tue valutazioni recenti.</p>
+            </div>
+            <div id="valutazioni-container" class="space-y-4">
+              <p class="text-gray-500">Caricamento valutazioni...</p>
+            </div>
+          </div>
 
-      <div>
-        <div class="w-full">
-          <h2 class="text-2xl font-bold text-my-black flex items-center">
-              <span class="opacity-20">🏠</span>
-              Immobili Censiti
-          </h2>
-          <p class="text-gray-600 border-b-2 pb-4 mb-4">Qui puoi vedere i tuoi immobili sottoposti a valutazione.</p>
-        </div>
-        <div id="immobili-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <p class="text-gray-500">Caricamento immobili...</p>
-        </div>
-      </div>
+          <div>
+            <div class="w-full">
+              <h2 class="text-2xl font-bold text-my-black flex items-center">
+                <span class="opacity-20">🏠</span>
+                Immobili Censiti
+              </h2>
+              <p class="text-gray-600 border-b-2 pb-4 mb-4">Qui puoi vedere i tuoi immobili sottoposti a valutazione.
+              </p>
+            </div>
+            <div id="immobili-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <p class="text-gray-500">Caricamento immobili...</p>
+            </div>
+          </div>
 
-      </div>
+        </div>
 
-    </main>
+      </main>
 
     </div>
 
-    <footer class="bg-my-green-dark text-white border-t border-white/10">
+    <footer id="contatti" class="bg-my-green-dark text-white border-t border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
 
           <div class="space-y-4">
             <div class="flex items-center gap-2 mb-4">
-              <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-              <span class="text-2xl font-bold tracking-tight">Immobiliaris</span>
+              <a href="index.html" class="flex items-center gap-2 group">
+                <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-16 w-16 object-contain" />
+                <span class="font-cinzel-dec text-white font-bold">Immobiliaris</span>
+              </a>
             </div>
             <p class="text-gray-400 leading-relaxed text-sm">
               Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni di
@@ -203,7 +228,10 @@
           <div class="md:text-right">
             <h5 class="text-lg font-bold text-white mb-6">Resta in Contatto</h5>
             <p class="text-gray-400 text-sm mb-2">Hai domande? Scrivici a:</p>
-            <button class="open-gmail-btn text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block" data-email="immobiliarishelp@gmail.com" style="background: none; border: none; padding: 0; cursor: pointer;">
+            <button
+              class="open-gmail-btn text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block"
+              data-email="immobiliarishelp@gmail.com"
+              style="background: none; border: none; padding: 0; cursor: pointer;">
               immobiliarishelp@gmail.com
             </button>
 
@@ -223,7 +251,8 @@
           </div>
         </div>
 
-        <div class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+        <div
+          class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
           <p>&copy; 2025 Immobiliaris S.r.l. - P.IVA 12345678901 - Tutti i diritti riservati.</p>
           <div class="flex space-x-4 mt-4 md:mt-0">
             <a class="hover:text-white transition-colors">Privacy Policy</a>
@@ -236,4 +265,5 @@
 
   </div>
 </body>
+
 </html>

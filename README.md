@@ -6,33 +6,41 @@ Progetto realizzato dal **Group 4** - Team InnovaRe
 Corso: Laboratorio Integrato  
 Repository: [laboratorio-integrato-group-4](https://github.com/marcologioco/laboratorio-integrato-group-4)
 
-**Membri:**
+**Membri del Team:**
 
-- Lamguanouah Badr (Web Developer) -> <https://github.com/pandabluh>
-- Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/marcologioco>
-- Lo Gioco Marco (Web Developer) - TEAM LEADER -> <https://github.com/MarcoLGM05> (secondo profilo)
-- Vecchi Alessandro (Web Developer) -> <https://github.com/itstyuda>
-- Ferrero Tommaso Francesco (Software Developer) - REFERENTE SWD -> <https://github.com/Tommaferre>
-- Nechainikov Yaroslav (Software Developer) -> <https://github.com/YaroslavNechainikov>
-- Chimirri Simone (Software Developer) -> <https://github.com/SimoneChimirri>
+- Lamguanouah Badr (Web Developer) - [GitHub](https://github.com/pandabluh)
+- Lo Gioco Marco (Web Developer - Team Leader) - [GitHub](https://github.com/marcologioco)
+- Vecchi Alessandro (Web Developer) - [GitHub](https://github.com/itstyuda)
+- Ferrero Tommaso Francesco (Software Developer - Referente SWD) - [GitHub](https://github.com/Tommaferre)
+- Nechainikov Yaroslav (Software Developer) - [GitHub](https://github.com/YaroslavNechainikov)
+- Chimirri Simone (Software Developer) - [GitHub](https://github.com/SimoneChimirri)
 - Casabianca Ivan (Digital Strategist)
 - Lasagno Luca (Digital Strategist)
-- Affinito Clarissa (Digital Strategist) - REFERENTE DIGITAL STRATEGIST
+- Affinito Clarissa (Digital Strategist - Referente)
 
 ## Descrizione del Progetto
 
-Portale web per un'agenzia immobiliare piemontese che modernizza l'acquisizione di immobili in esclusiva, con sistema di valutazione automatica e gestione contratti completa.
+Portale web professionale per agenzia immobiliare che opera in Piemonte. Il sistema modernizza il processo di acquisizione immobili in esclusiva attraverso valutazioni automatiche basate su dati di mercato e gestione completa dei contratti.
 
-**Target:** 35-55 anni  
-**Area operativa:** Torino, Cuneo, Alessandria, Asti
+**Target di riferimento:** Fascia 35-55 anni  
+**Area geografica:** Province di Torino, Cuneo, Alessandria e Asti
 
 ## Funzionalità Principali
 
-- **Valutazione automatica immobili** - Stima immediata basata su dati di mercato
-- **Dashboard utente** - Tracciamento richieste e valutazioni
-- **Dashboard admin** - Gestione completa immobili, utenti, valutazioni e contratti
-- **Sistema contratti** - Generazione e gestione contratti di vendita in esclusiva
-- **Autenticazione JWT** - Sistema sicuro con ruoli (utente/admin)
+**Valutazione Automatica Immobili**  
+Stima immediata del valore di mercato basata su dati georeferenziati e caratteristiche dell'immobile.
+
+**Dashboard Utente**  
+Area personale per il tracciamento delle richieste di valutazione e visualizzazione storico.
+
+**Dashboard Amministratore**  
+Gestione centralizzata di immobili, utenti, valutazioni e contratti con accesso completo alle funzionalità del sistema.
+
+**Sistema Contratti**  
+Generazione e gestione contratti di vendita in esclusiva con template personalizzabili.
+
+**Autenticazione Sicura**  
+Sistema di autenticazione basato su JWT con gestione ruoli utente e amministratore.
 
 ## Stack Tecnologico
 
@@ -80,56 +88,59 @@ immobiliaris-be/
 git clone https://github.com/marcologioco/laboratorio-integrato-group-4.git
 cd laboratorio-integrato-group-4/immobiliaris-be
 
-# Avvia applicazione
-mvn spring-boot:run 
-
-oppure lanciare il programma .bat
-
-laboratorio-integrato-group-4\immobiliaris-be\start-backend.bat
-
-e attendere l'avvio del progetto
+# Avvia applicazione con Maven
+mvn spring-boot:run
 ```
+
+**Oppure (più semplice su Windows):**
+
+1. Vai nella cartella `AVVIAMENTO\`
+2. Fai **doppio click** su `start.bat`
+3. Attendi l'avvio del progetto (apparirà una finestra console)
 
 L'applicazione sarà disponibile su: `http://localhost:8080`
 
 ## Accesso Rapido
 
-**Frontend:**
+### Frontend
+- Homepage: http://localhost:8080
+- Login: http://localhost:8080/login.html
+- Dashboard Admin: http://localhost:8080/admin.html
 
-- Homepage: `http://localhost:8080`
-- Login: `http://localhost:8080/login.html`
-- Dashboard Admin: `http://localhost:8080/admin.html`
-
-**Backend:**
-
-- Swagger UI: `http://localhost:8080/swagger`
-- H2 Console: `http://localhost:8080/h2` (JDBC: `jdbc:h2:mem:ImmobiliarisDB`, user: `sa`, password: vuota)
+### Backend
+- Swagger UI: http://localhost:8080/swagger
+- H2 Console: http://localhost:8080/h2
+  - JDBC URL: `jdbc:h2:mem:ImmobiliarisDB`
+  - Username: `sa`
+  - Password: (vuota)
 
 ## Credenziali di Test
 
-| Email | Password | Ruolo |
-|-------|----------|-------|
-| <admin@example.com> | admin123 | Admin |
-| <luca.rossi@example.com> | pwd123 | Utente |
+| Email | Password | Ruolo | Nome |
+|-------|----------|-------|------|
+| admin@example.com | admin123 | Amministratore | Admin Default |
+| luca.rossi@example.com | pwd123 | Utente | Luca Rossi |
+| marta.bianchi@example.com | pwd456 | Utente | Marta Bianchi |
+| giulia.verdi@example.com | pwd789 | Utente | Giulia Verdi |
+| paolo.ferrari@example.com | pwd101 | Utente | Paolo Ferrari |
+| sara.conti@example.com | pwd202 | Utente | Sara Conti |
 
-> **Nota:** Database in-memory - i dati si resettano ad ogni riavvio
+Nota: Il database è in-memory e viene reinizializzato a ogni riavvio dell'applicazione.
 
 ## API Principali
 
-**Pubbliche (no autenticazione):**
+### Endpoint Pubblici (nessuna autenticazione richiesta)
+- `POST /api/valutazioni/automatica` - Richiesta valutazione automatica immobile
+- `GET /api/immobili` - Elenco immobili con filtri opzionali
+- `GET /api/zone` - Zone geografiche e prezzi medi al metro quadro
 
-- `POST /api/valutazioni/automatica` - Valutazione automatica immobile
-- `GET /api/immobili` - Lista immobili (con filtri)
-- `GET /api/zone` - Zone geografiche e prezzi medi
-
-**Protette (JWT richiesto):**
-
-- `POST /api/auth/login` - Login e generazione token
-- `GET /api/utenti` - Gestione utenti
+### Endpoint Protetti (autenticazione JWT richiesta)
+- `POST /api/auth/login` - Autenticazione e generazione token
+- `GET /api/utenti` - Gestione utenti (solo amministratori)
 - `GET /api/valutazioni` - Gestione valutazioni
-- `POST /api/contratti` - Creazione contratti
+- `POST /api/contratti` - Creazione e gestione contratti
 
-> Documentazione completa: vedere [DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)
+Per la documentazione completa delle API consultare la [Documentazione Tecnica](./immobiliaris-be/Documentazione/DOCUMENTAZIONE_TECNICA.md).
 
 ## Struttura Database
 
@@ -166,5 +177,13 @@ L'applicazione sarà disponibile su: `http://localhost:8080`
 
 ## Documentazione
 
-- **[DOCUMENTAZIONE_TECNICA.md](./DOCUMENTAZIONE_TECNICA.md)** - Documentazione completa Backend, Database e Frontend
-- **Swagger UI**: <http://localhost:8080/swagger> - API interattiva
+**Documentazione Completa:**
+- [DOCUMENTAZIONE_TECNICA.md](./immobiliaris-be/Documentazione/DOCUMENTAZIONE_TECNICA.md) - Architettura sistema, database e API
+- [AUTENTICAZIONE_JWT.md](./immobiliaris-be/Documentazione/AUTENTICAZIONE_JWT.md) - Sistema autenticazione e sicurezza
+- [GUIDA_TESTING_VALUTAZIONE.md](./immobiliaris-be/Documentazione/GUIDA_TESTING_VALUTAZIONE.md) - Test e sistema valutazione
+- [GUIDA_DEPLOYMENT.md](./immobiliaris-be/Documentazione/GUIDA_DEPLOYMENT.md) - Deploy e configurazione produzione
+- [TROUBLESHOOTING.md](./immobiliaris-be/Documentazione/TROUBLESHOOTING.md) - Risoluzione problemi comuni
+- [MANUALE_UTENTE.md](./immobiliaris-be/Documentazione/MANUALE_UTENTE.md) - Guida utilizzo sistema
+
+**API Interattiva:**
+- Swagger UI: http://localhost:8080/swagger

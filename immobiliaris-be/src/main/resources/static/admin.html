@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <link rel="alternate icon" href="assets/logo.svg">
     <title>Admin Dashboard - Immobiliaris</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link href="styles/style-tailwind.css" rel="stylesheet">
     <script src="js/validation-utils.js"></script>
     <script src="js/auth-utils.js"></script>
@@ -63,20 +70,21 @@
     </style>
 </head>
 
-<body class="bg-gray-50 font-sans text-my-black">
+<body class="bg-gray-50 font-montserrat text-my-black">
 
     <div class="flex flex-col min-h-screen">
 
         <!-- Barra contatti estesa su tutta la larghezza -->
         <div class="bg-my-green-dark text-my-cream text-xs py-2.5">
-            <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div class="flex items-center space-x-6">
-                    <button class="open-gmail-btn flex items-center hover:text-white transition-colors" data-email="immobiliarishelp@gmail.com">
+                    <button class="open-gmail-btn flex items-center hover:text-white transition-colors"
+                        data-email="immobiliarishelp@gmail.com">
                         <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        <span class="hidden sm:inline">immobiliarishelp@gmail.com</span>
+                        <span class="hidden lg:inline">immobiliarishelp@gmail.com</span>
                     </button>
                     <a href="tel:+39011123456" class="flex items-center hover:text-white transition-colors">
                         <svg class="w-4 h-4 mr-2 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,7 +181,7 @@
                         <div class="flex justify-between items-center h-20">
                             <a href="index.html" class="flex items-center gap-2 group">
                                 <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-                                <span class="text-2xl font-bold tracking-tight text-my-green-dark">Immobiliaris</span>
+                                <span class="font-cinzel-dec text-my-green-dark font-bold">Immobiliaris</span>
                             </a>
                             <div class="flex items-center gap-2 px-4 py-2 bg-my-green-dark/5 rounded-lg">
                                 <span class="text-sm font-semibold text-my-green-dark">Area Admin</span>
@@ -381,6 +389,13 @@
                                         </div>
                                     </div>
 
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Prezzo Richiesto (€)</label>
+                                        <input type="number" id="prezzo-richiesto"
+                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 font-mono"
+                                            placeholder="0">
+                                    </div>
+
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
                                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Minimo
@@ -503,19 +518,20 @@
 
         </div>
 
-        <footer class="bg-my-green-dark text-white border-t border-white/10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <footer id="contatti" class="bg-my-green-dark text-white border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
 
                     <div class="space-y-4">
                         <div class="flex items-center gap-2 mb-4">
-                            <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-10 w-10 object-contain" />
-                            <span class="text-2xl font-bold tracking-tight">Immobiliaris</span>
+                            <a href="index.html" class="flex items-center gap-2 group">
+                                <img src="./assets/logo.svg" alt="Immobiliaris Logo" class="h-16 w-16 object-contain" />
+                                <span class="font-cinzel-dec text-white font-bold">Immobiliaris</span>
+                            </a>
                         </div>
                         <p class="text-gray-400 leading-relaxed text-sm">
-                            Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni
-                            di
+                            Il nostro core business è impegnarci ogni giorno per offrire valutazioni precise e soluzioni di
                             qualità, garantendo trasparenza in ogni compravendita.
                         </p>
                     </div>
@@ -553,10 +569,9 @@
                     <div class="md:text-right">
                         <h5 class="text-lg font-bold text-white mb-6">Resta in Contatto</h5>
                         <p class="text-gray-400 text-sm mb-2">Hai domande? Scrivici a:</p>
-                        <a href="mailto:immobiliarishelp@gmail.com"
-                            class="text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block">
+                        <button class="open-gmail-btn text-my-orange font-semibold hover:text-white transition-colors mb-6 inline-block" data-email="immobiliarishelp@gmail.com" style="background: none; border: none; padding: 0; cursor: pointer;">
                             immobiliarishelp@gmail.com
-                        </a>
+                        </button>
 
                         <div class="flex justify-start md:justify-end gap-4 mt-4">
                             <a
@@ -583,11 +598,6 @@
                         </div>
                     </div>
                 </div>
-
-                
-
-                
-            </div>
 
             <div
                 class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">

@@ -234,6 +234,15 @@ function openContractForView(contratto) {
       document.getElementById('prezzo-minimo').value = contratto.prezzoFinaleMinimo;
     }
 
+    // Estrai prezzo richiesto dalle note se presente
+    if (contratto.note && document.getElementById('prezzo-richiesto')) {
+      const matchPrezzo = contratto.note.match(/Prezzo di vendita richiesto: €([\d,\.]+)/);
+      if (matchPrezzo) {
+        const prezzoRichiesto = matchPrezzo[1].replace(/,/g, '');
+        document.getElementById('prezzo-richiesto').value = prezzoRichiesto;
+      }
+    }
+
     updateContractFields();
   }, 100);
 
@@ -414,22 +423,38 @@ function updateContractFromImmobile() {
   if (!selectedOption || !selectedOption.dataset.immobile) return;
 
   const immobile = JSON.parse(selectedOption.dataset.immobile);
+  
+  console.log('Immobile selezionato:', immobile); // Debug
 
-  // Aggiorna campi del contratto
-  document.getElementById('immobile-tipo').textContent = immobile.tipo || '';
-  document.getElementById('immobile-indirizzo').textContent = immobile.indirizzo || '';
-  document.getElementById('immobile-citta').textContent = immobile.citta || '';
-  document.getElementById('immobile-provincia').textContent = immobile.provincia || '';
-  document.getElementById('immobile-cap').textContent = immobile.cap || '';
-  document.getElementById('immobile-mq').textContent = immobile.metriQuadri || '';
-  document.getElementById('immobile-camere').textContent = immobile.camere || '';
-  document.getElementById('immobile-bagni').textContent = immobile.bagni || '';
-  document.getElementById('immobile-stato').textContent = immobile.stato || '';
-  document.getElementById('immobile-prezzo').textContent = immobile.prezzo ? immobile.prezzo.toLocaleString() : '';
-  document.getElementById('immobile-prezzo-num').textContent = immobile.prezzo || '';
+  // Aggiorna campi del contratto nel template
+  const campiMap = {
+    'immobile-tipo': immobile.tipo || '',
+    'immobile-indirizzo': immobile.indirizzo || '',
+    'immobile-citta': immobile.citta || '',
+    'immobile-provincia': immobile.provincia || '',
+    'immobile-cap': immobile.cap || '',
+    'immobile-mq': immobile.metriQuadri || '___',
+    'immobile-camere': immobile.camere || '___',
+    'immobile-bagni': immobile.bagni || '',
+    'immobile-stato': immobile.stato || '',
+    'immobile-prezzo': immobile.prezzo ? immobile.prezzo.toLocaleString() : '',
+    'immobile-prezzo-num': immobile.prezzo || ''
+  };
 
-  // Imposta prezzo minimo suggerito (90% del prezzo)
+  // Aggiorna tutti i campi
+  for (const [id, value] of Object.entries(campiMap)) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = value;
+    }
+  }
+
+  // Imposta prezzo richiesto e minimo suggerito
   if (immobile.prezzo) {
+    // Prezzo richiesto = prezzo dell'immobile
+    document.getElementById('prezzo-richiesto').value = immobile.prezzo;
+    
+    // Prezzo minimo suggerito (90% del prezzo)
     const prezzoMinimo = Math.floor(immobile.prezzo * 0.9);
     document.getElementById('prezzo-minimo').value = prezzoMinimo;
     document.getElementById('contratto-prezzo-minimo').textContent = prezzoMinimo.toLocaleString();
@@ -460,7 +485,13 @@ function updateContractFromVenditore() {
 
 // Anteprima contratto
 function previewContract() {
+  // Aggiorna prima i dati dell'immobile e del venditore
+  updateContractFromImmobile();
+  updateContractFromVenditore();
+  
+  // Poi aggiorna i campi dinamici (date, prezzi, ecc.)
   updateContractFields();
+  
   alert('Contratto aggiornato! Scorri verso il basso per vedere l\'anteprima completa.');
   
   // Scroll al template
@@ -472,6 +503,7 @@ function updateContractFields() {
   // Date
   const dataInizio = document.getElementById('data-inizio').value;
   const dataFine = document.getElementById('data-fine').value;
+  const prezzoRichiesto = document.getElementById('prezzo-richiesto').value;
   const prezzoMinimo = document.getElementById('prezzo-minimo').value;
   const commissione = document.getElementById('commissione').value;
 
@@ -483,6 +515,10 @@ function updateContractFields() {
   if (dataFine) {
     const dataFineFormatted = new Date(dataFine).toLocaleDateString('it-IT');
     document.getElementById('contratto-data-fine').textContent = dataFineFormatted;
+  }
+
+  if (prezzoRichiesto) {
+    document.getElementById('immobile-prezzo').textContent = parseInt(prezzoRichiesto).toLocaleString();
   }
 
   if (prezzoMinimo) {
@@ -505,11 +541,18 @@ async function saveContract() {
   const selectVenditore = document.getElementById('select-venditore');
   const dataInizio = document.getElementById('data-inizio').value;
   const dataFine = document.getElementById('data-fine').value;
+  const prezzoRichiesto = document.getElementById('prezzo-richiesto').value;
   const prezzoMinimo = document.getElementById('prezzo-minimo').value;
 
   if (!selectImmobile.value || !selectVenditore.value || !dataInizio || !dataFine || !prezzoMinimo) {
     alert('Compila tutti i campi obbligatori');
     return;
+  }
+
+  // Costruisci le note con il prezzo richiesto se specificato
+  let note = 'Contratto generato da admin dashboard';
+  if (prezzoRichiesto) {
+    note += ` - Prezzo di vendita richiesto: €${parseFloat(prezzoRichiesto).toLocaleString()}`;
   }
 
   const contractData = {
@@ -521,7 +564,7 @@ async function saveContract() {
     dataFine: dataFine,
     prezzoFinaleMinimo: parseFloat(prezzoMinimo),
     stato: 'ATTIVO',
-    note: 'Contratto generato da admin dashboard'
+    note: note
   };
 
   try {
@@ -541,7 +584,6 @@ async function saveContract() {
     }
 
     const savedContract = await response.json();
-    console.log('Contratto salvato:', savedContract);
     
     // Ricarica i contratti
     await loadAllData();
@@ -1029,7 +1071,6 @@ async function deleteUtente(idUtente) {
       throw new Error('Errore eliminazione utente');
     }
 
-    console.log('Utente eliminato con successo');
     currentData.utenti = currentData.utenti.filter(u => u.idUtente !== idUtente);
   } catch (error) {
     console.error('Errore eliminazione utente:', error);
@@ -1054,7 +1095,6 @@ async function deleteVenditore(idVenditore) {
       throw new Error('Errore eliminazione venditore');
     }
 
-    console.log('Venditore eliminato con successo');
     currentData.venditori = currentData.venditori.filter(v => v.idVenditore !== idVenditore);
     // aggiorna contatore
     updateCount('venditori', currentData.venditori.length);
@@ -1076,7 +1116,6 @@ async function deleteImmobile(idImmobile) {
       throw new Error('Errore eliminazione immobile');
     }
 
-    console.log('Immobile eliminato con successo');
     currentData.immobili = currentData.immobili.filter(i => i.idImmobile !== idImmobile);
     updateCount('immobili', currentData.immobili.length);
   } catch (error) {
@@ -1097,7 +1136,6 @@ async function deleteValutazione(idValutazione) {
       throw new Error('Errore eliminazione valutazione');
     }
 
-    console.log('Valutazione eliminata con successo');
     currentData.valutazioni = currentData.valutazioni.filter(v => v.idValutazione !== idValutazione);
     updateCount('valutazioni', currentData.valutazioni.length);
   } catch (error) {
@@ -1118,7 +1156,6 @@ async function deleteContratto(idContratto) {
       throw new Error('Errore eliminazione contratto');
     }
 
-    console.log('Contratto eliminato con successo');
     currentData.contratti = currentData.contratti.filter(c => c.idContratto !== idContratto);
   } catch (error) {
     console.error('Errore eliminazione contratto:', error);
