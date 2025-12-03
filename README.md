@@ -94,7 +94,7 @@ mvn spring-boot:run
 
 **Oppure (più semplice su Windows):**
 
-1. Vai nella cartella `immobiliaris-be\avviamento\`
+1. Vai nella cartella `AVVIAMENTO\`
 2. Fai **doppio click** su `start.bat`
 3. Attendi l'avvio del progetto (apparirà una finestra console)
 

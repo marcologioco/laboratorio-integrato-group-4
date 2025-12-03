@@ -24,7 +24,7 @@ Immobiliaris è un portale immobiliare che permette di:
 ### Avvio Rapido del Sistema
 
 **Windows:**
-1. Vai nella cartella `immobiliaris-be\avviamento\`
+1. Vai nella cartella `AVVIAMENTO\` (nella root del progetto)
 2. Fai **doppio click** su `start.bat`
 3. Attendi l'avvio (circa 30-60 secondi)
 4. Il sistema sarà accessibile su: `http://localhost:8080`

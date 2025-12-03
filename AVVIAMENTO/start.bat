@@ -6,7 +6,7 @@ echo.
 echo Avvio in corso...
 echo.
 
-cd /d "%~dp0.."
+cd /d "%~dp0..\immobiliaris-be"
 call mvnw.cmd spring-boot:run
 
 pause

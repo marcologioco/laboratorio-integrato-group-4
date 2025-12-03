@@ -237,7 +237,7 @@ VALUES (8, 1, 'COMPLETATA', 380650, 288000, NOW(), NOW());
    ```
 
    **Opzione B - Con doppio click (Windows):**
-   - Vai nella cartella `immobiliaris-be\avviamento\`
+   - Vai nella cartella `AVVIAMENTO\` (nella root del progetto)
    - Fai **doppio click** su `start.bat`
    - Attendi che appaia il messaggio "Started ImmobiliarisBeApplication"
 

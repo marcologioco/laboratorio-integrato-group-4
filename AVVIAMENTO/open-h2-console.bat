@@ -7,7 +7,7 @@ echo IMPORTANTE: Assicurati che l'applicazione Spring Boot sia FERMATA!
 echo.
 pause
 
-cd /d "%~dp0.."
+cd /d "%~dp0..\immobiliaris-be"
 
 echo Avvio console H2...
 echo.
