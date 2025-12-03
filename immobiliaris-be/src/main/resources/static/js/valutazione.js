@@ -192,6 +192,9 @@ function validateStep(step) {
         const indirizzo = document.getElementById('indirizzo').value.trim();
         const citta = document.getElementById('citta').value.trim();
         const provincia = document.getElementById('provincia').value.trim();
+        const metriQuadri = parseFloat(document.getElementById('metriQuadri').value.trim());
+        const camere = parseInt(document.getElementById('camere').value.trim());
+        const bagni = parseInt(document.getElementById('bagni').value.trim());
         
         // Validazione formato indirizzo
         if (!validateAddressFormat(indirizzo)) {
@@ -216,7 +219,35 @@ function validateStep(step) {
             document.getElementById('provincia').focus();
             return false;
         }
+
+        // Validazione Metri Quadri (>= 1)
+        if (isNaN(metriQuadri) || metriQuadri < 1) {
+            alert("I metri quadri devono essere almeno 1.");
+            document.getElementById('metriQuadri').classList.add('border-red-500');
+            document.getElementById('metriQuadri').focus();
+            return false;
+        }
+
+        // Validazione Camere (>= 1)
+        if (isNaN(camere) || camere < 1) {
+            alert("Il numero di camere deve essere almeno 1.");
+            document.getElementById('camere').classList.add('border-red-500');
+            document.getElementById('camere').focus();
+            return false;
+        }
+
+        // Validazione Bagni (>= 1)
+        if (isNaN(bagni) || bagni < 1) {
+            alert("Il numero di bagni deve essere almeno 1.");
+            document.getElementById('bagni').classList.add('border-red-500');
+            document.getElementById('bagni').focus();
+            return false;
+        }
     }
+
+    stepEl.querySelectorAll('.border-red-500').forEach(input => {
+        input.classList.remove('border-red-500');
+    });
     
     return valid;
 }
